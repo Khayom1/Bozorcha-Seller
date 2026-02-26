@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bozorcha Seller - Қадами 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .phone-container {
+            width: 100%;
+            max-width: 375px;
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .app-bar {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .back-button {
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            width: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+        }
+        
+        .app-title {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .step-badge {
+            background-color: #fff3e0;
+            color: #ff9800;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #757575;
+            margin-bottom: 30px;
+        }
+        
+        .code-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .code-input {
+            width: 45px;
+            height: 55px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            outline: none;
+        }
+        
+        .code-input:focus {
+            border-color: #ff9800;
+            border-width: 2px;
+        }
+        
+        .resend-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .resend-text {
+            color: #9e9e9e;
+            font-size: 14px;
+        }
+        
+        .resend-link {
+            color: #ff9800;
+            font-weight: 500;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 12px;
+            color: #bdbdbd;
+            margin-bottom: 20px;
+        }
+        
+        .verify-button {
+            width: 100%;
+            padding: 16px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .verify-button:hover {
+            background-color: #f57c00;
+        }
+        
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #bdbdbd;
+            border-top: 1px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- App Bar -->
+        <div class="app-bar">
+            <a href="index.html" class="back-button">←</a>
+            <div class="app-title">Bozorcha Seller</div>
+            <div style="width: 30px;"></div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <span class="step-badge">Қадами 2 аз 4</span>
+            </div>
+            
+            <!-- Title -->
+            <div class="title">Рамзи тасдиқро ворид кунед</div>
+            <div class="subtitle">Ба рақами +992 123 45 67 рамз фиристода шуд</div>
+            
+            <!-- Code Input -->
+            <div class="code-container">
+                <input type="text" class="code-input" maxlength="1" id="code1" onkeyup="moveToNext(this, 'code2')">
+                <input type="text" class="code-input" maxlength="1" id="code2" onkeyup="moveToNext(this, 'code3')">
+                <input type="text" class="code-input" maxlength="1" id="code3" onkeyup="moveToNext(this, 'code4')">
+                <input type="text" class="code-input" maxlength="1" id="code4" onkeyup="moveToNext(this, 'code5')">
+                <input type="text" class="code-input" maxlength="1" id="code5" onkeyup="moveToNext(this, 'code6')">
+                <input type="text" class="code-input" maxlength="1" id="code6" onkeyup="moveToNext(this, '')">
+            </div>
+            
+            <!-- Resend -->
+            <div class="resend-container">
+                <span class="resend-text">Рамзро нагирифтед?</span>
+                <a href="#" class="resend-link" onclick="resendCode()">Аз нав фиристодан</a>
+            </div>
+            <div class="timer">баъд аз 60 сония</div>
+            
+            <!-- Verify Button -->
+            <button class="verify-button" id="verifyBtn">Тасдиқ</button>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            © 2024 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.
+        </div>
+    </div>
+    
+    <script>
+        function moveToNext(current, nextId) {
+            if (current.value.length === 1 && nextId) {
+                document.getElementById(nextId).focus();
+            }
+        }
+        
+        function resendCode() {
+            alert('Рамзи нав фиристода шуд');
+        }
+        
+        document.getElementById('verifyBtn').addEventListener('click', function() {
+            const code1 = document.getElementById('code1').value;
+            const code2 = document.getElementById('code2').value;
+            const code3 = document.getElementById('code3').value;
+            const code4 = document.getElementById('code4').value;
+            const code5 = document.getElementById('code5').value;
+            const code6 = document.getElementById('code6').value;
+            
+            if (code1 && code2 && code3 && code4 && code5 && code6) {
+                alert('Рамз дуруст аст. Ба қадами 3 гузаред.');
+                // Ба step3.html мегузарем
+                window.location.href = 'step3.html';
+            } else {
+                alert('Лутфан ҳамаи 6 рақамро ворид кунед');
+            }
+        });
+    </script>
+</body>
+</html>
