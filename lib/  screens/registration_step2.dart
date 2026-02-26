@@ -184,29 +184,27 @@ class _RegistrationStep2State extends State<RegistrationStep2> {
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
-                  // Санҷиши рамз
-                  String code = '';
-                  for (var controller in _codeControllers) {
-                    code += controller.text;
-                  }
-                  
-                  if (code.length == 6) {
-                    // Ба саҳифаи навбатӣ гузаштан
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Рамз дуруст аст. Ба қадами 3 гузаред.'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Лутфан ҳамаи 6 рақамро ворид кунед'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                },
+  // Санҷиши рамз
+  String code = '';
+  for (var controller in _codeControllers) {
+    code += controller.text;
+  }
+  
+  if (code.length == 6) {
+    // Ба саҳифаи 3 гузаштан
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegistrationStep3()),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Лутфан ҳамаи 6 рақамро ворид кунед'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   foregroundColor: Colors.white,
