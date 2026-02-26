@@ -228,19 +228,25 @@ class _RegistrationStep3State extends State<RegistrationStep3> {
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
-                  // Санҷиши майдонҳои ҳатмӣ
-                  if (_nameController.text.isNotEmpty &&
-                      _surnameController.text.isNotEmpty &&
-                      _streetController.text.isNotEmpty &&
-                      _houseController.text.isNotEmpty) {
-                    
-                    // Ба саҳифаи 4 гузаштан (ҳанӯз насохтаем)
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Маълумот қабул шуд. Ба қадами 4 гузаред.'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+  if (_nameController.text.isNotEmpty &&
+      _surnameController.text.isNotEmpty &&
+      _streetController.text.isNotEmpty &&
+      _houseController.text.isNotEmpty) {
+    
+    // Ба саҳифаи 4 гузаштан
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegistrationStep4()),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Лутфан ҳамаи майдонҳои ҳатмиро пур кунед'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+},
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
