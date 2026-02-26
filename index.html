@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bozorcha Seller - Қадами 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .phone-container {
+            width: 100%;
+            max-width: 375px;
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .app-bar {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .back-button {
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .app-title {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .step-badge {
+            background-color: #fff3e0;
+            color: #ff9800;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+        
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #757575;
+            margin-bottom: 30px;
+        }
+        
+        .phone-input-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .country-code {
+            padding: 15px;
+            background-color: #fafafa;
+            border-right: 1px solid #e0e0e0;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .phone-input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .phone-input::placeholder {
+            color: #bdbdbd;
+        }
+        
+        .example-text {
+            font-size: 12px;
+            color: #9e9e9e;
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .next-button {
+            width: 100%;
+            padding: 16px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .next-button:hover {
+            background-color: #f57c00;
+        }
+        
+        .terms {
+            text-align: center;
+            font-size: 12px;
+            color: #9e9e9e;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #bdbdbd;
+            border-top: 1px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- App Bar -->
+        <div class="app-bar">
+            <div class="back-button">←</div>
+            <div class="app-title">Bozorcha Seller</div>
+            <div style="width: 30px;"></div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <span class="step-badge">Қадами 1 аз 4</span>
+            </div>
+            
+            <!-- Title -->
+            <div class="title">Рақами телефони худро ворид кунед</div>
+            <div class="subtitle">Ба ин рақам рамзи тасдиқ фиристода мешавад</div>
+            
+            <!-- Phone Input -->
+            <div class="phone-input-container">
+                <span class="country-code">+992</span>
+                <input type="tel" class="phone-input" placeholder="12 345 67" id="phoneNumber">
+            </div>
+            <div class="example-text">Намуна: 901 23 45 67</div>
+            
+            <!-- Next Button -->
+            <button class="next-button" id="nextBtn">Давом</button>
+            
+            <!-- Terms -->
+            <div class="terms">
+                Бо регистратсия шумо қоидаҳои истифодабариро қабул мекунед
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            © 2024 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            const phone = document.getElementById('phoneNumber').value;
+            if (phone.length >= 7) {
+                alert('Рақам қабул шуд. Ба қадами 2 гузаред.');
+                // Дар оянда ба саҳифаи 2 мегузарем
+            } else {
+                alert('Лутфан рақами дуруст ворид кунед');
+            }
+        });
+    </script>
+</body>
+</html>
