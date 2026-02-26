@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/registration_step2.dart';
+import 'screens/registration_step3.dart';
 
 void main() {
   runApp(const MyApp());
