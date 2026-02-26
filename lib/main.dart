@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/registration_step2.dart';
 
 void main() {
   runApp(const MyApp());
@@ -155,14 +156,21 @@ class _RegistrationStep1State extends State<RegistrationStep1> {
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
-                  if (_phoneController.text.length >= 9) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Рақам қабул шуд'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  } else {
+  if (_phoneController.text.length >= 9) {
+    // Ба саҳифаи 2 гузаштан
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RegistrationStep2()),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Рақами нодуруст'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}, {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Рақами нодуруст'),
