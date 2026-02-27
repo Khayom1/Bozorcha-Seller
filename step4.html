@@ -3,50 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Қадами 4 - Тасдиқ</title>
+    <title>Bozorcha Seller - Қадами 4</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
         body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px;}
-        .container{width:100%;max-width:375px;background:white;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,0.1);padding:20px;}
+        .phone-container{width:100%;max-width:375px;background:white;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,0.1);padding:20px;}
         .section-title { font-size: 16px; font-weight: bold; margin: 15px 0; color: #333; }
         .upload-btn {
             display: block; width: 100%; padding: 15px; margin-bottom: 10px;
-            background: #f9f9f9; border: 2px dashed #ddd; border-radius: 12px;
-            text-align: center; cursor: pointer; transition: 0.3s; color: #666;
+            background: #fafafa; border: 1px solid #ddd; border-radius: 12px;
+            text-align: center; cursor: pointer; transition: 0.3s;
         }
-        .upload-btn.done { background: #e8f5e9; border-color: #4caf50; border-style: solid; color: #2e7d32; }
+        .upload-btn.done { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
         input[type="file"] { display: none; }
-        
-        .delivery-option { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
-        .checkbox-custom { width: 20px; height: 20px; border: 2px solid #ff9800; border-radius: 5px; margin-right: 10px; }
-        input[type="checkbox"]:checked + .checkbox-custom { background: #ff9800; }
-
         .submit-button {
-            width: 100%; padding: 16px; background: #ff9800; color: white;
+            width: 100%; padding: 16px; background: #ccc; color: white;
             border: none; border-radius: 12px; font-size: 18px; font-weight: bold;
-            cursor: pointer; margin-top: 20px; transition: 0.3s;
+            cursor: not-allowed; margin-top: 20px;
         }
-        .submit-button:disabled { background: #ccc; cursor: not-allowed; opacity: 0.7; }
+        .submit-button.active { background: #ff9800; cursor: pointer; }
+        #statusText { text-align: center; font-size: 14px; color: #ff9800; margin-top: 10px; min-height: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="section-title">Тасдиқи шахсият (3 акс)</div>
+    <div class="phone-container">
+        <div class="section-title">Тасдиқи шахсият</div>
         <label class="upload-btn" id="lbl1">Акси пеши паспорт <input type="file" id="f1" accept="image/*" onchange="updateStatus('f1', 'lbl1')"></label>
         <label class="upload-btn" id="lbl2">Акси пушти паспорт <input type="file" id="f2" accept="image/*" onchange="updateStatus('f2', 'lbl2')"></label>
         <label class="upload-btn" id="lbl3">Селфи бо паспорт <input type="file" id="f3" accept="image/*" onchange="updateStatus('f3', 'lbl3')"></label>
 
         <div class="section-title">Усули доставка</div>
-        <label class="delivery-option">
-            <input type="checkbox" id="d1" style="display:none">
-            <div class="checkbox-custom"></div> <span>Доставкаи шахсӣ</span>
+        <label style="display:flex; align-items:center; margin-bottom:10px;">
+            <input type="checkbox" id="d1"> <span style="margin-left:10px;">Доставкаи шахсӣ</span>
         </label>
-        <label class="delivery-option">
-            <input type="checkbox" id="d2" style="display:none">
-            <div class="checkbox-custom"></div> <span>Тавассути почта</span>
+        <label style="display:flex; align-items:center;">
+            <input type="checkbox" id="d2"> <span style="margin-left:10px;">Тавассути почта</span>
         </label>
 
+        <div id="statusText"></div>
         <button class="submit-button" id="submitBtn" disabled>Фиристодан</button>
     </div>
 
@@ -67,49 +62,64 @@
             const f1 = document.getElementById('f1').files.length;
             const f2 = document.getElementById('f2').files.length;
             const f3 = document.getElementById('f3').files.length;
-            // Тугма вақте фаъол мешавад, ки 3 акс интихоб шавад
-            document.getElementById('submitBtn').disabled = !(f1 && f2 && f3);
+            const btn = document.getElementById('submitBtn');
+            if (f1 && f2 && f3) {
+                btn.disabled = false;
+                btn.classList.add('active');
+            }
         }
 
         async function uploadFile(file, folder) {
-            const path = `${folder}/${Date.now()}_seller.jpg`;
+            const path = `${folder}/${Date.now()}_${file.name}`;
             const { data, error } = await _supabase.storage.from('documents').upload(path, file);
             if (error) throw error;
-            return path;
+            return data.path;
         }
 
         document.getElementById('submitBtn').onclick = async function() {
-            this.disabled = true;
-            this.innerText = "Дар ҳоли ирсол...";
+            const btn = this;
+            const status = document.getElementById('statusText');
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
 
             try {
                 const info = JSON.parse(localStorage.getItem('temp_seller_info') || '{}');
                 
+                status.innerText = "Боркунии акси 1...";
                 const p1 = await uploadFile(document.getElementById('f1').files[0], 'passports');
+                
+                status.innerText = "Боркунии акси 2...";
                 const p2 = await uploadFile(document.getElementById('f2').files[0], 'passports');
+                
+                status.innerText = "Боркунии акси 3...";
                 const p3 = await uploadFile(document.getElementById('f3').files[0], 'selfies');
 
+                status.innerText = "Сабти маълумот дар база...";
+                
                 const deliveries = [];
                 if(document.getElementById('d1').checked) deliveries.push("Шахсӣ");
                 if(document.getElementById('d2').checked) deliveries.push("Почта");
 
-                const { error } = await _supabase.from('sellers').insert([{
+                const { error: dbError } = await _supabase.from('sellers').insert([{
                     ...info,
                     doc_front: p1,
                     doc_back: p2,
                     doc_selfie: p3,
-                    delivery_methods: deliveries,
-                    status: 'pending'
+                    delivery_methods: deliveries
                 }]);
 
-                if (error) throw error;
-                alert("Муваффақият! Маълумот ба база сабт шуд.");
+                if (dbError) throw dbError;
+
+                status.innerText = "Муваффақият!";
+                alert("Ҳамаи маълумот ва аксҳо бор карда шуданд!");
                 localStorage.clear();
                 window.location.href = 'index.html';
+
             } catch (err) {
+                status.innerText = "Хатогӣ рӯй дод";
                 alert("Хатогӣ: " + err.message);
-                this.disabled = false;
-                this.innerText = "Фиристодан";
+                btn.disabled = false;
+                btn.style.opacity = "1";
             }
         };
     </script>
