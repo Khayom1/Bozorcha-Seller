@@ -21,9 +21,12 @@
         .phone-input{flex:1;padding:15px;border:none;outline:none;font-size:16px;}
         .phone-input::placeholder{color:#bdbdbd;}
         .example-text{font-size:12px;color:#9e9e9e;padding-left:15px;margin-bottom:20px;}
-        .next-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px;}
-        .next-button:hover{background:#f57c00;}
-        .terms{text-align:center;font-size:12px;color:#9e9e9e;margin-top:20px;line-height:1.5;}
+        .terms-check{display:flex;align-items:center;margin:15px 0;gap:8px;}
+        .terms-check input{width:18px;height:18px;cursor:pointer;}
+        .terms-check label{font-size:14px;color:#333;}
+        .terms-link{color:#2196f3;text-decoration:none;}
+        .next-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:10px;transition:0.3s;}
+        .next-button:disabled{background:#e0e0e0;cursor:not-allowed;}
         .footer{padding:20px;text-align:center;font-size:12px;color:#bdbdbd;border-top:1px solid #f0f0f0;}
     </style>
 </head>
@@ -43,18 +46,40 @@
                 <input type="tel" class="phone-input" placeholder="12 345 67" id="phone">
             </div>
             <div class="example-text">Намуна: 901 23 45 67</div>
-            <button class="next-button" id="nextBtn">Давом</button>
-            <div class="terms">Бо регистратсия шумо қоидаҳоро қабул мекунед</div>
+            
+            <!-- Чекбокс барои қоидаҳо -->
+            <div class="terms-check">
+                <input type="checkbox" id="agree">
+                <label for="agree">Ман <a href="rules.html" target="_blank" class="terms-link">қоидаҳои истифодабариро</a> қабул мекунам</label>
+            </div>
+            
+            <button class="next-button" id="nextBtn" disabled>Давом</button>
         </div>
-        <div class="footer">© 2024 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
+        <div class="footer">© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
     </div>
     <script>
-        document.getElementById('nextBtn').onclick = function() {
-            var phone = document.getElementById('phone').value.replace(/\s/g, '');
-            if (phone.length >= 7) {
+        const phoneInput = document.getElementById('phone');
+        const agreeCheck = document.getElementById('agree');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function checkForm() {
+            let phone = phoneInput.value.replace(/\s/g, '');
+            if (phone.length >= 7 && agreeCheck.checked) {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
+            }
+        }
+
+        phoneInput.addEventListener('input', checkForm);
+        agreeCheck.addEventListener('change', checkForm);
+
+        nextBtn.onclick = function() {
+            let phone = phoneInput.value.replace(/\s/g, '');
+            if (phone.length >= 7 && agreeCheck.checked) {
                 window.location.href = 'step2.html';
             } else {
-                alert('Рақами нодуруст');
+                alert('Рақами дуруст ворид кунед ва қоидаҳоро қабул кунед');
             }
         };
     </script>
