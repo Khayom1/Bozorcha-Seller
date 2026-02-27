@@ -4,10 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bozorcha Seller - Қадами 4</title>
-
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
 body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;}
@@ -15,11 +12,9 @@ body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;m
 .upload-btn{display:block;width:100%;padding:16px;margin-bottom:10px;border:2px dashed #ccc;border-radius:10px;text-align:center;cursor:pointer;}
 .upload-btn.done{border-color:#4caf50;background:#e8f5e9;}
 input[type="file"]{display:none;}
-.submit-button{width:100%;padding:16px;background:#ccc;color:white;border:none;border-radius:10px;font-size:18px;}
-.submit-button.ready{background:#ff9800;cursor:pointer;}
+.submit-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:10px;font-size:18px;margin-top:15px;cursor:pointer;}
 </style>
 </head>
-
 <body>
 <div class="container">
 
@@ -45,208 +40,95 @@ input[type="file"]{display:none;}
 
 <br>
 
-<div class="g-recaptcha"
-data-sitekey="6LdOqHksAAAAACqetrmTgVMiqOeqD6hEMrGySKr">
+<!-- SIMPLE CAPTCHA -->
+<div style="margin-top:15px;">
+    <label id="captchaQuestion" style="font-weight:bold;"></label>
+    <input type="number" id="captchaAnswer"
+           placeholder="Ҷавобро навис"
+           style="width:100%;padding:10px;margin-top:5px;">
 </div>
 
-<br>
-
-<button class="submit-button" id="submitBtn" disabled>Фиристодан</button>
+<button class="submit-button" id="submitBtn">Фиристодан</button>
 
 </div>
 
 <script>
-
 const supabaseClient = supabase.createClient(
 'https://seagtlaujnnhoyitgsdd.supabase.co',
 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
 );
 
-let selectedFiles = {
-doc_front:null,
-doc_back:null,
-doc_selfie:null
-};
+let selectedFiles = {doc_front:null, doc_back:null, doc_selfie:null};
 
 function storeFile(input,key,labelId){
-const file=input.files[0];
-if(!file)return;
-
-selectedFiles[key]=file;
-document.getElementById(labelId).classList.add("done");
-checkReady();
+    const file=input.files[0];
+    if(!file)return;
+    selectedFiles[key]=file;
+    document.getElementById(labelId).classList.add("done");
 }
 
-document.getElementById("d1").onchange=checkReady;
-document.getElementById("d2").onchange=checkReady;
-
-function checkReady(){
-const filesReady=selectedFiles.doc_front&&selectedFiles.doc_back&&selectedFiles.doc_selfie;
-const deliveryReady=document.getElementById("d1").checked||document.getElementById("d2").checked;
-
-if(filesReady&&deliveryReady){
-submitBtn.disabled=false;
-submitBtn.classList.add("ready");
-}else{
-submitBtn.disabled=true;
-submitBtn.classList.remove("ready");
-}
-}
+// Simple Captcha
+let captchaA = Math.floor(Math.random()*10)+1;
+let captchaB = Math.floor(Math.random()*10)+1;
+let captchaResult = captchaA + captchaB;
+document.getElementById("captchaQuestion").innerText = "Чанд мешавад: " + captchaA + " + " + captchaB + " ?";
 
 document.getElementById("submitBtn").onclick = async function(){
+    const userAnswer = parseInt(document.getElementById("captchaAnswer").value);
+    if(userAnswer !== captchaResult){
+        alert("Ҷавоб нодуруст. Лутфан санҷишро гузаред.");
+        return;
+    }
+    if(!selectedFiles.doc_front || !selectedFiles.doc_back || !selectedFiles.doc_selfie){
+        alert("Лутфан ҳамаи аксҳоро интихоб кунед.");
+        return;
+    }
+    if(!document.getElementById("d1").checked && !document.getElementById("d2").checked){
+        alert("Усули доставкаро интихоб кунед.");
+        return;
+    }
 
-const token = grecaptcha.getResponse();
+    this.disabled=true;
+    this.innerText="Бор шуда истодааст...";
 
-if(!token){
-alert("reCAPTCHA-ро пур кунед");
-return;
-}
+    try{
+        async function uploadOne(file,folder){
+            const fileName = Date.now()+"_"+file.name;
+            const {data,error} = await supabaseClient.storage
+                .from("documents")
+                .upload(folder+"/"+fileName,file);
+            if(error) throw error;
+            return data.path;
+        }
 
-this.disabled = true;
-this.innerText = "Санҷиш...";
+        const [front,back,selfie] = await Promise.all([
+            uploadOne(selectedFiles.doc_front,"passports"),
+            uploadOne(selectedFiles.doc_back,"passports"),
+            uploadOne(selectedFiles.doc_selfie,"selfies")
+        ]);
 
-try{
+        const deliveries=[];
+        if(document.getElementById("d1").checked) deliveries.push("Шахсӣ");
+        if(document.getElementById("d2").checked) deliveries.push("Почта");
 
-// SEND TOKEN TO SUPABASE EDGE FUNCTION
-const verify = await fetch(
-"https://seagtlaujnnhoyitgsdd.supabase.co/functions/v1/verify-recaptcha",
-{
-method:"POST",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({ token })
-}
-);
+        const {error} = await supabaseClient.from("sellers").insert([{
+            doc_front:front,
+            doc_back:back,
+            doc_selfie:selfie,
+            delivery_methods:deliveries
+        }]);
 
-const result = await verify.json();
+        if(error) throw error;
 
-if(!result.success){
-alert("reCAPTCHA хато");
-grecaptcha.reset();
-this.disabled = false;
-this.innerText = "Фиристодан";
-return;
-}
+        alert("Ҳама чиз бо муваффақият иҷро шуд!");
+        window.location.href="dashboard.html";
 
-this.innerText = "Бор шуда истодааст...";
-
-async function uploadOne(file,folder){
-const fileName = Date.now()+"_"+file.name;
-const {data,error} = await supabaseClient.storage
-.from("documents")
-.upload(folder+"/"+fileName,file);
-
-if(error) throw error;
-return data.path;
-}
-
-const [front,back,selfie] = await Promise.all([
-uploadOne(selectedFiles.doc_front,"passports"),
-uploadOne(selectedFiles.doc_back,"passports"),
-uploadOne(selectedFiles.doc_selfie,"selfies")
-]);
-
-const deliveries=[];
-if(document.getElementById("d1").checked) deliveries.push("Шахсӣ");
-if(document.getElementById("d2").checked) deliveries.push("Почта");
-
-const {error} = await supabaseClient.from("sellers").insert([{
-doc_front:front,
-doc_back:back,
-doc_selfie:selfie,
-delivery_methods:deliveries
-}]);
-
-if(error) throw error;
-
-alert("Ҳама чиз бо муваффақият иҷро шуд!");
-window.location.href="index.html";
-
-}catch(err){
-alert("Хато: "+err.message);
-this.disabled=false;
-this.innerText="Фиристодан";
-grecaptcha.reset();
-}
-
+    }catch(err){
+        alert("Хато: "+err.message);
+        this.disabled=false;
+        this.innerText="Фиристодан";
+    }
 };
-
-this.disabled=true;
-this.innerText="Санҷиш...";
-
-try{
-
-const token=grecaptcha.getResponse();
-
-if(!token){
-alert("reCAPTCHA гузаред");
-this.disabled=false;
-this.innerText="Фиристодан";
-return;
-}
-
-// VERIFY WITH EDGE FUNCTION
-const verify=await fetch(
-"https://seagtlaujnnhoyitgsdd.supabase.co/functions/v1/verify-recaptcha",
-{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({token})
-}
-);
-
-const result=await verify.json();
-
-if(!result.ok){
-alert("reCAPTCHA тасдиқ нашуд");
-grecaptcha.reset();
-this.disabled=false;
-this.innerText="Фиристодан";
-return;
-}
-
-this.innerText="Бор шуда истодааст...";
-
-async function uploadOne(file,folder){
-const fileName=Date.now()+"_"+file.name;
-const {data,error}=await supabaseClient.storage
-.from("documents")
-.upload(folder+"/"+fileName,file);
-if(error)throw error;
-return data.path;
-}
-
-const [front,back,selfie]=await Promise.all([
-uploadOne(selectedFiles.doc_front,"passports"),
-uploadOne(selectedFiles.doc_back,"passports"),
-uploadOne(selectedFiles.doc_selfie,"selfies")
-]);
-
-const deliveries=[];
-if(document.getElementById("d1").checked)deliveries.push("Шахсӣ");
-if(document.getElementById("d2").checked)deliveries.push("Почта");
-
-const {error}=await supabaseClient.from("sellers").insert([{
-doc_front:front,
-doc_back:back,
-doc_selfie:selfie,
-delivery_methods:deliveries
-}]);
-
-if(error)throw error;
-
-alert("Ҳама чиз бо муваффақият иҷро шуд!");
-window.location.href = "dashboard.html";
-
-}catch(err){
-alert("Хато: "+err.message);
-this.disabled=false;
-this.innerText="Фиристодан";
-grecaptcha.reset();
-}
-
-};
-
 </script>
-
 </body>
 </html>
