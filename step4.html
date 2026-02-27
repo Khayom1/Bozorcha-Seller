@@ -28,6 +28,18 @@
             display: flex;
             justify-content: center;
             margin: 20px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .recaptcha-note {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 10px;
         }
 
         .submit-button{
@@ -81,6 +93,7 @@
                  data-expired-callback="onRecaptchaExpired">
             </div>
         </div>
+        <div class="recaptcha-note">Лутфан, санҷиши "Ман робот нестам" -ро анҷом диҳед</div>
 
         <button class="submit-button" id="submitBtn" disabled>Фиристодан</button>
     </div>
@@ -115,11 +128,13 @@
         }
 
         function onRecaptchaSuccess() {
+            console.log("reCAPTCHA гузашт");
             recaptchaPassed = true;
             checkReady();
         }
 
         function onRecaptchaExpired() {
+            console.log("reCAPTCHA мӯҳлаташ гузашт");
             recaptchaPassed = false;
             checkReady();
         }
