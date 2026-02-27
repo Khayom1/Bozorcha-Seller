@@ -88,7 +88,6 @@
 
         let uploaded = {front: false, back: false, selfie: false};
 
-        // Функсия барои нишон додани номи файл пас аз интихоб
         window.handleFile = function(input, type) {
             if (input.files && input.files[0]) {
                 let fileName = input.files[0].name;
@@ -102,7 +101,6 @@
             }
         };
 
-        // Функсияи санҷиши пайвастшавӣ ба Supabase
         async function testConnection() {
             try {
                 const { error } = await supabase.from('user').select('*').limit(1);
@@ -113,20 +111,19 @@
             }
         }
 
-        // Фаъол кардани санҷиш ҳангоми боршавии саҳифа
         window.addEventListener('load', function() {
             testConnection();
         });
 
-        // Тугмаи Фиристодан
         document.getElementById('finishBtn').onclick = async function() {
-            // Санҷиши бор шудани аксҳо
+            // АЛЕРТ БАРОИ САНҶИШИ ТУГМА
+            alert('Тугма кор мекунад!');
+
             if (!uploaded.front || !uploaded.back || !uploaded.selfie) {
                 alert('Лутфан ҳар се аксро бор кунед');
                 return;
             }
             
-            // Санҷиши интихоби усули доставка
             let del1 = document.getElementById('del1').checked;
             let del2 = document.getElementById('del2').checked;
             let del3 = document.getElementById('del3').checked;
@@ -135,7 +132,6 @@
                 return;
             }
 
-            // Ҷамъоварии маълумот аз LocalStorage (аз қадамҳои қаблӣ)
             const userData = {
                 phone: localStorage.getItem('bozorcha_phone') || '',
                 name: localStorage.getItem('bozorcha_name') || '',
@@ -151,7 +147,6 @@
             };
 
             try {
-                // Фиристодани маълумот ба Supabase
                 const { error } = await supabase
                     .from('user')
                     .insert([userData]);
@@ -159,7 +154,6 @@
                 if (error) throw error;
 
                 alert('✅ Маълумот бомуваффақият фиристода шуд!');
-                // Ба саҳифаи аввал баргаштан
                 window.location.href = 'index.html';
                 
             } catch (error) {
