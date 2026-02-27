@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Санҷиши оддӣ</title>
+    <style>
+        body{font-family:sans-serif;padding:20px;}
+        button{padding:10px 20px;background:orange;border:none;border-radius:5px;margin-top:10px;}
+        .done{border:2px solid green;}
+    </style>
+</head>
+<body>
+    <h3>Санҷиши тугма</h3>
+    <button id="testBtn">Тугмаи санҷишӣ</button>
+    <p id="message"></p>
+
+    <h3>Санҷиши боркунии акс</h3>
+    <label id="fileLabel" style="display:block;padding:10px;border:1px solid #ccc;">
+        Акс интихоб кунед
+        <input type="file" id="testFile" accept="image/*">
+    </label>
+    <p id="fileName"></p>
+
+    <script>
+        // Санҷиши тугма
+        document.getElementById('testBtn').onclick = function() {
+            document.getElementById('message').innerText = 'Тугма кор кард!';
+        };
+
+        // Санҷиши боркунии акс
+        document.getElementById('testFile').onchange = function(event) {
+            if (event.target.files[0]) {
+                document.getElementById('fileName').innerText = 'Интихоб шуд: ' + event.target.files[0].name;
+                document.getElementById('fileLabel').classList.add('done');
+            } else {
+                document.getElementById('fileName').innerText = '';
+                document.getElementById('fileLabel').classList.remove('done');
+            }
+        };
+    </script>
+</body>
+</html>
