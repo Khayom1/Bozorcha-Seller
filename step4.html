@@ -12,39 +12,39 @@
         .section-title { font-size: 16px; font-weight: bold; margin: 15px 0; color: #333; }
         .upload-btn {
             display: block; width: 100%; padding: 15px; margin-bottom: 10px;
-            background: #fafafa; border: 1px solid #ddd; border-radius: 12px;
-            text-align: center; cursor: pointer; transition: 0.3s;
+            background: #f9f9f9; border: 2px dashed #ddd; border-radius: 12px;
+            text-align: center; cursor: pointer; transition: 0.3s; color: #666;
         }
-        .upload-btn.done { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .upload-btn.done { background: #e8f5e9; border-color: #4caf50; border-style: solid; color: #2e7d32; }
         input[type="file"] { display: none; }
-        .checkbox-container {
-            width: 22px; height: 22px; border: 2px solid #ff9800; border-radius: 6px;
-            margin-right: 12px; cursor: pointer; transition: 0.2s;
-        }
-        .checkbox-container:active { transform: scale(0.8); }
-        input[type="checkbox"] { display: none; }
-        input[type="checkbox"]:checked + .checkbox-container { background: #ff9800; }
+        
+        .delivery-option { display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
+        .checkbox-custom { width: 20px; height: 20px; border: 2px solid #ff9800; border-radius: 5px; margin-right: 10px; }
+        input[type="checkbox"]:checked + .checkbox-custom { background: #ff9800; }
+
         .submit-button {
             width: 100%; padding: 16px; background: #ff9800; color: white;
             border: none; border-radius: 12px; font-size: 18px; font-weight: bold;
-            cursor: pointer; margin-top: 20px;
+            cursor: pointer; margin-top: 20px; transition: 0.3s;
         }
-        .submit-button:disabled { background: #ccc; cursor: not-allowed; }
+        .submit-button:disabled { background: #ccc; cursor: not-allowed; opacity: 0.7; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="section-title">Тасдиқи шахсият</div>
+        <div class="section-title">Тасдиқи шахсият (3 акс)</div>
         <label class="upload-btn" id="lbl1">Акси пеши паспорт <input type="file" id="f1" accept="image/*" onchange="updateStatus('f1', 'lbl1')"></label>
         <label class="upload-btn" id="lbl2">Акси пушти паспорт <input type="file" id="f2" accept="image/*" onchange="updateStatus('f2', 'lbl2')"></label>
         <label class="upload-btn" id="lbl3">Селфи бо паспорт <input type="file" id="f3" accept="image/*" onchange="updateStatus('f3', 'lbl3')"></label>
 
         <div class="section-title">Усули доставка</div>
-        <label style="display:flex; align-items:center; margin-bottom:10px;">
-            <input type="checkbox" id="d1"><div class="checkbox-container"></div><span>Доставкаи шахсӣ</span>
+        <label class="delivery-option">
+            <input type="checkbox" id="d1" style="display:none">
+            <div class="checkbox-custom"></div> <span>Доставкаи шахсӣ</span>
         </label>
-        <label style="display:flex; align-items:center;">
-            <input type="checkbox" id="d2"><div class="checkbox-container"></div><span>Тавассути почта</span>
+        <label class="delivery-option">
+            <input type="checkbox" id="d2" style="display:none">
+            <div class="checkbox-custom"></div> <span>Тавассути почта</span>
         </label>
 
         <button class="submit-button" id="submitBtn" disabled>Фиристодан</button>
@@ -58,7 +58,7 @@
             const label = document.getElementById(labelId);
             if (input.files[0]) {
                 label.classList.add('done');
-                label.innerText = "✓ " + input.files[0].name.substring(0, 15);
+                label.innerText = "✓ Интихоб шуд";
                 checkForm();
             }
         }
@@ -67,12 +67,12 @@
             const f1 = document.getElementById('f1').files.length;
             const f2 = document.getElementById('f2').files.length;
             const f3 = document.getElementById('f3').files.length;
-            // Тугма танҳо вақте рангин (фаъол) мешавад, ки 3 акс бошад
+            // Тугма вақте фаъол мешавад, ки 3 акс интихоб шавад
             document.getElementById('submitBtn').disabled = !(f1 && f2 && f3);
         }
 
         async function uploadFile(file, folder) {
-            const path = `${folder}/${Date.now()}_${file.name}`;
+            const path = `${folder}/${Date.now()}_seller.jpg`;
             const { data, error } = await _supabase.storage.from('documents').upload(path, file);
             if (error) throw error;
             return path;
@@ -80,10 +80,11 @@
 
         document.getElementById('submitBtn').onclick = async function() {
             this.disabled = true;
-            this.innerText = "Ирсол...";
+            this.innerText = "Дар ҳоли ирсол...";
 
             try {
-                const info = JSON.parse(localStorage.getItem('temp_seller_info'));
+                const info = JSON.parse(localStorage.getItem('temp_seller_info') || '{}');
+                
                 const p1 = await uploadFile(document.getElementById('f1').files[0], 'passports');
                 const p2 = await uploadFile(document.getElementById('f2').files[0], 'passports');
                 const p3 = await uploadFile(document.getElementById('f3').files[0], 'selfies');
@@ -97,11 +98,12 @@
                     doc_front: p1,
                     doc_back: p2,
                     doc_selfie: p3,
-                    delivery_methods: deliveries
+                    delivery_methods: deliveries,
+                    status: 'pending'
                 }]);
 
                 if (error) throw error;
-                alert("Муваффақият!");
+                alert("Муваффақият! Маълумот ба база сабт шуд.");
                 localStorage.clear();
                 window.location.href = 'index.html';
             } catch (err) {
