@@ -93,7 +93,82 @@ submitBtn.classList.remove("ready");
 }
 }
 
-document.getElementById("submitBtn").onclick=async function(){
+document.getElementById("submitBtn").onclick = async function(){
+
+const token = grecaptcha.getResponse();
+
+if(!token){
+alert("reCAPTCHA-ро пур кунед");
+return;
+}
+
+this.disabled = true;
+this.innerText = "Санҷиш...";
+
+try{
+
+// SEND TOKEN TO SUPABASE EDGE FUNCTION
+const verify = await fetch(
+"https://seagtlaujnnhoyitgsdd.supabase.co/functions/v1/verify-recaptcha",
+{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({ token })
+}
+);
+
+const result = await verify.json();
+
+if(!result.success){
+alert("reCAPTCHA хато");
+grecaptcha.reset();
+this.disabled = false;
+this.innerText = "Фиристодан";
+return;
+}
+
+this.innerText = "Бор шуда истодааст...";
+
+async function uploadOne(file,folder){
+const fileName = Date.now()+"_"+file.name;
+const {data,error} = await supabaseClient.storage
+.from("documents")
+.upload(folder+"/"+fileName,file);
+
+if(error) throw error;
+return data.path;
+}
+
+const [front,back,selfie] = await Promise.all([
+uploadOne(selectedFiles.doc_front,"passports"),
+uploadOne(selectedFiles.doc_back,"passports"),
+uploadOne(selectedFiles.doc_selfie,"selfies")
+]);
+
+const deliveries=[];
+if(document.getElementById("d1").checked) deliveries.push("Шахсӣ");
+if(document.getElementById("d2").checked) deliveries.push("Почта");
+
+const {error} = await supabaseClient.from("sellers").insert([{
+doc_front:front,
+doc_back:back,
+doc_selfie:selfie,
+delivery_methods:deliveries
+}]);
+
+if(error) throw error;
+
+alert("Ҳама чиз бо муваффақият иҷро шуд!");
+window.location.href="index.html";
+
+}catch(err){
+alert("Хато: "+err.message);
+this.disabled=false;
+this.innerText="Фиристодан";
+grecaptcha.reset();
+}
+
+};
 
 this.disabled=true;
 this.innerText="Санҷиш...";
