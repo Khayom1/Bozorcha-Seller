@@ -4,65 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha Seller - Қадами 3</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
         body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px;}
-        .phone-container{width:100%;max-width:375px;background:white;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,0.1);overflow:hidden;animation:fadeIn 0.5s ease;}
-        @keyframes fadeIn{0%{opacity:0;transform:translateY(10px);}100%{opacity:1;transform:translateY(0);}}
-        .app-bar{display:flex;align-items:center;padding:15px 20px;border-bottom:1px solid #f0f0f0;}
-        .back-button{font-size:24px;color:#333;width:30px;text-align:center;text-decoration:none;color:#333;transition:opacity 0.2s;}
-        .back-button:active{opacity:0.6;}
-        .app-title{flex:1;text-align:center;font-weight:bold;font-size:18px;color:#333;}
-        .content{padding:20px;animation:slideIn 0.4s ease;}
-        @keyframes slideIn{0%{opacity:0;transform:translateX(-10px);}100%{opacity:1;transform:translateX(0);}}
-        .step-indicator{display:flex;justify-content:center;margin-bottom:30px;}
-        .step-badge{background:#fff3e0;color:#ff9800;font-size:14px;padding:5px 15px;border-radius:20px;}
-        .title{font-size:18px;font-weight:bold;margin-bottom:10px;}
-        .input-field{width:100%;padding:15px;border:1px solid #e0e0e0;border-radius:12px;font-size:16px;margin-bottom:15px;outline:none;transition:border-color 0.3s, transform 0.1s;}
-        .input-field:focus{border-color:#ff9800;border-width:2px;transform:scale(1.01);}
-        .row{display:flex;gap:10px;margin-bottom:15px;}
-        .half{flex:1;}
-        .next-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:10px;transition:all 0.2s ease;}
-        .next-button:hover{background:#f57c00;}
-        .next-button:active{transform:scale(0.97);}
-        .footer{padding:20px;text-align:center;font-size:12px;color:#bdbdbd;border-top:1px solid #f0f0f0;}
+        .phone-container{width:100%;max-width:375px;background:white;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,0.1);padding:20px;}
+        .title{font-size:18px;font-weight:bold;margin:15px 0;color:#333;}
+        .input-field{width:100%;padding:14px;background:#f5f5f5;border:none;border-radius:12px;margin-bottom:12px;font-size:15px;outline:none;}
+        .row{display:flex;gap:10px;}
+        .half{width:50%;}
+        .next-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:15px;font-size:18px;font-weight:bold;margin-top:20px;cursor:pointer;}
     </style>
 </head>
 <body>
     <div class="phone-container">
-        <div class="app-bar">
-            <a href="step2.html" class="back-button">←</a>
-            <div class="app-title">Bozorcha Seller</div>
-            <div style="width:30px;"></div>
+        <div class="title">Маълумоти шахсӣ</div>
+        <input type="text" class="input-field" placeholder="Ном" id="name">
+        <input type="text" class="input-field" placeholder="Насаб" id="surname">
+        <input type="text" class="input-field" placeholder="Номи мағоза" id="shop">
+        
+        <div class="title">Суроға</div>
+        <input type="text" class="input-field" placeholder="Шаҳр" id="city" value="Душанбе">
+        <input type="text" class="input-field" placeholder="Ноҳия" id="district">
+        <div class="row">
+            <input type="text" class="input-field half" placeholder="Кӯча" id="street">
+            <input type="text" class="input-field half" placeholder="Хона" id="house">
         </div>
-        <div class="content">
-            <div class="step-indicator"><span class="step-badge">Қадами 3 аз 4</span></div>
-            <div class="title">Маълумоти шахсӣ</div>
-            <input type="text" class="input-field" placeholder="Ном" id="name">
-            <input type="text" class="input-field" placeholder="Насаб" id="surname">
-            <input type="text" class="input-field" placeholder="Номи мағоза (ихтиёрӣ)" id="shop">
-            <div class="title">Суроға</div>
-            <input type="text" class="input-field" placeholder="Шаҳр" id="city" value="Душанбе">
-            <input type="text" class="input-field" placeholder="Ноҳия" id="district" value="Сино">
-            <div class="row">
-                <input type="text" class="input-field half" placeholder="Кӯча" id="street">
-                <input type="text" class="input-field half" placeholder="Хона" id="house">
-            </div>
-            <button class="next-button" id="nextBtn">Давом</button>
-        </div>
-        <div class="footer">© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
+        <button class="next-button" id="nextBtn">Давом додан</button>
     </div>
+
     <script>
         document.getElementById('nextBtn').onclick = function() {
-            let name = document.getElementById('name').value.trim();
-            let surname = document.getElementById('surname').value.trim();
-            let street = document.getElementById('street').value.trim();
-            let house = document.getElementById('house').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const surname = document.getElementById('surname').value.trim();
+            const street = document.getElementById('street').value.trim();
+            const house = document.getElementById('house').value.trim();
+
             if (name && surname && street && house) {
+                const sellerData = {
+                    phone: localStorage.getItem('seller_phone') || '',
+                    name: name,
+                    surname: surname,
+                    shop: document.getElementById('shop').value.trim(),
+                    city: document.getElementById('city').value.trim(),
+                    district: document.getElementById('district').value.trim(),
+                    street: street,
+                    house: house
+                };
+                
+                // Захира барои қадами 4
+                localStorage.setItem('temp_seller_info', JSON.stringify(sellerData));
                 window.location.href = 'step4.html';
             } else {
-                alert('Майдонҳои ҳатмиро пур кунед (ном, насаб, кӯча, хона)');
+                alert('Лутфан майдонҳои ҳатмиро пур кунед');
             }
         };
     </script>
