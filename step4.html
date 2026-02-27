@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bozorcha Seller - Қадами 4</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+        body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px;}
+        .phone-container{width:100%;max-width:375px;background:white;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,0.1);overflow:hidden;}
+        .app-bar{display:flex;align-items:center;padding:15px 20px;border-bottom:1px solid #f0f0f0;}
+        .back-button{font-size:24px;color:#333;width:30px;text-align:center;text-decoration:none;color:#333;}
+        .app-title{flex:1;text-align:center;font-weight:bold;font-size:18px;color:#333;}
+        .content{padding:20px;}
+        .step-indicator{display:flex;justify-content:center;margin-bottom:30px;}
+        .step-badge{background:#fff3e0;color:#ff9800;font-size:14px;padding:5px 15px;border-radius:20px;}
+        .title{font-size:18px;font-weight:bold;margin:15px 0 10px;}
+        .upload-box{width:100%;padding:15px;border:1px solid #e0e0e0;border-radius:12px;margin-bottom:10px;text-align:center;cursor:pointer;background:#fafafa;}
+        .upload-box.done{border-color:green;background:#e8f5e8;}
+        .checkbox-item{display:flex;align-items:center;margin-bottom:10px;}
+        .checkbox-item input{width:20px;height:20px;margin-right:10px;}
+        .finish-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px;}
+        .footer{padding:20px;text-align:center;font-size:12px;color:#bdbdbd;border-top:1px solid #f0f0f0;}
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="app-bar">
+            <a href="step3.html" class="back-button">←</a>
+            <div class="app-title">Bozorcha Seller</div>
+            <div style="width:30px;"></div>
+        </div>
+        <div class="content">
+            <div class="step-indicator"><span class="step-badge">Қадами 4 аз 4</span></div>
+            <div class="title">Тасдиқи шахсият</div>
+            <div class="upload-box" id="front" onclick="upload(this)">Акси пеши паспорт</div>
+            <div class="upload-box" id="back" onclick="upload(this)">Акси пушти паспорт</div>
+            <div class="upload-box" id="selfie" onclick="upload(this)">Селфи бо паспорт</div>
+            
+            <div class="title">Усули доставка</div>
+            <div class="checkbox-item"><input type="checkbox" id="del1"><label for="del1">Доставкаи шахсӣ</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="del2"><label for="del2">Тавассути почта</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="del3"><label for="del3">Супоридани дастӣ</label></div>
+            
+            <button class="finish-button" id="finishBtn">Фиристодан</button>
+        </div>
+        <div class="footer">© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
+    </div>
+    <script>
+        let uploaded = {front:false, back:false, selfie:false};
+        function upload(el) {
+            let id = el.id;
+            uploaded[id] = true;
+            el.classList.add('done');
+            el.innerText = '✓ ' + el.innerText;
+        }
+        document.getElementById('finishBtn').onclick = function() {
+            if (!uploaded.front || !uploaded.back || !uploaded.selfie) {
+                alert('Ҳар се аксро бор кунед');
+                return;
+            }
+            let del1 = document.getElementById('del1').checked;
+            let del2 = document.getElementById('del2').checked;
+            let del3 = document.getElementById('del3').checked;
+            if (!del1 && !del2 && !del3) {
+                alert('Ҳадди ақал як усули доставкаро интихоб кунед');
+                return;
+            }
+            alert('Маълумот барои санҷиш фиристода шуд!');
+            window.location.href = 'index.html';
+        };
+    </script>
+</body>
+</html>
