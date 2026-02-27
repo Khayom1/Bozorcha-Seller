@@ -22,10 +22,11 @@
         .code-container{display:flex;justify-content:space-between;margin-bottom:30px;}
         .code-input{width:45px;height:55px;border:1px solid #e0e0e0;border-radius:8px;text-align:center;font-size:22px;font-weight:bold;outline:none;transition:border-color 0.3s, transform 0.1s;}
         .code-input:focus{border-color:#ff9800;border-width:2px;transform:scale(1.02);}
-        .resend-container{display:flex;justify-content:center;margin-bottom:20px;}
+        .resend-container{display:flex;justify-content:center;align-items:center;margin-bottom:20px;gap:10px;}
         .resend-text{color:#9e9e9e;font-size:14px;}
-        .resend-link{color:#ff9800;margin-left:5px;text-decoration:none;transition:opacity 0.2s;}
-        .resend-link:active{opacity:0.6;}
+        .resend-link{color:#ff9800;font-weight:500;text-decoration:none;transition:opacity 0.2s;cursor:pointer;}
+        .resend-link.disabled{color:#bdbdbd;pointer-events:none;cursor:default;}
+        .timer{font-size:14px;color:#ff9800;font-weight:500;margin-left:5px;}
         .verify-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:12px;font-size:18px;font-weight:bold;cursor:pointer;margin-top:20px;transition:all 0.2s ease;}
         .verify-button:hover{background:#f57c00;}
         .verify-button:active{transform:scale(0.97);}
@@ -53,21 +54,49 @@
             </div>
             <div class="resend-container">
                 <span class="resend-text">Рамзро нагирифтед?</span>
-                <a href="#" class="resend-link" onclick="resend()">Аз нав фиристодан</a>
+                <a href="#" class="resend-link" id="resendLink" onclick="resendCode(event)">Аз нав фиристодан</a>
+                <span class="timer" id="timer"></span>
             </div>
             <button class="verify-button" id="verifyBtn">Тасдиқ</button>
         </div>
         <div class="footer">© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
     </div>
     <script>
+        let timerInterval;
+        let timeLeft = 0;
+        const resendLink = document.getElementById('resendLink');
+        const timerDisplay = document.getElementById('timer');
+
+        function startTimer(seconds) {
+            timeLeft = seconds;
+            resendLink.classList.add('disabled');
+            
+            timerInterval = setInterval(function() {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerText = '';
+                    resendLink.classList.remove('disabled');
+                } else {
+                    timerDisplay.innerText = `(${timeLeft} сония)`;
+                }
+            }, 1000);
+        }
+
         function move(current, nextId) {
             if (current.value.length === 1 && nextId) {
                 document.getElementById(nextId).focus();
             }
         }
-        function resend() {
+
+        function resendCode(event) {
+            event.preventDefault();
+            if (resendLink.classList.contains('disabled')) return;
+            
             alert('Рамзи нав фиристода шуд');
+            startTimer(60);
         }
+
         document.getElementById('verifyBtn').onclick = function() {
             let c1 = document.getElementById('c1').value;
             let c2 = document.getElementById('c2').value;
@@ -75,11 +104,17 @@
             let c4 = document.getElementById('c4').value;
             let c5 = document.getElementById('c5').value;
             let c6 = document.getElementById('c6').value;
+            
             if (c1 && c2 && c3 && c4 && c5 && c6) {
                 window.location.href = 'step3.html';
             } else {
                 alert('Ҳамаи 6 рақамро ворид кунед');
             }
+        };
+
+        // Оғози таймер ҳангоми боркунии саҳифа
+        window.onload = function() {
+            startTimer(60);
         };
     </script>
 </body>
