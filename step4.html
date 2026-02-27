@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha Seller - Қадами 4</title>
+    <!-- Supabase JavaScript library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
@@ -80,7 +81,12 @@
         <div class="footer">© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
     </div>
     <script>
-        let uploaded = {front:false, back:false, selfie:false};
+        // Инициализатсияи Supabase
+        const SUPABASE_URL = 'https://seagtlaujnnhoyitgsdd.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let uploaded = {front: false, back: false, selfie: false};
 
         window.handleFile = function(input, type) {
             if (input.files && input.files[0]) {
@@ -95,11 +101,26 @@
             }
         };
 
-        document.getElementById('finishBtn').onclick = function() {
+        // Санҷиши пайвастшавӣ ба Supabase
+        async function testConnection() {
+            try {
+                const { data, error } = await supabase.from('users').select('count', { count: 'exact', head: true });
+                if (error) throw error;
+                alert('✅ Пайвастшавӣ ба Supabase дуруст аст!');
+            } catch (e) {
+                alert('❌ Хатогӣ дар пайвастшавӣ: ' + e.message);
+            }
+        }
+
+        // Санҷишро фавран иҷро кун
+        testConnection();
+
+        document.getElementById('finishBtn').onclick = async function() {
             if (!uploaded.front || !uploaded.back || !uploaded.selfie) {
                 alert('Ҳар се аксро бор кунед');
                 return;
             }
+            
             let del1 = document.getElementById('del1').checked;
             let del2 = document.getElementById('del2').checked;
             let del3 = document.getElementById('del3').checked;
@@ -107,8 +128,44 @@
                 alert('Ҳадди ақал як усули доставкаро интихоб кунед');
                 return;
             }
-            alert('Маълумот барои санҷиш фиристода шуд!');
-            window.location.href = 'index.html';
+
+            // Ҷамъоварии маълумот аз LocalStorage
+            const userData = {
+                phone: localStorage.getItem('bozorcha_phone') || '',
+                name: localStorage.getItem('bozorcha_name') || '',
+                surname: localStorage.getItem('bozorcha_surname') || '',
+                shop_name: localStorage.getItem('bozorcha_shop') || '',
+                city: localStorage.getItem('bozorcha_city') || 'Душанбе',
+                district: localStorage.getItem('bozorcha_district') || 'Сино',
+                street: localStorage.getItem('bozorcha_street') || '',
+                house: localStorage.getItem('bozorcha_house') || '',
+                delivery_self: del1,
+                delivery_post: del2,
+                delivery_pickup: del3
+            };
+
+            try {
+                // Фиристодани маълумот ба Supabase
+                const { data: userDataResult, error: userError } = await supabase
+                    .from('users')
+                    .insert([userData])
+                    .select();
+
+                if (userError) throw userError;
+
+                alert('✅ Маълумот бомуваффақият фиристода шуд! Пас аз санҷиш ба шумо хабар медиҳем.');
+                window.location.href = 'index.html';
+                
+            } catch (error) {
+                alert('❌ Хатогӣ: ' + error.message);
+                console.error('Error:', error);
+            }
+        };
+
+        // Нишон додани хатогӣ дар саҳифа
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("Хатогӣ дар саҳифа: " + message);
+            return true;
         };
     </script>
 </body>
