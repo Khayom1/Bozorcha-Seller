@@ -1,214 +1,177 @@
 <!DOCTYPE html>
 <html lang="tg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bozorcha Seller - Қадами 4</title>
-    <!-- reCAPTCHA library -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <!-- Supabase library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
-        body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px;}
-        .container{width:100%;max-width:375px;background:white;border-radius:30px;box-shadow:0 10px 30px rgba(0,0,0,0.1);padding:20px;}
-        .section-title { font-size:16px;font-weight:bold;margin:15px 0;color:#333; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bozorcha Seller - Қадами 4</title>
 
-        .upload-btn{
-            display:block;width:100%;padding:18px;margin-bottom:12px;
-            background:#fafafa;border:2px dashed #ddd;border-radius:15px;
-            text-align:center;cursor:pointer;transition:0.3s;
-        }
-        .upload-btn.selected{border-color:#2196f3;background:#e3f2fd;color:#1565c0;}
-        .upload-btn.done{border-color:#4caf50;background:#e8f5e9;color:#2e7d32;}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        input[type="file"]{display:none;}
-
-        .recaptcha-wrapper {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        .recaptcha-note {
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-            margin-bottom: 10px;
-        }
-
-        .submit-button{
-            width:100%;padding:16px;background:#ccc;color:white;
-            border:none;border-radius:12px;font-size:18px;
-            font-weight:bold;cursor:not-allowed;margin-top:20px;
-            transition:0.3s;
-        }
-        .submit-button.ready{background:#ff9800;cursor:pointer;}
-    </style>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+.container{width:100%;max-width:380px;background:white;border-radius:20px;padding:20px;}
+.upload-btn{display:block;width:100%;padding:16px;margin-bottom:10px;border:2px dashed #ccc;border-radius:10px;text-align:center;cursor:pointer;}
+.upload-btn.done{border-color:#4caf50;background:#e8f5e9;}
+input[type="file"]{display:none;}
+.submit-button{width:100%;padding:16px;background:#ccc;color:white;border:none;border-radius:10px;font-size:18px;}
+.submit-button.ready{background:#ff9800;cursor:pointer;}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="section-title">Тасдиқи шахсият</div>
+<div class="container">
 
-        <label class="upload-btn" id="lbl1">
-            <span id="txt1">Акси пеши паспорт</span>
-            <input type="file" accept="image/*" onchange="storeFile(this,'doc_front','lbl1','txt1')">
-        </label>
+<label class="upload-btn" id="lbl1">
+Акси пеши паспорт
+<input type="file" accept="image/*" onchange="storeFile(this,'doc_front','lbl1')">
+</label>
 
-        <label class="upload-btn" id="lbl2">
-            <span id="txt2">Акси пушти паспорт</span>
-            <input type="file" accept="image/*" onchange="storeFile(this,'doc_back','lbl2','txt2')">
-        </label>
+<label class="upload-btn" id="lbl2">
+Акси пушти паспорт
+<input type="file" accept="image/*" onchange="storeFile(this,'doc_back','lbl2')">
+</label>
 
-        <label class="upload-btn" id="lbl3">
-            <span id="txt3">Селфи бо паспорт</span>
-            <input type="file" accept="image/*" onchange="storeFile(this,'doc_selfie','lbl3','txt3')">
-        </label>
+<label class="upload-btn" id="lbl3">
+Селфи бо паспорт
+<input type="file" accept="image/*" onchange="storeFile(this,'doc_selfie','lbl3')">
+</label>
 
-        <div class="section-title">Усули доставка</div>
+<br>
 
-        <label style="display:flex;margin-bottom:10px;">
-            <input type="checkbox" id="d1">
-            <span style="margin-left:10px;">Доставкаи шахсӣ</span>
-        </label>
-        <label style="display:flex;margin-bottom:10px;">
-            <input type="checkbox" id="d2">
-            <span style="margin-left:10px;">Тавассути почта</span>
-        </label>
-        <label style="display:flex;margin-bottom:10px;">
-            <input type="checkbox" id="d3">
-            <span style="margin-left:10px;">Супоридани дастӣ</span>
-        </label>
+<label><input type="checkbox" id="d1"> Доставкаи шахсӣ</label><br>
+<label><input type="checkbox" id="d2"> Почта</label><br>
 
-        <!-- reCAPTCHA widget бо Site Key -->
-        <div class="recaptcha-wrapper">
-            <div class="g-recaptcha" 
-                 data-sitekey="6Ld6mnksAAAAAEwyfULfJ1-rja-3VPCO2pGWa1Ey" 
-                 data-callback="onRecaptchaSuccess" 
-                 data-expired-callback="onRecaptchaExpired">
-            </div>
-        </div>
-        <div class="recaptcha-note">Лутфан, санҷиши "Ман робот нестам" -ро анҷом диҳед</div>
+<br>
 
-        <button class="submit-button" id="submitBtn" disabled>Фиристодан</button>
-    </div>
+<div class="g-recaptcha"
+data-sitekey="SITE_KEY_ХУДАТОН">
+</div>
 
-    <script>
-        // Supabase бо Anon Key
-        const supabaseClient = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-        );
+<br>
 
-        let selectedFiles = {
-            doc_front: null,
-            doc_back: null,
-            doc_selfie: null
-        };
-        let recaptchaPassed = false;
+<button class="submit-button" id="submitBtn" disabled>Фиристодан</button>
 
-        function storeFile(input, key, labelId, textId) {
-            const file = input.files[0];
-            if (!file) return;
+</div>
 
-            selectedFiles[key] = file;
+<script>
 
-            const label = document.getElementById(labelId);
-            const text = document.getElementById(textId);
+const supabaseClient = supabase.createClient(
+'https://seagtlaujnnhoyitgsdd.supabase.co',
+'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+);
 
-            label.className = "upload-btn done";
-            text.innerText = "✓ " + file.name;
+let selectedFiles = {
+doc_front:null,
+doc_back:null,
+doc_selfie:null
+};
 
-            checkReady();
-        }
+function storeFile(input,key,labelId){
+const file=input.files[0];
+if(!file)return;
 
-        function onRecaptchaSuccess() {
-            console.log("reCAPTCHA гузашт");
-            recaptchaPassed = true;
-            checkReady();
-        }
+selectedFiles[key]=file;
+document.getElementById(labelId).classList.add("done");
+checkReady();
+}
 
-        function onRecaptchaExpired() {
-            console.log("reCAPTCHA мӯҳлаташ гузашт");
-            recaptchaPassed = false;
-            checkReady();
-        }
+document.getElementById("d1").onchange=checkReady;
+document.getElementById("d2").onchange=checkReady;
 
-        function checkReady() {
-            const btn = document.getElementById("submitBtn");
-            const filesReady = selectedFiles.doc_front && selectedFiles.doc_back && selectedFiles.doc_selfie;
-            const deliveryReady = document.getElementById('d1').checked || document.getElementById('d2').checked || document.getElementById('d3').checked;
+function checkReady(){
+const filesReady=selectedFiles.doc_front&&selectedFiles.doc_back&&selectedFiles.doc_selfie;
+const deliveryReady=document.getElementById("d1").checked||document.getElementById("d2").checked;
 
-            if (filesReady && deliveryReady && recaptchaPassed) {
-                btn.disabled = false;
-                btn.classList.add("ready");
-            } else {
-                btn.disabled = true;
-                btn.classList.remove("ready");
-            }
-        }
+if(filesReady&&deliveryReady){
+submitBtn.disabled=false;
+submitBtn.classList.add("ready");
+}else{
+submitBtn.disabled=true;
+submitBtn.classList.remove("ready");
+}
+}
 
-        document.getElementById('d1').addEventListener('change', checkReady);
-        document.getElementById('d2').addEventListener('change', checkReady);
-        document.getElementById('d3').addEventListener('change', checkReady);
+document.getElementById("submitBtn").onclick=async function(){
 
-        document.getElementById("submitBtn").onclick = async function() {
-            if (this.disabled) return;
+this.disabled=true;
+this.innerText="Санҷиш...";
 
-            this.disabled = true;
-            this.innerText = "Бор шуда истодааст...";
+try{
 
-            try {
-                async function uploadOne(file, folder) {
-                    const fileName = Date.now() + "_" + file.name;
-                    const { data, error } = await supabaseClient.storage
-                        .from("documents")
-                        .upload(folder + "/" + fileName, file);
-                    if (error) throw error;
-                    return data.path;
-                }
+const token=grecaptcha.getResponse();
 
-                const [front, back, selfie] = await Promise.all([
-                    uploadOne(selectedFiles.doc_front, "passports"),
-                    uploadOne(selectedFiles.doc_back, "passports"),
-                    uploadOne(selectedFiles.doc_selfie, "selfies")
-                ]);
+if(!token){
+alert("reCAPTCHA гузаред");
+this.disabled=false;
+this.innerText="Фиристодан";
+return;
+}
 
-                const info = JSON.parse(localStorage.getItem("temp_seller_info") || "{}");
+// VERIFY WITH EDGE FUNCTION
+const verify=await fetch(
+"https://seagtlaujnnhoyitgsdd.supabase.co/functions/v1/verify-recaptcha",
+{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({token})
+}
+);
 
-                const deliveries = [];
-                if (document.getElementById("d1").checked) deliveries.push("Шахсӣ");
-                if (document.getElementById("d2").checked) deliveries.push("Почта");
-                if (document.getElementById("d3").checked) deliveries.push("Дастӣ");
+const result=await verify.json();
 
-                const { error } = await supabaseClient.from("sellers").insert([{
-                    ...info,
-                    doc_front: front,
-                    doc_back: back,
-                    doc_selfie: selfie,
-                    delivery_methods: deliveries
-                }]);
+if(!result.ok){
+alert("reCAPTCHA тасдиқ нашуд");
+grecaptcha.reset();
+this.disabled=false;
+this.innerText="Фиристодан";
+return;
+}
 
-                if (error) throw error;
+this.innerText="Бор шуда истодааст...";
 
-                alert("Ҳама чиз бо муваффақият иҷро шуд!");
-                localStorage.clear();
-                window.location.href = "index.html";
+async function uploadOne(file,folder){
+const fileName=Date.now()+"_"+file.name;
+const {data,error}=await supabaseClient.storage
+.from("documents")
+.upload(folder+"/"+fileName,file);
+if(error)throw error;
+return data.path;
+}
 
-            } catch (err) {
-                alert("Хато: " + err.message);
-                this.disabled = false;
-                this.innerText = "Фиристодан";
-                grecaptcha.reset();
-                recaptchaPassed = false;
-                checkReady();
-            }
-        };
-    </script>
+const [front,back,selfie]=await Promise.all([
+uploadOne(selectedFiles.doc_front,"passports"),
+uploadOne(selectedFiles.doc_back,"passports"),
+uploadOne(selectedFiles.doc_selfie,"selfies")
+]);
+
+const deliveries=[];
+if(document.getElementById("d1").checked)deliveries.push("Шахсӣ");
+if(document.getElementById("d2").checked)deliveries.push("Почта");
+
+const {error}=await supabaseClient.from("sellers").insert([{
+doc_front:front,
+doc_back:back,
+doc_selfie:selfie,
+delivery_methods:deliveries
+}]);
+
+if(error)throw error;
+
+alert("Ҳама чиз бо муваффақият иҷро шуд!");
+window.location.href="index.html";
+
+}catch(err){
+alert("Хато: "+err.message);
+this.disabled=false;
+this.innerText="Фиристодан";
+grecaptcha.reset();
+}
+
+};
+
+</script>
+
 </body>
 </html>
