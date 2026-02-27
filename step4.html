@@ -89,15 +89,18 @@
         let uploaded = {front: false, back: false, selfie: false};
 
         window.handleFile = function(input, type) {
+            alert('Функсияи handleFile барои ' + type + ' даъват шуд!');
             if (input.files && input.files[0]) {
                 let fileName = input.files[0].name;
                 document.getElementById(type + 'Name').innerText = '✓ ' + fileName;
                 document.getElementById(type + 'Label').classList.add('done');
                 uploaded[type] = true;
+                alert('Файл ' + fileName + ' интихоб шуд');
             } else {
                 document.getElementById(type + 'Name').innerText = '';
                 document.getElementById(type + 'Label').classList.remove('done');
                 uploaded[type] = false;
+                alert('Файл бекор карда шуд');
             }
         };
 
@@ -116,8 +119,8 @@
         });
 
         document.getElementById('finishBtn').onclick = async function() {
-            // АЛЕРТ БАРОИ САНҶИШИ ТУГМА
-            alert('Тугма кор мекунад!');
+            alert('Тугма пахш шуд!');
+            alert('Ҳолати uploaded: front=' + uploaded.front + ', back=' + uploaded.back + ', selfie=' + uploaded.selfie);
 
             if (!uploaded.front || !uploaded.back || !uploaded.selfie) {
                 alert('Лутфан ҳар се аксро бор кунед');
