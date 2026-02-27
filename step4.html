@@ -1,129 +1,92 @@
 <!DOCTYPE html>
 <html lang="tg">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bozorcha Seller - Қадами 4</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
-body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;}
-.container{width:100%;max-width:380px;background:white;border-radius:20px;padding:20px;}
-.upload-btn{display:block;width:100%;padding:16px;margin-bottom:10px;border:2px dashed #ccc;border-radius:10px;text-align:center;cursor:pointer;}
-.upload-btn.done{border-color:#4caf50;background:#e8f5e9;}
-input[type="file"]{display:none;}
-.submit-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:10px;font-size:18px;margin-top:15px;cursor:pointer;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bozorcha Seller - Қадами 4</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+        body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px;}
+        .container{width:100%;max-width:380px;background:white;border-radius:20px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.1);}
+        .upload-btn{display:block;width:100%;padding:16px;margin-bottom:10px;border:2px dashed #ccc;border-radius:12px;text-align:center;cursor:pointer;}
+        .upload-btn.done{border-color:#4caf50;background:#e8f5e9;color:#2e7d32;}
+        input[type="file"]{display:none;}
+        .submit-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:12px;font-size:18px;font-weight:bold;margin-top:15px;cursor:pointer;}
+        .submit-button:disabled{background:#ccc;cursor:not-allowed;}
+    </style>
 </head>
 <body>
 <div class="container">
+    <div style="font-weight:bold; margin-bottom:15px;">Тасдиқи шахсият</div>
+    <label class="upload-btn" id="lbl1">Акси пеши паспорт <input type="file" accept="image/*" onchange="storeFile(this,'doc_front','lbl1')"></label>
+    <label class="upload-btn" id="lbl2">Акси пушти паспорт <input type="file" accept="image/*" onchange="storeFile(this,'doc_back','lbl2')"></label>
+    <label class="upload-btn" id="lbl3">Селфи бо паспорт <input type="file" accept="image/*" onchange="storeFile(this,'doc_selfie','lbl3')"></label>
 
-<label class="upload-btn" id="lbl1">
-Акси пеши паспорт
-<input type="file" accept="image/*" onchange="storeFile(this,'doc_front','lbl1')">
-</label>
+    <div style="margin:15px 0;">
+        <label><input type="checkbox" id="d1"> Доставкаи шахсӣ</label><br>
+        <label><input type="checkbox" id="d2"> Тавассути почта</label>
+    </div>
 
-<label class="upload-btn" id="lbl2">
-Акси пушти паспорт
-<input type="file" accept="image/*" onchange="storeFile(this,'doc_back','lbl2')">
-</label>
-
-<label class="upload-btn" id="lbl3">
-Селфи бо паспорт
-<input type="file" accept="image/*" onchange="storeFile(this,'doc_selfie','lbl3')">
-</label>
-
-<br>
-
-<label><input type="checkbox" id="d1"> Доставкаи шахсӣ</label><br>
-<label><input type="checkbox" id="d2"> Почта</label><br>
-
-<br>
-
-<!-- SIMPLE CAPTCHA -->
-<div style="margin-top:15px;">
-    <label id="captchaQuestion" style="font-weight:bold;"></label>
-    <input type="number" id="captchaAnswer"
-           placeholder="Ҷавобро навис"
-           style="width:100%;padding:10px;margin-top:5px;">
-</div>
-
-<button class="submit-button" id="submitBtn">Фиристодан</button>
-
+    <button class="submit-button" id="submitBtn">Фиристодан</button>
 </div>
 
 <script>
 const supabaseClient = supabase.createClient(
-'https://seagtlaujnnhoyitgsdd.supabase.co',
-'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+    'https://seagtlaujnnhoyitgsdd.supabase.co',
+    'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
 );
 
 let selectedFiles = {doc_front:null, doc_back:null, doc_selfie:null};
 
-function storeFile(input,key,labelId){
-    const file=input.files[0];
-    if(!file)return;
-    selectedFiles[key]=file;
-    document.getElementById(labelId).classList.add("done");
+function storeFile(input, key, labelId){
+    const file = input.files[0];
+    if(file) {
+        selectedFiles[key] = file;
+        const lbl = document.getElementById(labelId);
+        lbl.classList.add("done");
+        lbl.innerText = "✓ " + file.name.substring(0, 15);
+    }
 }
 
-// Simple Captcha
-let captchaA = Math.floor(Math.random()*10)+1;
-let captchaB = Math.floor(Math.random()*10)+1;
-let captchaResult = captchaA + captchaB;
-document.getElementById("captchaQuestion").innerText = "Чанд мешавад: " + captchaA + " + " + captchaB + " ?";
-
 document.getElementById("submitBtn").onclick = async function(){
-    const userAnswer = parseInt(document.getElementById("captchaAnswer").value);
-    if(userAnswer !== captchaResult){
-        alert("Ҷавоб нодуруст. Лутфан санҷишро гузаред.");
-        return;
-    }
     if(!selectedFiles.doc_front || !selectedFiles.doc_back || !selectedFiles.doc_selfie){
-        alert("Лутфан ҳамаи аксҳоро интихоб кунед.");
-        return;
-    }
-    if(!document.getElementById("d1").checked && !document.getElementById("d2").checked){
-        alert("Усули доставкаро интихоб кунед.");
+        alert("Ҳамаи аксҳоро интихоб кунед.");
         return;
     }
 
-    this.disabled=true;
-    this.innerText="Бор шуда истодааст...";
+    this.disabled = true;
+    this.innerText = "Бор шуда истодааст...";
 
-    try{
-        // ХОНДАНИ МАЪЛУМОТ АЗ LOCALSTORAGE
-        const info = {
-            name: localStorage.getItem('bozorcha_name') || '',
-            surname: localStorage.getItem('bozorcha_surname') || '',
-            phone: localStorage.getItem('bozorcha_phone') || '',
-            city: localStorage.getItem('bozorcha_city') || 'Душанбе',
-            district: localStorage.getItem('bozorcha_district') || 'Сино',
-            street: localStorage.getItem('bozorcha_street') || '',
-            house: localStorage.getItem('bozorcha_house') || ''
-        };
+    try {
+        // ХОНДАНИ МАЪЛУМОТ АЗ STEP 3
+        const rawData = localStorage.getItem('temp_seller_info');
+        if(!rawData) throw new Error("Маълумоти Step 3 ёфт нашуд.");
+        const info = JSON.parse(rawData);
 
-        async function uploadOne(file,folder){
-            const fileName = Date.now()+"_"+file.name;
-            const {data,error} = await supabaseClient.storage
+        // ФУНКСИЯИ БОРКУНИИ АКС БА STORAGE
+        async function uploadOne(file, folder){
+            const fileName = Date.now() + "_" + file.name.replace(/\s/g, '_');
+            const { data, error } = await supabaseClient.storage
                 .from("documents")
-                .upload(folder+"/"+fileName,file);
+                .upload(folder + "/" + fileName, file);
             if(error) throw error;
             return data.path;
         }
 
-        const [front,back,selfie] = await Promise.all([
-            uploadOne(selectedFiles.doc_front,"passports"),
-            uploadOne(selectedFiles.doc_back,"passports"),
-            uploadOne(selectedFiles.doc_selfie,"selfies")
+        // БОРКУНИИ ҲАМАИ АКСҲО
+        const [p1, p2, p3] = await Promise.all([
+            uploadOne(selectedFiles.doc_front, "passports"),
+            uploadOne(selectedFiles.doc_back, "passports"),
+            uploadOne(selectedFiles.doc_selfie, "selfies")
         ]);
 
-        const deliveries=[];
+        const deliveries = [];
         if(document.getElementById("d1").checked) deliveries.push("Шахсӣ");
         if(document.getElementById("d2").checked) deliveries.push("Почта");
 
-        // ФИРИСТОДАНИ МАЪЛУМОТ БО info
-        const {error} = await supabaseClient.from("sellers").insert([{
+        // САБТ ДАР БАЗА (TABLE: sellers)
+        const { error: dbError } = await supabaseClient.from("sellers").insert([{
             name: info.name,
             surname: info.surname,
             phone: info.phone,
@@ -131,21 +94,24 @@ document.getElementById("submitBtn").onclick = async function(){
             district: info.district,
             street: info.street,
             house: info.house,
-            doc_front: front,
-            doc_back: back,
-            doc_selfie: selfie,
-            delivery_methods: deliveries
+            shop_name: info.shop,
+            doc_front: p1,
+            doc_back: p2,
+            doc_selfie: p3,
+            delivery_methods: deliveries,
+            status: 'pending'
         }]);
 
-        if(error) throw error;
+        if(dbError) throw dbError;
 
-        alert("Ҳама чиз бо муваффақият иҷро шуд!");
-        window.location.href="dashboard.html";
+        alert("Бақайдгирӣ бо муваффақият анҷом ёфт!");
+        localStorage.clear();
+        window.location.href = "dashboard.html";
 
-    }catch(err){
-        alert("Хато: "+err.message);
-        this.disabled=false;
-        this.innerText="Фиристодан";
+    } catch(err) {
+        alert("Хатогӣ: " + err.message);
+        this.disabled = false;
+        this.innerText = "Фиристодан";
     }
 };
 </script>
