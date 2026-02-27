@@ -92,6 +92,17 @@ document.getElementById("submitBtn").onclick = async function(){
     this.innerText="Бор шуда истодааст...";
 
     try{
+        // ХОНДАНИ МАЪЛУМОТ АЗ LOCALSTORAGE
+        const info = {
+            name: localStorage.getItem('bozorcha_name') || '',
+            surname: localStorage.getItem('bozorcha_surname') || '',
+            phone: localStorage.getItem('bozorcha_phone') || '',
+            city: localStorage.getItem('bozorcha_city') || 'Душанбе',
+            district: localStorage.getItem('bozorcha_district') || 'Сино',
+            street: localStorage.getItem('bozorcha_street') || '',
+            house: localStorage.getItem('bozorcha_house') || ''
+        };
+
         async function uploadOne(file,folder){
             const fileName = Date.now()+"_"+file.name;
             const {data,error} = await supabaseClient.storage
@@ -111,11 +122,19 @@ document.getElementById("submitBtn").onclick = async function(){
         if(document.getElementById("d1").checked) deliveries.push("Шахсӣ");
         if(document.getElementById("d2").checked) deliveries.push("Почта");
 
+        // ФИРИСТОДАНИ МАЪЛУМОТ БО info
         const {error} = await supabaseClient.from("sellers").insert([{
-            doc_front:front,
-            doc_back:back,
-            doc_selfie:selfie,
-            delivery_methods:deliveries
+            name: info.name,
+            surname: info.surname,
+            phone: info.phone,
+            city: info.city,
+            district: info.district,
+            street: info.street,
+            house: info.house,
+            doc_front: front,
+            doc_back: back,
+            doc_selfie: selfie,
+            delivery_methods: deliveries
         }]);
 
         if(error) throw error;
