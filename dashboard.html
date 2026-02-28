@@ -1332,5 +1332,65 @@
         // Initialize
         displayProducts();
     </script>
+    <!-- Тугмаи тестӣ барои тоза кардан ва тест -->
+<div style="position: fixed; bottom: 80px; left: 20px; z-index: 9999;">
+    <button onclick="resetAndTest()" style="background: linear-gradient(135deg, #ff9800, #ff6b6b); color: white; border: none; padding: 15px 20px; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 20px rgba(255,152,0,0.4); font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-sync-alt"></i> Тоза ва тест
+    </button>
+</div>
+
+<script>
+function resetAndTest() {
+    // Тоза кардани тамоми маълумот
+    localStorage.clear();
+    
+    // Иловаи маълумоти тестӣ барои гузаштан аз регистратсия
+    localStorage.setItem('bozorcha_name', 'Тест');
+    localStorage.setItem('bozorcha_surname', 'Тестов');
+    localStorage.setItem('bozorcha_phone', '901234567');
+    localStorage.setItem('bozorcha_city', 'Душанбе');
+    localStorage.setItem('bozorcha_district', 'Сино');
+    localStorage.setItem('bozorcha_street', 'Пушкин');
+    localStorage.setItem('bozorcha_house', '15');
+    
+    // Иловаи маҳсулоти тестӣ
+    const testProducts = [
+        {
+            id: Date.now() + 1,
+            name: '👕 Футболка Adidas',
+            price: 150,
+            stock: 20,
+            description: 'Футболкаи пахтагии сифатнок',
+            features: ['Мавод: 100% пахта', 'Андоза: S, M, L', 'Ранг: сафед, сиёҳ'],
+            imageUrl: 'https://via.placeholder.com/150'
+        },
+        {
+            id: Date.now() + 2,
+            name: '👟 Кроссовки Nike',
+            price: 450,
+            stock: 5,
+            description: 'Кроссовки барои варзиш',
+            features: ['Андоза: 39-44', 'Ранг: кабуд'],
+            imageUrl: 'https://via.placeholder.com/150'
+        },
+        {
+            id: Date.now() + 3,
+            name: '👜 Сумка',
+            price: 80,
+            stock: 12,
+            description: 'Сумкаи пӯстии замонавӣ',
+            features: ['Мавод: пӯст', 'Ранг: қаҳваранг'],
+            imageUrl: 'https://via.placeholder.com/150'
+        }
+    ];
+    localStorage.setItem('products', JSON.stringify(testProducts));
+    
+    // Ба саҳифаи dashboard бармегардем
+    window.location.reload();
+    
+    // Паёми муваффақият
+    alert('✅ Маълумот тоза шуд ва маълумоти тестӣ илова шуд!\nАкнун шумо бе регистратсия маълумотро мебинед.');
+}
+</script>
 </body>
     </html>
