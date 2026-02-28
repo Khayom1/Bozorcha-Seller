@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Панели фурӯшанда</title>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* ========== RESET & VARIABLES ========== */
         * {
             margin: 0;
             padding: 0;
@@ -20,18 +18,10 @@
             --bg-card: #ffffff;
             --text: #0f172a;
             --text-light: #475569;
-            --text-muted: #64748b;
             --accent: #ff9800;
             --accent-light: #fff3e0;
-            --accent-dark: #f57c00;
             --border: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 30px rgba(0,0,0,0.05);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --gradient: linear-gradient(135deg, var(--accent), #ff6b6b);
+            --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
         }
 
         [data-theme="dark"] {
@@ -47,51 +37,31 @@
             color: var(--text);
             transition: background 0.3s, color 0.3s;
             padding-bottom: 70px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* ========== ANIMATIONS ========== */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes scaleIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* ========== APP BAR ========== */
+        /* App Bar */
         .app-bar {
             background: var(--bg-card);
-            height: 64px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 16px;
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(8px);
+            z-index: 100;
         }
 
         .logo {
             font-size: 24px;
-            font-weight: 800;
+            font-weight: 700;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
         }
 
         .header-actions {
@@ -103,41 +73,32 @@
         .icon-btn {
             width: 40px;
             height: 40px;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.3s ease;
             background: var(--bg);
             border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
         .icon-btn:hover {
             background: var(--accent-light);
             color: var(--accent);
-            transform: translateY(-2px);
-            border-color: var(--accent);
         }
 
-        .icon-btn.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
+        /* Content Frame */
+        .content-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: var(--bg);
         }
 
-        .settings-btn {
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .settings-btn.active {
-            transform: rotate(90deg);
-            color: var(--accent);
-        }
-
-        /* ========== BOTTOM NAVIGATION ========== */
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -150,34 +111,24 @@
             align-items: center;
             border-top: 1px solid var(--border);
             z-index: 1000;
-            backdrop-filter: blur(8px);
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             gap: 4px;
             color: var(--text-light);
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             width: 25%;
             height: 100%;
+            justify-content: center;
         }
 
         .nav-item i {
             font-size: 22px;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-item:hover {
-            color: var(--accent);
-        }
-
-        .nav-item:hover i {
-            transform: translateY(-2px);
         }
 
         .nav-item.active {
@@ -196,691 +147,7 @@
             border-radius: 3px 3px 0 0;
         }
 
-        /* ========== PAGES ========== */
-        .page {
-            display: none;
-            animation: fadeIn 0.4s ease;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* ========== COMMON COMPONENTS ========== */
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-title i {
-            color: var(--accent);
-        }
-
-        .badge {
-            background: var(--accent-light);
-            color: var(--accent);
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        /* ========== HOME PAGE ========== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            padding: 16px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px 8px;
-            text-align: center;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--gradient);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover::before {
-            transform: translateX(0);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-icon {
-            font-size: 24px;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-period {
-            font-size: 9px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        /* Product List */
-        .product-list {
-            padding: 0 16px 20px;
-        }
-
-        .product-item {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .product-item:hover {
-            border-color: var(--accent);
-            box-shadow: var(--shadow-md);
-        }
-
-        .product-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            background: var(--accent-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 24px;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .product-details {
-            flex: 1;
-        }
-
-        .product-name {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .product-attributes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .attribute-tag {
-            background: var(--bg);
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 10px;
-            color: var(--text-light);
-            border: 1px solid var(--border);
-        }
-
-        .attribute-tag i {
-            color: var(--accent);
-            margin-right: 4px;
-            font-size: 9px;
-        }
-
-        .product-price {
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 15px;
-        }
-
-        .product-menu {
-            color: var(--text-light);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .product-menu:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        /* Dropdown Menu */
-        .dropdown-menu {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 8px;
-            min-width: 150px;
-            box-shadow: var(--shadow-lg);
-            z-index: 100;
-            display: none;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 10px 12px;
-            font-size: 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dropdown-item:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        .dropdown-item i {
-            width: 18px;
-            color: var(--accent);
-        }
-
-        .dropdown-item.danger:hover {
-            background: #fee2e2;
-            color: var(--danger);
-        }
-
-        .dropdown-item.danger i {
-            color: var(--danger);
-        }
-
-        /* ========== CHAT PAGE ========== */
-        .chat-list {
-            padding: 16px;
-        }
-
-        .chat-item {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .chat-item:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .chat-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .chat-info {
-            flex: 1;
-        }
-
-        .chat-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .chat-last {
-            font-size: 13px;
-            color: var(--text-light);
-        }
-
-        .chat-time {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .chat-badge {
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        /* Chat Detail Modal */
-        .chat-detail-modal {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            top: 0;
-            background: var(--bg-card);
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
-        }
-
-        .chat-detail-modal.open {
-            display: flex;
-        }
-
-        .chat-header {
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: var(--bg-card);
-        }
-
-        .chat-back {
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 12px;
-            border-radius: 18px;
-            position: relative;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .message.sent {
-            background: var(--accent);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.received {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-time {
-            font-size: 10px;
-            opacity: 0.7;
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        .chat-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 12px;
-            background: var(--bg-card);
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            background: var(--bg);
-            color: var(--text);
-            outline: none;
-        }
-
-        .chat-input:focus {
-            border-color: var(--accent);
-        }
-
-        .chat-send {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--gradient);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        /* ========== STATISTICS PAGE ========== */
-        .stats-page {
-            padding: 16px;
-        }
-
-        .stats-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
-        }
-
-        .stats-card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .stats-card-title i {
-            color: var(--accent);
-        }
-
-        .stats-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stats-row:last-child {
-            border-bottom: none;
-        }
-
-        .stats-label {
-            color: var(--text-light);
-        }
-
-        .stats-value {
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .stats-value.accent {
-            color: var(--accent);
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 8px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient);
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        .chart-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .chart-label {
-            width: 100px;
-            font-size: 14px;
-        }
-
-        .chart-bar-container {
-            flex: 1;
-            height: 30px;
-            background: var(--bg);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .chart-bar {
-            height: 100%;
-            background: var(--gradient);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-            transition: width 0.5s ease;
-        }
-
-        .stat-badge {
-            background: var(--accent-light);
-            color: var(--accent);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 20px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 6px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--border);
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 20px;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -20px;
-            top: 4px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--accent);
-            border: 2px solid var(--bg-card);
-        }
-
-        .timeline-date {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .timeline-content {
-            background: var(--bg);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        /* ========== PROFILE PAGE ========== */
-        .profile-header {
-            background: var(--gradient);
-            padding: 40px 20px;
-            text-align: center;
-            color: white;
-            border-radius: 0 0 30px 30px;
-        }
-
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: white;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 40px;
-            border: 4px solid rgba(255,255,255,0.3);
-        }
-
-        .profile-name {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .profile-bio {
-            opacity: 0.9;
-            font-size: 14px;
-            max-width: 300px;
-            margin: 0 auto;
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 20px;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .profile-stat {
-            text-align: center;
-        }
-
-        .profile-stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .profile-stat-label {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        .profile-menu {
-            background: var(--bg-card);
-            padding: 0 16px;
-        }
-
-        .profile-menu-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .profile-menu-item:hover {
-            background: var(--accent-light);
-        }
-
-        .profile-menu-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--accent-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-        }
-
-        .profile-menu-content {
-            flex: 1;
-        }
-
-        .profile-menu-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .profile-menu-subtitle {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        .profile-menu-arrow {
-            color: var(--text-light);
-        }
-
-        /* ========== SETTINGS PANEL ========== */
+        /* Settings Panel */
         .settings-panel {
             position: fixed;
             top: 0;
@@ -890,11 +157,11 @@
             height: 100vh;
             background: var(--bg-card);
             z-index: 2000;
-            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: right 0.4s ease;
             padding: 25px;
             overflow-y: auto;
             border-left: 1px solid var(--border);
-            box-shadow: var(--shadow-lg);
+            box-shadow: -5px 0 20px rgba(0,0,0,0.2);
         }
 
         .settings-panel.open {
@@ -913,7 +180,7 @@
         }
 
         .panel-section {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .panel-section h3 {
@@ -938,7 +205,6 @@
             background: var(--bg);
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 14px;
         }
 
         .lang-option:hover {
@@ -965,10 +231,6 @@
             cursor: pointer;
             text-align: center;
             transition: all 0.3s;
-        }
-
-        .theme-option:hover {
-            border-color: var(--accent);
         }
 
         .theme-option.active {
@@ -1001,616 +263,57 @@
             color: var(--accent);
             font-weight: 700;
             font-size: 18px;
-            margin-bottom: 8px;
-        }
-
-        .plan-features, .ad-features {
-            font-size: 12px;
-            color: var(--text-light);
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        .checkbox-item input[type="checkbox"] {
+        .checkbox-item input {
             width: 18px;
             height: 18px;
-            cursor: pointer;
             accent-color: var(--accent);
-        }
-
-        /* ========== MODALS ========== */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 3000;
-        }
-
-        .modal.open {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 30px;
-            padding: 25px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: scaleIn 0.3s ease;
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .modal-header i {
-            cursor: pointer;
-            font-size: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 5px;
-            color: var(--text);
-        }
-
-        .form-input, .form-textarea, .form-select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 15px;
-            transition: all 0.3s;
-        }
-
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
-            border-color: var(--accent);
-            outline: none;
-            box-shadow: 0 0 0 3px var(--accent-light);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: var(--gradient);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 16px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255,152,0,0.4);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-
-        .btn-outline:hover {
-            background: var(--accent-light);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* ========== ADD BUTTON ========== */
-        .add-btn {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--gradient);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255,152,0,0.4);
-            transition: all 0.3s;
-            z-index: 90;
-        }
-
-        .add-btn:hover {
-            transform: scale(1.1) rotate(90deg);
         }
     </style>
 </head>
 <body data-theme="light">
-
-    <!-- ========== APP BAR ========== -->
+    <!-- App Bar -->
     <div class="app-bar">
         <div class="logo">Bozorcha</div>
         <div class="header-actions">
-            <div class="icon-btn" id="langBtn" onclick="toggleSettings()">
-                <i class="fas fa-globe"></i>
-            </div>
-            <div class="icon-btn settings-btn" id="settingsBtn" onclick="toggleSettings()">
+            <div class="icon-btn" onclick="toggleSettings()">
                 <i class="fas fa-cog"></i>
             </div>
         </div>
     </div>
 
-    <!-- ========== PAGES ========== -->
-    <!-- Home Page -->
-    <div id="homePage" class="page active">
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-box"></i></div>
-                <span class="stat-value" id="statProducts">24</span>
-                <span class="stat-label">Маҳсулот</span>
-                <span class="stat-period">имрӯз</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-                <span class="stat-value" id="statOrders">8</span>
-                <span class="stat-label">Фармоиш</span>
-                <span class="stat-period">имрӯз</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                <span class="stat-value" id="statSales">1,250</span>
-                <span class="stat-label">Фурӯш</span>
-                <span class="stat-period">имрӯз</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-users"></i></div>
-                <span class="stat-value" id="statSubscribers">2</span>
-                <span class="stat-label">Обуначӣ</span>
-                <span class="stat-period">имрӯз</span>
-            </div>
-        </div>
+    <!-- Content Frame (Экранҳо дар ин ҷо бор мешаванд) -->
+    <iframe src="home.html" class="content-frame" id="contentFrame"></iframe>
 
-        <!-- Product List Header -->
-        <div class="section-header">
-            <div class="section-title">
-                <i class="fas fa-list"></i>
-                Рӯйхати Маҳсулот
-            </div>
-            <div class="icon-btn" onclick="openFilterModal()">
-                <i class="fas fa-filter"></i>
-            </div>
-        </div>
-
-        <!-- Product List -->
-        <div class="product-list" id="productList">
-            <!-- Продукт 1 -->
-            <div class="product-item">
-                <div class="product-image">
-                    <i class="fas fa-tshirt"></i>
-                </div>
-                <div class="product-details">
-                    <div class="product-name">Футболка Adidas</div>
-                    <div class="product-attributes">
-                        <span class="attribute-tag"><i class="fas fa-tag"></i> Мардона</span>
-                        <span class="attribute-tag"><i class="fas fa-tshirt"></i> Пахта</span>
-                        <span class="attribute-tag"><i class="fas fa-ruler"></i> XL</span>
-                    </div>
-                    <div class="product-price">150 с</div>
-                </div>
-                <div class="product-menu" onclick="toggleMenu(this)">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-item"><i class="fas fa-edit"></i> Таҳрир</div>
-                        <div class="dropdown-item danger"><i class="fas fa-trash"></i> Пок кардан</div>
-                    </div>
-                </div>
-            </div>
-            <!-- Продукт 2 -->
-            <div class="product-item">
-                <div class="product-image">
-                    <i class="fas fa-shoe-prints"></i>
-                </div>
-                <div class="product-details">
-                    <div class="product-name">Кроссовки Nike</div>
-                    <div class="product-attributes">
-                        <span class="attribute-tag"><i class="fas fa-tag"></i> Варзишӣ</span>
-                        <span class="attribute-tag"><i class="fas fa-ruler"></i> 42</span>
-                    </div>
-                    <div class="product-price">450 с</div>
-                </div>
-                <div class="product-menu" onclick="toggleMenu(this)">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-item"><i class="fas fa-edit"></i> Таҳрир</div>
-                        <div class="dropdown-item danger"><i class="fas fa-trash"></i> Пок кардан</div>
-                    </div>
-                </div>
-            </div>
-            <!-- Продукт 3 -->
-            <div class="product-item">
-                <div class="product-image">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <div class="product-details">
-                    <div class="product-name">iPhone 15 Pro</div>
-                    <div class="product-attributes">
-                        <span class="attribute-tag"><i class="fas fa-microchip"></i> 256GB</span>
-                        <span class="attribute-tag"><i class="fas fa-sim-card"></i> Нав</span>
-                    </div>
-                    <div class="product-price">12,500 с</div>
-                </div>
-                <div class="product-menu" onclick="toggleMenu(this)">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-item"><i class="fas fa-edit"></i> Таҳрир</div>
-                        <div class="dropdown-item danger"><i class="fas fa-trash"></i> Пок кардан</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chat Page -->
-    <div id="chatPage" class="page">
-        <div class="section-header">
-            <div class="section-title">
-                <i class="fas fa-comment"></i>
-                Паёмҳо
-            </div>
-            <div class="icon-btn" onclick="openChatSettings()">
-                <i class="fas fa-cog"></i>
-            </div>
-        </div>
-
-        <div class="chat-list">
-            <!-- Чат 1 -->
-            <div class="chat-item" onclick="openChat('Азиза Раҳимова')">
-                <div class="chat-avatar"><i class="fas fa-user"></i></div>
-                <div class="chat-info">
-                    <div class="chat-name">Азиза Раҳимова</div>
-                    <div class="chat-last">Ассалому алейкум, ин маҳсулот...</div>
-                </div>
-                <div class="chat-time">12:30</div>
-                <div class="chat-badge">2</div>
-            </div>
-            <!-- Чат 2 -->
-            <div class="chat-item" onclick="openChat('Фирӯз Каримов')">
-                <div class="chat-avatar"><i class="fas fa-user"></i></div>
-                <div class="chat-info">
-                    <div class="chat-name">Фирӯз Каримов</div>
-                    <div class="chat-last">Нархашро кам мекунед?</div>
-                </div>
-                <div class="chat-time">10:15</div>
-            </div>
-            <!-- Чат 3 -->
-            <div class="chat-item" onclick="openChat('Мадина Солеҳова')">
-                <div class="chat-avatar"><i class="fas fa-user"></i></div>
-                <div class="chat-info">
-                    <div class="chat-name">Мадина Солеҳова</div>
-                    <div class="chat-last">Ташаккур, фармоиш гирифтам</div>
-                </div>
-                <div class="chat-time">Кеча</div>
-            </div>
-            <!-- Чат 4 -->
-            <div class="chat-item" onclick="openChat('Раҳим Қурбонов')">
-                <div class="chat-avatar"><i class="fas fa-user"></i></div>
-                <div class="chat-info">
-                    <div class="chat-name">Раҳим Қурбонов</div>
-                    <div class="chat-last">Андозаи M ҳаст?</div>
-                </div>
-                <div class="chat-time">Кеча</div>
-                <div class="chat-badge">1</div>
-            </div>
-        </div>
-
-        <!-- Chat Detail Modal -->
-        <div class="chat-detail-modal" id="chatDetailModal">
-            <div class="chat-header">
-                <i class="fas fa-arrow-left chat-back" onclick="closeChat()"></i>
-                <div class="chat-name" id="chatPartnerName">Азиза Раҳимова</div>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="message received">
-                    Ассалому алейкум! Чанд сол аст ин маҳсулотро истифода мебаред?
-                    <div class="message-time">12:30</div>
-                </div>
-                <div class="message sent">
-                    Салом! Ин маҳсулотро мохуз 2 сол истифода мекунем. Сифаташ хеле хуб аст.
-                    <div class="message-time">12:32</div>
-                </div>
-                <div class="message received">
-                    Нархашро кам мекунед?
-                    <div class="message-time">12:33</div>
-                </div>
-            </div>
-            <div class="chat-footer">
-                <input type="text" class="chat-input" placeholder="Нависед..." id="chatInput">
-                <div class="chat-send" onclick="sendMessage()">
-                    <i class="fas fa-paper-plane"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Statistics Page -->
-    <div id="statsPage" class="page">
-        <div class="section-header">
-            <div class="section-title">
-                <i class="fas fa-chart-bar"></i>
-                Статистика
-            </div>
-            <div class="badge">Аз 01.01.2026</div>
-        </div>
-
-        <div class="stats-page">
-            <!-- Карточкаи асосӣ -->
-            <div class="stats-card">
-                <div class="stats-card-title">
-                    <i class="fas fa-chart-pie"></i>
-                    Фурӯши имрӯз
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Фурӯши умумӣ</span>
-                    <span class="stats-value accent">1,250 с</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Шумораи фармоишҳо</span>
-                    <span class="stats-value">8</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Маҳсулоти фурӯхташуда</span>
-                    <span class="stats-value">12</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 75%;"></div>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Ҳадафи рӯз</span>
-                    <span class="stats-value">75%</span>
-                </div>
-            </div>
-
-            <!-- Фурӯши ҳафта -->
-            <div class="stats-card">
-                <div class="stats-card-title">
-                    <i class="fas fa-calendar-week"></i>
-                    Фурӯши ҳафта
-                </div>
-                <div class="chart-item">
-                    <span class="chart-label">Душанбе</span>
-                    <div class="chart-bar-container">
-                        <div class="chart-bar" style="width: 60%;">850 с</div>
-                    </div>
-                </div>
-                <div class="chart-item">
-                    <span class="chart-label">Сешанбе</span>
-                    <div class="chart-bar-container">
-                        <div class="chart-bar" style="width: 45%;">620 с</div>
-                    </div>
-                </div>
-                <div class="chart-item">
-                    <span class="chart-label">Чоршанбе</span>
-                    <div class="chart-bar-container">
-                        <div class="chart-bar" style="width: 70%;">980 с</div>
-                    </div>
-                </div>
-                <div class="chart-item">
-                    <span class="chart-label">Панҷшанбе</span>
-                    <div class="chart-bar-container">
-                        <div class="chart-bar" style="width: 55%;">780 с</div>
-                    </div>
-                </div>
-                <div class="chart-item">
-                    <span class="chart-label">Ҷумъа</span>
-                    <div class="chart-bar-container">
-                        <div class="chart-bar" style="width: 85%;">1,200 с</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Беҳтарин маҳсулот -->
-            <div class="stats-card">
-                <div class="stats-card-title">
-                    <i class="fas fa-crown"></i>
-                    Беҳтарин маҳсулот
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">iPhone 15 Pro</span>
-                    <span class="stats-value accent">45%</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Футболка Adidas</span>
-                    <span class="stats-value accent">30%</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Кроссовки Nike</span>
-                    <span class="stats-value accent">25%</span>
-                </div>
-            </div>
-
-            <!-- Таърихи фурӯш -->
-            <div class="stats-card">
-                <div class="stats-card-title">
-                    <i class="fas fa-history"></i>
-                    Таърихи фурӯш
-                </div>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-date">Имрӯз, 14:30</div>
-                        <div class="timeline-content">
-                            <div>iPhone 15 Pro - 12,500 с</div>
-                            <div style="font-size: 11px; color: var(--text-light);">Харидор: Азиза Р.</div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Имрӯз, 11:20</div>
-                        <div class="timeline-content">
-                            <div>Футболка Adidas - 150 с</div>
-                            <div style="font-size: 11px; color: var(--text-light);">Харидор: Фирӯз К.</div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">Ди рӯз, 16:45</div>
-                        <div class="timeline-content">
-                            <div>Кроссовки Nike - 450 с</div>
-                            <div style="font-size: 11px; color: var(--text-light);">Харидор: Мадина С.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Омори иловагӣ -->
-            <div class="stats-card">
-                <div class="stats-card-title">
-                    <i class="fas fa-chart-line"></i>
-                    Омори иловагӣ
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Миёнаи фурӯш дар як рӯз</span>
-                    <span class="stats-value">940 с</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Маҳсулоти маъмултарин</span>
-                    <span class="stats-value">iPhone 15 Pro</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Шумораи муштариёни нав</span>
-                    <span class="stats-value">+12</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">Бозгашти муштариён</span>
-                    <span class="stats-value">78%</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Page -->
-    <div id="profilePage" class="page">
-        <div class="profile-header">
-            <div class="profile-avatar">
-                <i class="fas fa-store"></i>
-            </div>
-            <div class="profile-name">Мағозаи ман</div>
-            <div class="profile-bio">Либос, телефон, пойафзол • Аз соли 2024</div>
-        </div>
-
-        <div class="profile-stats">
-            <div class="profile-stat">
-                <div class="profile-stat-value">124</div>
-                <div class="profile-stat-label">Маҳсулот</div>
-            </div>
-            <div class="profile-stat">
-                <div class="profile-stat-value">1.2k</div>
-                <div class="profile-stat-label">Муштарӣ</div>
-            </div>
-            <div class="profile-stat">
-                <div class="profile-stat-value">4.8</div>
-                <div class="profile-stat-label">Рейтинг</div>
-            </div>
-        </div>
-
-        <div class="profile-menu">
-            <div class="profile-menu-item" onclick="openProfileSection('info')">
-                <div class="profile-menu-icon"><i class="fas fa-user"></i></div>
-                <div class="profile-menu-content">
-                    <div class="profile-menu-title">Маълумоти шахсӣ</div>
-                    <div class="profile-menu-subtitle">Ном, суроға, телефон</div>
-                </div>
-                <i class="fas fa-chevron-right profile-menu-arrow"></i>
-            </div>
-            <div class="profile-menu-item" onclick="openProfileSection('shop')">
-                <div class="profile-menu-icon"><i class="fas fa-store-alt"></i></div>
-                <div class="profile-menu-content">
-                    <div class="profile-menu-title">Маълумоти мағоза</div>
-                    <div class="profile-menu-subtitle">Номи мағоза, категория, тавсиф</div>
-                </div>
-                <i class="fas fa-chevron-right profile-menu-arrow"></i>
-            </div>
-            <div class="profile-menu-item" onclick="openProfileSection('payment')">
-                <div class="profile-menu-icon"><i class="fas fa-credit-card"></i></div>
-                <div class="profile-menu-content">
-                    <div class="profile-menu-title">Пардохт ва ҳисоб</div>
-                    <div class="profile-menu-subtitle">Корти бонкӣ, таърихи пардохт</div>
-                </div>
-                <i class="fas fa-chevron-right profile-menu-arrow"></i>
-            </div>
-            <div class="profile-menu-item" onclick="openProfileSection('delivery')">
-                <div class="profile-menu-icon"><i class="fas fa-truck"></i></div>
-                <div class="profile-menu-content">
-                    <div class="profile-menu-title">Усули интиқол</div>
-                    <div class="profile-menu-subtitle">Почта, курьер, супоридани дастӣ</div>
-                </div>
-                <i class="fas fa-chevron-right profile-menu-arrow"></i>
-            </div>
-            <div class="profile-menu-item" onclick="openProfileSection('privacy')">
-                <div class="profile-menu-icon"><i class="fas fa-lock"></i></div>
-                <div class="profile-menu-content">
-                    <div class="profile-menu-title">Махфият ва амният</div>
-                    <div class="profile-menu-subtitle">Рамз, тасдиқи дуқабата</div>
-                </div>
-                <i class="fas fa-chevron-right profile-menu-arrow"></i>
-            </div>
-            <div class="profile-menu-item" onclick="openProfileSection('settings')">
-                <div class="profile-menu-icon"><i class="fas fa-cog"></i></div>
-                <div class="profile-menu-content">
-                    <div class="profile-menu-title">Танзимот</div>
-                    <div class="profile-menu-subtitle">Забон, тема, огоҳиномаҳо</div>
-                </div>
-                <i class="fas fa-chevron-right profile-menu-arrow"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== ADD BUTTON ========== -->
-    <div class="add-btn" onclick="openAddProductModal()">
-        <i class="fas fa-plus"></i>
-    </div>
-
-    <!-- ========== BOTTOM NAVIGATION ========== -->
+    <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('home')">
+        <div class="nav-item active" onclick="loadPage('home')">
             <i class="fas fa-home"></i>
             <span>Асосӣ</span>
         </div>
-        <div class="nav-item" onclick="switchPage('chat')">
+        <div class="nav-item" onclick="loadPage('chat')">
             <i class="fas fa-comment"></i>
             <span>Паём</span>
         </div>
-        <div class="nav-item" onclick="switchPage('stats')">
+        <div class="nav-item" onclick="loadPage('stats')">
             <i class="fas fa-chart-bar"></i>
             <span>Омор</span>
         </div>
-        <div class="nav-item" onclick="switchPage('profile')">
+        <div class="nav-item" onclick="loadPage('profile')">
             <i class="fas fa-user"></i>
             <span>Профил</span>
         </div>
     </div>
 
-    <!-- ========== SETTINGS PANEL ========== -->
+    <!-- Settings Panel -->
     <div class="settings-panel" id="settingsPanel">
         <div class="panel-header">
             <span>Танзимот</span>
@@ -1631,57 +334,46 @@
         <div class="panel-section">
             <h3><i class="fas fa-palette"></i> Тема</h3>
             <div class="theme-options">
-                <div class="theme-option active" onclick="setTheme('light')">
-                    <i class="fas fa-sun"></i> Равшан
-                </div>
-                <div class="theme-option" onclick="setTheme('dark')">
-                    <i class="fas fa-moon"></i> Торик
-                </div>
+                <div class="theme-option active" onclick="setTheme('light')">Равшан</div>
+                <div class="theme-option" onclick="setTheme('dark')">Торик</div>
             </div>
         </div>
 
-        <!-- Subscription Plans -->
+        <!-- Plans -->
         <div class="panel-section">
-            <h3><i class="fas fa-crown"></i> Планҳои обуна</h3>
-            <div class="plan-card" onclick="showPlanDetails('free')">
+            <h3><i class="fas fa-crown"></i> Планҳо</h3>
+            <div class="plan-card">
                 <div class="plan-name">Free</div>
                 <div class="plan-price">0 с/моҳ</div>
-                <div class="plan-features">✅ То 20 маҳсулот • 5% комиссия</div>
             </div>
-            <div class="plan-card" onclick="showPlanDetails('basic')">
+            <div class="plan-card">
                 <div class="plan-name">Basic</div>
                 <div class="plan-price">19 с/моҳ</div>
-                <div class="plan-features">✅ То 50 маҳсулот • 4% комиссия • Analytics</div>
             </div>
-            <div class="plan-card" onclick="showPlanDetails('pro')">
+            <div class="plan-card">
                 <div class="plan-name">Pro</div>
                 <div class="plan-price">99 с/моҳ</div>
-                <div class="plan-features">✅ То 200 маҳсулот • 3% комиссия • AI • 3D</div>
             </div>
-            <div class="plan-card" onclick="showPlanDetails('ultra')">
+            <div class="plan-card">
                 <div class="plan-name">Ultra</div>
                 <div class="plan-price">299 с/моҳ</div>
-                <div class="plan-features">✅ Бемаҳдуд • 2% комиссия • AI пурра • 3D</div>
             </div>
         </div>
 
-        <!-- Advertising Plans -->
+        <!-- Ads -->
         <div class="panel-section">
             <h3><i class="fas fa-chart-line"></i> Реклама</h3>
-            <div class="ad-card" onclick="showAdDetails('plus')">
+            <div class="ad-card">
                 <div class="ad-name">Plus</div>
                 <div class="ad-price">6 с/рӯз</div>
-                <div class="ad-features">📢 Маҳсулот дар саҳифаи асосӣ боло меравад</div>
             </div>
-            <div class="ad-card" onclick="showAdDetails('pro')">
+            <div class="ad-card">
                 <div class="ad-name">Pro</div>
                 <div class="ad-price">14 с/рӯз</div>
-                <div class="ad-features">🎯 Боло + ба аудиторияи мушаххас</div>
             </div>
-            <div class="ad-card" onclick="showAdDetails('ultra')">
+            <div class="ad-card">
                 <div class="ad-name">Ultra</div>
                 <div class="ad-price">30 с/рӯз</div>
-                <div class="ad-features">🏆 Мағоза дар ТОП, поиск аввал, тавсияҳо</div>
             </div>
         </div>
 
@@ -1708,327 +400,43 @@
         </div>
     </div>
 
-    <!-- ========== ADD PRODUCT MODAL ========== -->
-    <div class="modal" id="addProductModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>Иловаи маҳсулоти нав</span>
-                <i class="fas fa-times" onclick="closeAddProductModal()"></i>
-            </div>
-            <form onsubmit="saveProduct(); return false;">
-                <div class="form-group">
-                    <label class="form-label">Номи маҳсулот</label>
-                    <input type="text" class="form-input" placeholder="Масалан: Футболка Adidas" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Категория</label>
-                    <select class="form-select" required>
-                        <option value="">Интихоб кунед...</option>
-                        <option value="clothing">Либос</option>
-                        <option value="footwear">Пойафзол</option>
-                        <option value="electronics">Телефон ва аксессуар</option>
-                        <option value="fruits">Меваю сабзавот</option>
-                        <option value="cosmetics">Косметика</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Нарх (c.)</label>
-                    <input type="number" class="form-input" placeholder="0" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Акс</label>
-                    <input type="file" class="form-input" accept="image/*">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Тавсиф</label>
-                    <textarea class="form-textarea" rows="3" placeholder="Тавсифи мухтасар..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Хусусиятҳо (ҳар як дар сатри нав)</label>
-                    <textarea class="form-textarea" rows="3" placeholder="Масалан:
-- Андоза: S, M, L
-- Ранг: сафед, сиёҳ
-- Мавод: 100% пахта"></textarea>
-                </div>
-                <button type="submit" class="btn">Сабт кардан</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ========== FILTER MODAL ========== -->
-    <div class="modal" id="filterModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>Филтр</span>
-                <i class="fas fa-times" onclick="closeFilterModal()"></i>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Категория</label>
-                <select class="form-select">
-                    <option value="">Ҳама</option>
-                    <option value="clothing">Либос</option>
-                    <option value="footwear">Пойафзол</option>
-                    <option value="electronics">Телефон</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Нарх аз</label>
-                <input type="number" class="form-input" placeholder="Аз">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Нарх то</label>
-                <input type="number" class="form-input" placeholder="То">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Ҳолат</label>
-                <select class="form-select">
-                    <option value="">Ҳама</option>
-                    <option value="new">Нав</option>
-                    <option value="used">Истифодашуда</option>
-                </select>
-            </div>
-            <button class="btn">Татбиқ кардан</button>
-        </div>
-    </div>
-
-    <!-- ========== PLAN DETAIL MODAL ========== -->
-    <div class="modal" id="planDetailModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span id="planDetailTitle">План</span>
-                <i class="fas fa-times" onclick="closePlanDetailModal()"></i>
-            </div>
-            <div id="planDetailBody"></div>
-        </div>
-    </div>
-
     <script>
-        // ========== PAGE NAVIGATION ==========
-        function switchPage(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(page + 'Page').classList.add('active');
-            
+        function loadPage(page) {
+            document.getElementById('contentFrame').src = page + '.html';
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             event.currentTarget.classList.add('active');
         }
 
-        // ========== SETTINGS PANEL ==========
         function toggleSettings() {
             document.getElementById('settingsPanel').classList.toggle('open');
-            document.getElementById('settingsBtn').classList.toggle('active');
         }
 
         function closeSettings() {
             document.getElementById('settingsPanel').classList.remove('open');
-            document.getElementById('settingsBtn').classList.remove('active');
         }
 
-        // ========== LANGUAGE & THEME ==========
         function setLanguage(lang) {
             document.querySelectorAll('.lang-option').forEach(opt => opt.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            // Тарҷумаи матнҳоро метавон илова кард
         }
 
         function setTheme(theme) {
             document.body.setAttribute('data-theme', theme);
             document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
             event.currentTarget.classList.add('active');
-        }
-
-        // ========== PRODUCT MENU ==========
-        function toggleMenu(element) {
-            const menu = element.querySelector('.dropdown-menu');
-            menu.classList.toggle('show');
             
-            // Close other menus
-            document.addEventListener('click', function closeMenu(e) {
-                if (!element.contains(e.target)) {
-                    menu.classList.remove('show');
-                    document.removeEventListener('click', closeMenu);
-                }
+            // Ба тамоми iframeҳо низ темаро фиристодан
+            document.querySelectorAll('iframe').forEach(iframe => {
+                iframe.contentWindow.postMessage({ type: 'theme', theme: theme }, '*');
             });
         }
 
-        // ========== CHAT FUNCTIONS ==========
-        function openChat(name) {
-            document.getElementById('chatPartnerName').innerText = name;
-            document.getElementById('chatDetailModal').classList.add('open');
-        }
-
-        function closeChat() {
-            document.getElementById('chatDetailModal').classList.remove('open');
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            if (input.value.trim() === '') return;
-            
-            const messages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message sent';
-            messageDiv.innerHTML = `
-                ${input.value}
-                <div class="message-time">Ҳозир</div>
-            `;
-            messages.appendChild(messageDiv);
-            input.value = '';
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        function openChatSettings() {
-            toggleSettings();
-        }
-
-        // ========== MODALS ==========
-        function openAddProductModal() {
-            document.getElementById('addProductModal').classList.add('open');
-        }
-
-        function closeAddProductModal() {
-            document.getElementById('addProductModal').classList.remove('open');
-        }
-
-        function openFilterModal() {
-            document.getElementById('filterModal').classList.add('open');
-        }
-
-        function closeFilterModal() {
-            document.getElementById('filterModal').classList.remove('open');
-        }
-
-        function showPlanDetails(plan) {
-            const title = document.getElementById('planDetailTitle');
-            const body = document.getElementById('planDetailBody');
-            
-            const plans = {
-                free: {
-                    name: 'Free',
-                    price: '0 с/моҳ',
-                    features: [
-                        '✓ То 20 маҳсулот',
-                        '✓ Комиссия 5%',
-                        '✗ Реклама нест',
-                        '✗ 3D нест',
-                        '✗ Analytics нест'
-                    ]
-                },
-                basic: {
-                    name: 'Basic',
-                    price: '19 с/моҳ',
-                    features: [
-                        '✓ То 50 маҳсулот',
-                        '✓ Комиссия 4%',
-                        '✓ Рекламаи Plus (1/ҳафта)',
-                        '✓ Analytics',
-                        '✗ 3D нест'
-                    ]
-                },
-                pro: {
-                    name: 'Pro',
-                    price: '99 с/моҳ',
-                    features: [
-                        '✓ То 200 маҳсулот',
-                        '✓ Комиссия 3%',
-                        '✓ Рекламаи Pro (2/моҳ)',
-                        '✓ Analytics + AI маҳдуд',
-                        '✓ 3D оддӣ'
-                    ]
-                },
-                ultra: {
-                    name: 'Ultra',
-                    price: '299 с/моҳ',
-                    features: [
-                        '✓ Бемаҳдуд маҳсулот',
-                        '✓ Комиссия 2%',
-                        '✓ Рекламаи Ultra (1/моҳ)',
-                        '✓ Analytics + AI пурра',
-                        '✓ 3D пурра'
-                    ]
-                }
-            };
-
-            const p = plans[plan];
-            let featuresHtml = '';
-            p.features.forEach(f => {
-                featuresHtml += `<li style="list-style:none; padding:5px 0;">${f}</li>`;
-            });
-
-            body.innerHTML = `
-                <h2 style="color:var(--accent); margin:15px 0;">${p.price}</h2>
-                <ul style="margin-bottom:20px;">${featuresHtml}</ul>
-                <button class="btn" onclick="selectPlan('${plan}')">Интихоб кардан</button>
-            `;
-            title.innerText = p.name;
-            document.getElementById('planDetailModal').classList.add('open');
-        }
-
-        function closePlanDetailModal() {
-            document.getElementById('planDetailModal').classList.remove('open');
-        }
-
-        function selectPlan(plan) {
-            alert(`Шумо плани ${plan} -ро интихоб кардед`);
-            closePlanDetailModal();
-        }
-
-        function showAdDetails(ad) {
-            const title = document.getElementById('planDetailTitle');
-            const body = document.getElementById('planDetailBody');
-            
-            const ads = {
-                plus: {
-                    name: 'Plus',
-                    price: '6 с/рӯз',
-                    desc: 'Маҳсулот дар саҳифаи асосӣ боло меравад',
-                    duration: '1 рӯз'
-                },
-                pro: {
-                    name: 'Pro',
-                    price: '14 с/рӯз',
-                    desc: 'Боло + ба аудиторияи мушаххас нишон дода мешавад',
-                    duration: '1 рӯз'
-                },
-                ultra: {
-                    name: 'Ultra',
-                    price: '30 с/рӯз',
-                    desc: 'Мағоза дар ТОП, поиск аввал, тавсияҳо',
-                    duration: '1 рӯз'
-                }
-            };
-
-            const a = ads[ad];
-            body.innerHTML = `
-                <h2 style="color:var(--accent); margin:15px 0;">${a.price}</h2>
-                <p style="margin-bottom:10px;">${a.desc}</p>
-                <p style="margin-bottom:20px; font-size:13px; color:var(--text-light);">Давомнокӣ: ${a.duration}</p>
-                <button class="btn" onclick="buyAd('${ad}')">Харидан</button>
-            `;
-            title.innerText = a.name;
-            document.getElementById('planDetailModal').classList.add('open');
-        }
-
-        function buyAd(ad) {
-            alert(`Шумо рекламаи ${ad} -ро харидед`);
-            closePlanDetailModal();
-        }
-
-        function saveProduct() {
-            // Ин ҷо коди сабти маҳсулот
-            alert('Маҳсулот сабт шуд');
-            closeAddProductModal();
-        }
-
-        function openProfileSection(section) {
-            alert('Қисми ' + section + ' дар ҳоли сохтан аст');
-        }
-
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('open');
+        // Гирфтани паём аз iframe
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'openSettings') {
+                toggleSettings();
             }
-        }
+        });
     </script>
 </body>
-    </html>
+</html>
