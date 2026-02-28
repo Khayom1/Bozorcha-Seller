@@ -1,291 +1,144 @@
 <!DOCTYPE html>
 <html lang="tg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bozorcha - Ultra Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
-        :root {
-            --bg: #f0f2f5; --bg-card: #ffffff; --text: #1c1e21; --text-light: #65676b;
-            --accent: #ff9800; --border: #dbdbdb; --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
-        }
-        [data-theme="dark"] {
-            --bg: #000000; --bg-card: #121212; --text: #ffffff; --text-light: #b0b3b8; --border: #262626;
-        }
-        body { background: var(--bg); color: var(--text); padding-bottom: 70px; transition: 0.3s; overflow-x: hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bozorcha Dashboard</title>
 
-        /* Header - Instagram Style */
-        .app-bar { 
-            background: var(--bg-card); height: 60px; display: flex; align-items: center; 
-            justify-content: space-between; padding: 0 15px; position: sticky; top: 0; z-index: 1000;
-            border-bottom: 1px solid var(--border);
-        }
-        .logo { font-size: 24px; font-weight: bold; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .header-actions { display: flex; gap: 18px; align-items: center; }
-        .header-actions i { font-size: 22px; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .settings-icon.active { transform: rotate(90deg); color: var(--accent); }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        /* Stats Grid - Fixed at Top */
-        .stats-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; background: var(--bg-card); }
-        .stat-item { text-align: center; }
-        .stat-value { font-size: 18px; font-weight: bold; display: block; }
-        .stat-label { font-size: 11px; color: var(--text-light); }
-
-        /* Posts - Instagram Style */
-        .post { background: var(--bg-card); margin-bottom: 15px; border-bottom: 1px solid var(--border); animation: fadeIn 0.5s ease; }
-        .post-header { display: flex; align-items: center; justify-content: space-between; padding: 12px; }
-        .post-user { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; }
-        .post-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); }
-        .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #eee; }
-        
-        .post-actions { padding: 12px; display: flex; justify-content: space-between; font-size: 22px; }
-        .post-actions-left { display: flex; gap: 15px; }
-        .post-actions-left i:hover { color: #ff3040; }
-        
-        .post-info { padding: 0 12px 12px; }
-        .post-title { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
-        .post-price { color: var(--accent); font-weight: bold; }
-
-        /* Side Settings Panel */
-        .side-panel {
-            position: fixed; top: 0; right: -100%; width: 85%; height: 100%; background: var(--bg-card);
-            z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 20px;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.2);
-        }
-        .side-panel.open { right: 0; }
-        .panel-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; font-size: 20px; font-weight: bold; }
-        .panel-item { padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; background: var(--bg); cursor: pointer; }
-
-        /* Language Selector - Fixed Bug */
-        .lang-container { display: flex; gap: 10px; padding: 15px; }
-        .lang-btn { 
-            padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); 
-            background: var(--bg-card); cursor: pointer; transition: 0.3s;
-        }
-        .lang-btn.active { background: var(--accent); color: white; border-color: var(--accent); transform: scale(1.05); }
-
-        /* Category Modal */
-        .modal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; 
-            z-index: 3000; align-items: flex-end; 
-        }
-        .modal-content { 
-            width: 100%; background: var(--bg-card); border-radius: 20px 20px 0 0; 
-            padding: 20px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease;
-        }
-        .category-item { 
-            padding: 15px; border-bottom: 1px solid var(--border); display: flex; 
-            justify-content: space-between; cursor: pointer; 
-        }
-
-        /* Floating Add Button */
-        .add-btn {
-            position: fixed; bottom: 85px; right: 20px; width: 56px; height: 56px;
-            border-radius: 50%; background: var(--gradient); color: white;
-            display: flex; align-items: center; justify-content: center; font-size: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100;
-        }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; height: 55px; background: var(--bg-card);
-            display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid var(--border); z-index: 1000;
-        }
-        .nav-link { color: var(--text); font-size: 22px; text-decoration: none; }
-        .nav-link.active { color: var(--accent); }
-
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .form-input { 
-            width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; 
-            border: 1px solid var(--border); background: var(--bg); color: var(--text);
-        }
-    </style>
+<style>
+body{font-family:sans-serif;background:#f4f4f4;margin:0}
+.post{background:white;margin:10px;padding:10px;border-radius:10px}
+input,textarea,button{width:100%;padding:10px;margin-top:10px}
+button{background:#ff9800;color:white;border:none;border-radius:6px}
+</style>
 </head>
-<body data-theme="light">
 
-    <div class="app-bar">
-        <div class="logo">Bozorcha</div>
-        <div class="header-actions">
-            <i class="fas fa-plus-square" onclick="openAddModal()"></i>
-            <i class="fas fa-adjust" onclick="toggleTheme()"></i>
-            <i class="fas fa-th-large settings-icon" id="settingsBtn" onclick="toggleSettings()"></i>
-        </div>
-    </div>
+<body>
 
-    <div class="stats-container">
-        <div class="stat-item"><span class="stat-value" id="count-prod">24</span><span class="stat-label">Маҳсулот</span></div>
-        <div class="stat-item"><span class="stat-value">4.8</span><span class="stat-label">Рейтинг</span></div>
-        <div class="stat-item"><span class="stat-value">1.2k</span><span class="stat-label">Фурӯш</span></div>
-        <div class="stat-item"><span class="stat-value">8</span><span class="stat-label">Фармоиш</span></div>
-    </div>
+<h2 style="padding:10px">Bozorcha</h2>
 
-    <div class="lang-container" id="langBox">
-        <button class="lang-btn active" onclick="changeLang('tg', this)">Тоҷикӣ</button>
-        <button class="lang-btn" onclick="changeLang('ru', this)">Русский</button>
-    </div>
+<button onclick="openAddModal()">+ Иловаи маҳсулот</button>
 
-    <div id="posts-feed" class="posts-container">
-        </div>
+<div id="posts"></div>
 
-    <div class="side-panel" id="sidePanel">
-        <div class="panel-header">
-            <i class="fas fa-arrow-left" onclick="toggleSettings()"></i>
-            <span>Танзимот</span>
-        </div>
-        <div class="panel-item"><i class="fas fa-crown"></i> <span>Обунаҳо</span></div>
-        <div class="panel-item"><i class="fas fa-ad"></i> <span>Реклама</span></div>
-        <div class="panel-item"><i class="fas fa-info-circle"></i> <span>Дар бораи мо</span></div>
-    </div>
+<!-- MODAL -->
+<div id="modal" style="display:none;background:#0008;position:fixed;inset:0;padding:20px;">
+<div style="background:white;padding:20px;border-radius:10px">
 
-    <div class="modal" id="addModal">
-        <div class="modal-content">
-            <div id="modal-header-text" style="font-weight:bold; margin-bottom:15px;">Интихоби категория</div>
-            <div id="category-path" style="color:var(--accent); font-size:12px; margin-bottom:10px;"></div>
-            <div id="modal-body-content">
-                </div>
-            <button onclick="closeAddModal()" style="width:100%; padding:12px; margin-top:10px; border:none; background:#eee; border-radius:8px;">Пӯшидан</button>
-        </div>
-    </div>
+<h3>Интихоби категория</h3>
+<div id="categories"></div>
 
-    <nav class="bottom-nav">
-        <a href="#" class="nav-link active"><i class="fas fa-home"></i></a>
-        <a href="#" class="nav-link"><i class="fas fa-search"></i></a>
-        <a href="#" class="nav-link"><i class="fas fa-heart"></i></a>
-        <a href="#" class="nav-link"><i class="fas fa-user"></i></a>
-    </nav>
+<div id="form"></div>
 
-    <script>
-        // --- SUPABASE CONFIG ---
-        const SB_URL = 'https://seagtlaujnnhoyitgsdd.supabase.co';
-        const SB_KEY = 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP';
-        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+<button onclick="closeModal()">Пӯшидан</button>
 
-        let currentLang = 'tg';
-        let categoryHistory = [];
+</div>
+</div>
 
-        // --- CORE FUNCTIONS ---
-        function toggleSettings() {
-            const panel = document.getElementById('sidePanel');
-            const icon = document.getElementById('settingsBtn');
-            panel.classList.toggle('open');
-            icon.classList.toggle('active');
-        }
+<script>
+const SB_URL = "https://seagtlaujnnhoyitgsdd.supabase.co";
+const SB_KEY = "sb_publishable_OILChtOja0i8nIrPZuM_Og_vyfGjfsP";
 
-        function toggleTheme() {
-            const body = document.body;
-            const theme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            body.setAttribute('data-theme', theme);
-        }
+const db = supabase.createClient(SB_URL, SB_KEY);
 
-        function changeLang(lang, btn) {
-            currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            // Refresh content if needed
-        }
+let selectedCategory = null;
 
-        // --- POSTS SYSTEM (INSTAGRAM STYLE) ---
-        const dummyProducts = [
-            { name: 'iPhone 15 Pro', price: '12,500', img: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=500' },
-            { name: 'Nike Air Max', price: '1,200', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=500' }
-        ];
+function openAddModal(){
+document.getElementById("modal").style.display="block";
+loadCategories(null);
+}
 
-        function loadPosts() {
-            const feed = document.getElementById('posts-feed');
-            feed.innerHTML = dummyProducts.map(p => `
-                <div class="post">
-                    <div class="post-header">
-                        <div class="post-user"><div class="post-avatar"></div><span>Мағозаи Ман</span></div>
-                        <i class="fas fa-ellipsis-v"></i>
-                    </div>
-                    <img src="${p.img}" class="post-img">
-                    <div class="post-actions">
-                        <div class="post-actions-left">
-                            <i class="far fa-heart"></i>
-                            <i class="far fa-comment"></i>
-                            <i class="far fa-paper-plane"></i>
-                        </div>
-                        <i class="far fa-bookmark"></i>
-                    </div>
-                    <div class="post-info">
-                        <div class="post-title">${p.name}</div>
-                        <div class="post-price">${p.price} c.</div>
-                    </div>
-                </div>
-            `).join('');
-        }
+function closeModal(){
+document.getElementById("modal").style.display="none";
+document.getElementById("form").innerHTML="";
+}
 
-        // --- ADVANCED CATEGORY SYSTEM ---
-        function openAddModal() {
-            document.getElementById('addModal').style.display = 'flex';
-            categoryHistory = [];
-            loadCategories(null);
-        }
+async function loadCategories(parent){
+let q = db.from("categories").select("*");
+parent ? q=q.eq("parent_id",parent) : q=q.is("parent_id",null);
 
-        function closeAddModal() {
-            document.getElementById('addModal').style.display = 'none';
-        }
+const {data}=await q;
 
-        async function loadCategories(parentId) {
-            const container = document.getElementById('modal-body-content');
-            container.innerHTML = '<p>Боргирӣ...</p>';
+const box=document.getElementById("categories");
+box.innerHTML="";
 
-            let query = _supabase.from('categories').select('*');
-            parentId ? query = query.eq('parent_id', parentId) : query = query.is('parent_id', null);
+if(data.length===0){
+showForm(parent);
+return;
+}
 
-            const { data, error } = await query;
+data.forEach(c=>{
+const b=document.createElement("button");
+b.innerText=c.name_tg;
+b.onclick=()=>loadCategories(c.id);
+box.appendChild(b);
+});
+}
 
-            if (data && data.length > 0) {
-                container.innerHTML = '';
-                data.forEach(cat => {
-                    const div = document.createElement('div');
-                    div.className = 'category-item';
-                    div.innerHTML = `<span>${cat.name_tg}</span> <i class="fas fa-chevron-right"></i>`;
-                    div.onclick = () => {
-                        categoryHistory.push(cat.name_tg);
-                        document.getElementById('category-path').innerText = categoryHistory.join(' > ');
-                        loadCategories(cat.id);
-                    };
-                    container.appendChild(div);
-                });
-            } else {
-                renderFinalForm(parentId);
-            }
-        }
+async function showForm(catId){
+selectedCategory=catId;
 
-        async function renderFinalForm(catId) {
-            const container = document.getElementById('modal-body-content');
-            container.innerHTML = '<h4>Маълумоти маҳсулот</h4><br>';
-            
-            // Гирифтани майдонҳои техникӣ аз Supabase
-            const { data: fields } = await _supabase.from('category_fields').select('*').eq('category_id', catId);
+document.getElementById("categories").innerHTML="<b>Категория интихоб шуд</b>";
 
-            let html = `
-                <input type="text" placeholder="Номи маҳсулот" class="form-input">
-                <input type="number" placeholder="Нарх" class="form-input">
-            `;
+const {data:fields}=await db
+.from("category_fields")
+.select("*")
+.eq("category_id",catId);
 
-            if (fields) {
-                fields.forEach(f => {
-                    html += `<input type="${f.field_type}" placeholder="${f.label_tg}" class="form-input">`;
-                });
-            }
+let html=`
+<input id="name" placeholder="Ном">
+<input id="price" type="number" placeholder="Нарх">
+`;
 
-            html += `<textarea placeholder="Тавсиф" class="form-input" style="height:80px;"></textarea>`;
-            html += `<button class="lang-btn active" style="width:100%; border-radius:8px;" onclick="alert('Сабт шуд!')">Сабт кардан</button>`;
-            
-            container.innerHTML = html;
-        }
+fields.forEach(f=>{
+html+=`<input id="field_${f.id}" placeholder="${f.label_tg}">`;
+});
 
-        // Init
-        window.onload = loadPosts;
-    </script>
+html+=`
+<textarea id="desc" placeholder="Тавсиф"></textarea>
+<button onclick="saveProduct()">Сабт</button>
+`;
+
+document.getElementById("form").innerHTML=html;
+}
+
+async function saveProduct(){
+const name=document.getElementById("name").value;
+const price=document.getElementById("price").value;
+const desc=document.getElementById("desc").value;
+
+await db.from("products").insert({
+name:name,
+price:price,
+description:desc,
+category_id:selectedCategory
+});
+
+closeModal();
+loadProducts();
+}
+
+async function loadProducts(){
+const {data}=await db.from("products").select("*").order("created_at",{ascending:false});
+
+const box=document.getElementById("posts");
+box.innerHTML="";
+
+data.forEach(p=>{
+box.innerHTML+=`
+<div class="post">
+<b>${p.name}</b><br>
+${p.price} c.<br>
+${p.description||""}
+</div>
+`;
+});
+}
+
+loadProducts();
+</script>
+
 </body>
 </html>
