@@ -11,36 +11,31 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* Theme Variables */
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
+            --bg: #f8fafc;
+            --bg-card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
             --accent: #ff9800;
             --accent-light: #fff3e0;
-            --accent-dark: #f57c00;
             --border: #e2e8f0;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --gradient: linear-gradient(135deg, #ff9800 0%, #ff6b6b 100%);
         }
 
         [data-theme="dark"] {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
             --border: #334155;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            transition: background 0.3s ease, color 0.3s ease;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -48,99 +43,62 @@
             padding: 10px;
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes rotateIn {
-            from { transform: rotate(-180deg) scale(0); }
-            to { transform: rotate(0) scale(1); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-
         .container {
             width: 100%;
             max-width: 400px;
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             border-radius: 30px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow: hidden;
-            animation: fadeIn 0.6s ease;
             border: 1px solid var(--border);
         }
 
-        /* Header */
         .header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             padding: 16px 20px;
             border-bottom: 1px solid var(--border);
         }
 
         .logo {
             font-size: 22px;
-            font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            color: var(--accent);
         }
 
         .header-actions {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .theme-toggle {
             position: relative;
             width: 56px;
             height: 30px;
-            background: var(--bg-tertiary, #e2e8f0);
+            background: var(--bg);
             border-radius: 30px;
-            cursor: pointer;
             border: 1px solid var(--border);
-            overflow: hidden;
+            cursor: pointer;
         }
 
-        .theme-toggle-icons {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        .theme-icons {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             padding: 0 6px;
+            height: 100%;
         }
 
-        .theme-toggle i {
+        .theme-icons i {
             font-size: 16px;
-            color: var(--text-secondary);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             z-index: 2;
         }
 
-        .theme-toggle .sun {
-            color: #fbbf24;
-        }
+        .fa-sun { color: #fbbf24; }
+        .fa-moon { color: #818cf8; }
 
-        .theme-toggle .moon {
-            color: #818cf8;
-        }
-
-        .theme-toggle-ball {
+        .theme-ball {
             position: absolute;
             top: 2px;
             left: 2px;
@@ -149,59 +107,36 @@
             background: white;
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 1;
+            transition: transform 0.3s;
         }
 
-        [data-theme="dark"] .theme-toggle-ball {
+        [data-theme="dark"] .theme-ball {
             transform: translateX(26px);
         }
 
-        .language-selector {
-            position: relative;
-        }
-
         .lang-btn {
-            background: var(--bg-primary);
+            background: var(--bg);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 6px 12px;
+            padding: 5px 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: var(--text-primary);
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .lang-btn:hover {
-            border-color: var(--accent);
-            transform: scale(1.02);
-        }
-
-        .lang-btn i {
-            color: var(--accent);
-            transition: transform 0.3s ease;
-        }
-
-        .lang-btn:hover i {
-            transform: rotate(10deg);
+            gap: 5px;
+            color: var(--text);
         }
 
         .lang-menu {
             position: absolute;
-            top: 40px;
-            right: 0;
-            background: var(--bg-secondary);
+            top: 60px;
+            right: 20px;
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 8px;
-            min-width: 120px;
+            border-radius: 10px;
+            padding: 5px;
             display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             z-index: 100;
-            box-shadow: var(--shadow);
-            animation: fadeIn 0.3s ease;
         }
 
         .lang-menu.show {
@@ -209,373 +144,272 @@
         }
 
         .lang-option {
-            padding: 10px 15px;
+            padding: 8px 15px;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-primary);
+            border-radius: 5px;
+            color: var(--text);
         }
 
         .lang-option:hover {
             background: var(--accent-light);
             color: var(--accent);
-            transform: translateX(5px);
         }
 
-        .lang-option i {
-            font-size: 14px;
-            color: var(--accent);
-        }
-
-        .lang-option.active {
-            background: var(--accent-light);
-            color: var(--accent);
-            font-weight: 500;
-        }
-
-        /* Content */
         .content {
             padding: 30px 20px;
         }
 
-        .step-indicator {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-            animation: slideIn 0.4s ease;
-        }
-
-        .step-badge {
-            background: var(--accent-light);
+        .step {
+            text-align: center;
             color: var(--accent);
-            font-size: 14px;
             font-weight: 600;
-            padding: 6px 18px;
-            border-radius: 30px;
-            letter-spacing: 0.5px;
+            margin-bottom: 20px;
         }
 
         .title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            animation: slideIn 0.4s ease 0.1s both;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
         .subtitle {
-            font-size: 14px;
-            color: var(--text-secondary);
+            color: var(--text-light);
             margin-bottom: 30px;
-            animation: slideIn 0.4s ease 0.2s both;
         }
 
-        .phone-input-container {
+        .phone-input {
             border: 2px solid var(--border);
-            border-radius: 16px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             margin-bottom: 10px;
             overflow: hidden;
-            transition: all 0.3s ease;
-            animation: fadeIn 0.4s ease 0.3s both;
-        }
-
-        .phone-input-container:focus-within {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-light);
         }
 
         .country-code {
-            padding: 16px 18px;
-            background: var(--bg-primary);
+            padding: 15px;
+            background: var(--bg);
             border-right: 2px solid var(--border);
             font-weight: 600;
-            color: var(--text-primary);
         }
 
-        .phone-input {
+        .phone-input input {
             flex: 1;
-            padding: 16px 18px;
+            padding: 15px;
             border: none;
             outline: none;
-            font-size: 16px;
             background: transparent;
-            color: var(--text-primary);
+            color: var(--text);
+            font-size: 16px;
         }
 
-        .phone-input::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.7;
-        }
-
-        .example-text {
+        .example {
             font-size: 12px;
-            color: var(--text-secondary);
-            padding-left: 18px;
+            color: var(--text-light);
             margin-bottom: 20px;
-            animation: fadeIn 0.4s ease 0.4s both;
+            padding-left: 15px;
         }
 
-        .terms-check {
+        .terms {
             display: flex;
             align-items: center;
             gap: 10px;
             margin: 20px 0;
-            animation: fadeIn 0.4s ease 0.5s both;
         }
 
-        .terms-check input {
+        .terms input {
             width: 18px;
             height: 18px;
             cursor: pointer;
-            accent-color: var(--accent);
         }
 
-        .terms-check label {
-            font-size: 14px;
-            color: var(--text-primary);
-        }
-
-        .terms-link {
+        .terms a {
             color: var(--accent);
             text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
         }
 
-        .terms-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient);
-            transition: width 0.3s ease;
-        }
-
-        .terms-link:hover::after {
-            width: 100%;
-        }
-
-        .next-button {
+        .next-btn {
             width: 100%;
             padding: 16px;
-            background: var(--gradient);
+            background: var(--accent);
             color: white;
             border: none;
-            border-radius: 16px;
+            border-radius: 15px;
             font-size: 18px;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: float 3s infinite ease-in-out;
+            transition: 0.3s;
+            opacity: 0.6;
+        }
+
+        .next-btn:not(:disabled) {
+            opacity: 1;
             box-shadow: 0 4px 15px rgba(255,152,0,0.3);
         }
 
-        .next-button:hover:not(:disabled) {
-            transform: translateY(-3px);
+        .next-btn:not(:disabled):hover {
+            transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(255,152,0,0.5);
         }
 
-        .next-button:active:not(:disabled) {
-            transform: translateY(-1px);
-        }
-
-        .next-button:disabled {
-            background: var(--border);
-            box-shadow: none;
+        .next-btn:disabled {
             cursor: not-allowed;
-            opacity: 0.6;
         }
 
         .footer {
             padding: 20px;
             text-align: center;
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--text-light);
             border-top: 1px solid var(--border);
         }
     </style>
 </head>
 <body data-theme="light">
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <div class="logo">Bozorcha</div>
             <div class="header-actions">
-                <!-- Theme Toggle -->
-                <div class="theme-toggle" onclick="toggleTheme()">
-                    <div class="theme-toggle-icons">
-                        <i class="fas fa-sun sun"></i>
-                        <i class="fas fa-moon moon"></i>
+                <div class="theme-toggle" id="themeToggle">
+                    <div class="theme-icons">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
                     </div>
-                    <div class="theme-toggle-ball"></div>
+                    <div class="theme-ball"></div>
                 </div>
-
-                <!-- Language Selector -->
-                <div class="language-selector">
-                    <div class="lang-btn" onclick="toggleLanguageMenu()">
+                <div style="position: relative;">
+                    <div class="lang-btn" id="langBtn">
                         <i class="fas fa-globe"></i>
                         <span id="currentLang">Тоҷикӣ</span>
-                        <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="lang-menu" id="langMenu">
-                        <div class="lang-option active" onclick="setLanguage('tg')">
-                            <i class="fas fa-check"></i> Тоҷикӣ
-                        </div>
-                        <div class="lang-option" onclick="setLanguage('ru')">
-                            <i class="fas fa-check"></i> Русский
-                        </div>
-                        <div class="lang-option" onclick="setLanguage('en')">
-                            <i class="fas fa-check"></i> English
-                        </div>
+                        <div class="lang-option" data-lang="tg">Тоҷикӣ</div>
+                        <div class="lang-option" data-lang="ru">Русский</div>
+                        <div class="lang-option" data-lang="en">English</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Content -->
         <div class="content">
-            <div class="step-indicator">
-                <span class="step-badge">Қадами 1 аз 4</span>
-            </div>
-            <h2 class="title" id="titleText">Рақами телефони худро ворид кунед</h2>
-            <p class="subtitle" id="subtitleText">Ба ин рақам рамзи тасдиқ фиристода мешавад</p>
-            
-            <div class="phone-input-container">
-                <span class="country-code">+992</span>
-                <input type="tel" class="phone-input" placeholder="12 345 67" id="phone">
-            </div>
-            <div class="example-text" id="exampleText">Намуна: 901 23 45 67</div>
+            <div class="step" id="stepText">Қадами 1 аз 4</div>
+            <div class="title" id="titleText">Рақами телефони худро ворид кунед</div>
+            <div class="subtitle" id="subtitleText">Ба ин рақам рамзи тасдиқ фиристода мешавад</div>
 
-            <div class="terms-check">
+            <div class="phone-input">
+                <span class="country-code">+992</span>
+                <input type="tel" id="phone" placeholder="12 345 67">
+            </div>
+            <div class="example" id="exampleText">Намуна: 901 23 45 67</div>
+
+            <div class="terms">
                 <input type="checkbox" id="agree">
                 <label for="agree" id="termsLabel">
-                    Ман <a href="rules.html" target="_blank" class="terms-link" id="termsLink">қоидаҳои истифодабариро</a> қабул мекунам
+                    Ман <a href="#" id="termsLink">қоидаҳои истифодабариро</a> қабул мекунам
                 </label>
             </div>
 
-            <button class="next-button" id="nextBtn" disabled>Давом</button>
+            <button class="next-btn" id="nextBtn" disabled>Давом</button>
         </div>
 
         <div class="footer" id="footerText">© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
     </div>
 
     <script>
-        // Language translations
+        // Элементҳо
+        const phone = document.getElementById('phone');
+        const agree = document.getElementById('agree');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Санҷиши валидӣ
+        function checkForm() {
+            const phoneValue = phone.value.replace(/\s/g, '');
+            if (phoneValue.length >= 7 && agree.checked) {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
+            }
+        }
+
+        phone.addEventListener('input', checkForm);
+        agree.addEventListener('change', checkForm);
+
+        // Тугмаи Давом
+        nextBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const phoneValue = phone.value.replace(/\s/g, '');
+            if (phoneValue.length >= 7 && agree.checked) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Тема
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', function() {
+            const body = document.body;
+            const current = body.getAttribute('data-theme');
+            body.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+        });
+
+        // Забон
+        const langBtn = document.getElementById('langBtn');
+        const langMenu = document.getElementById('langMenu');
+        const currentLang = document.getElementById('currentLang');
+
+        langBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            langMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function() {
+            langMenu.classList.remove('show');
+        });
+
+        // Тарҷума
         const translations = {
             tg: {
-                currentLang: 'Тоҷикӣ',
                 step: 'Қадами 1 аз 4',
                 title: 'Рақами телефони худро ворид кунед',
                 subtitle: 'Ба ин рақам рамзи тасдиқ фиристода мешавад',
                 example: 'Намуна: 901 23 45 67',
                 terms: 'Ман қоидаҳои истифодабариро қабул мекунам',
-                termsLink: 'қоидаҳои истифодабариро',
-                button: 'Давом',
                 footer: '© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.'
             },
             ru: {
-                currentLang: 'Русский',
                 step: 'Шаг 1 из 4',
                 title: 'Введите номер телефона',
                 subtitle: 'На этот номер будет отправлен код подтверждения',
                 example: 'Пример: 901 23 45 67',
                 terms: 'Я принимаю правила использования',
-                termsLink: 'правила использования',
-                button: 'Далее',
                 footer: '© 2026 Bozorcha. Все права защищены.'
             },
             en: {
-                currentLang: 'English',
                 step: 'Step 1 of 4',
                 title: 'Enter your phone number',
                 subtitle: 'A verification code will be sent to this number',
                 example: 'Example: 901 23 45 67',
                 terms: 'I accept the terms of use',
-                termsLink: 'terms of use',
-                button: 'Continue',
                 footer: '© 2026 Bozorcha. All rights reserved.'
             }
         };
 
-        let currentLang = 'tg';
-
-        // Language functions
-        function toggleLanguageMenu() {
-            document.getElementById('langMenu').classList.toggle('show');
-        }
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            const t = translations[lang];
-
-            // Update all text
-            document.getElementById('currentLang').innerText = t.currentLang;
-            document.querySelector('.step-badge').innerText = t.step;
-            document.getElementById('titleText').innerText = t.title;
-            document.getElementById('subtitleText').innerText = t.subtitle;
-            document.getElementById('exampleText').innerText = t.example;
-            document.getElementById('termsLabel').innerHTML = `Ман <a href="rules.html" target="_blank" class="terms-link" id="termsLink">${t.termsLink}</a> қабул мекунам`;
-            document.getElementById('nextBtn').innerText = t.button;
-            document.getElementById('footerText').innerText = t.footer;
-
-            // Update active class on language options
-            document.querySelectorAll('.lang-option').forEach(opt => opt.classList.remove('active'));
-            if (lang === 'tg') document.querySelector('.lang-option[onclick="setLanguage(\'tg\')"]').classList.add('active');
-            if (lang === 'ru') document.querySelector('.lang-option[onclick="setLanguage(\'ru\')"]').classList.add('active');
-            if (lang === 'en') document.querySelector('.lang-option[onclick="setLanguage(\'en\')"]').classList.add('active');
-
-            // Close menu
-            document.getElementById('langMenu').classList.remove('show');
-        }
-
-        // Close language menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.language-selector')) {
-                document.getElementById('langMenu').classList.remove('show');
-            }
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                const lang = this.dataset.lang;
+                const t = translations[lang];
+                
+                document.getElementById('stepText').innerText = t.step;
+                document.getElementById('titleText').innerText = t.title;
+                document.getElementById('subtitleText').innerText = t.subtitle;
+                document.getElementById('exampleText').innerText = t.example;
+                document.getElementById('termsLabel').innerHTML = `Ман <a href="#" id="termsLink">${lang === 'tg' ? 'қоидаҳои истифодабариро' : lang === 'ru' ? 'правила использования' : 'terms of use'}</a> қабул мекунам`;
+                document.getElementById('footerText').innerText = t.footer;
+                
+                currentLang.innerText = lang === 'tg' ? 'Тоҷикӣ' : lang === 'ru' ? 'Русский' : 'English';
+                langMenu.classList.remove('show');
+            });
         });
-
-        // Theme functions
-        function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            if (currentTheme === 'light') {
-                body.setAttribute('data-theme', 'dark');
-            } else {
-                body.setAttribute('data-theme', 'light');
-            }
-        }
-
-        // Form validation
-        const phoneInput = document.getElementById('phone');
-        const agreeCheck = document.getElementById('agree');
-        const nextBtn = document.getElementById('nextBtn');
-
-        function checkForm() {
-            let phone = phoneInput.value.replace(/\s/g, '');
-            nextBtn.disabled = !(phone.length >= 7 && agreeCheck.checked);
-        }
-
-        phoneInput.addEventListener('input', checkForm);
-        agreeCheck.addEventListener('change', checkForm);
-
-        nextBtn.onclick = function() {
-            let phone = phoneInput.value.replace(/\s/g, '');
-            if (phone.length >= 7 && agreeCheck.checked) {
-                window.location.href = 'dashboard.html';
-            } else {
-                alert(currentLang === 'tg' ? 'Рақами дуруст ворид кунед ва қоидаҳоро қабул кунед' :
-                      currentLang === 'ru' ? 'Введите правильный номер и примите правила' :
-                      'Enter a valid number and accept the terms');
-            }
-        };
     </script>
 </body>
 </html>
