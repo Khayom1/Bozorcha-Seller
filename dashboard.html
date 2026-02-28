@@ -1,13 +1,10 @@
-```html
 <!DOCTYPE html>
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Фурӯшанда</title>
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -45,15 +42,14 @@
             padding-bottom: 70px;
         }
 
-        /* Animations */
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @keyframes scaleIn {
@@ -94,24 +90,11 @@
             color: var(--text);
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .icon-btn:hover {
             color: var(--accent);
             transform: scale(1.1);
-        }
-
-        .lang-btn {
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text);
-        }
-
-        .lang-btn:hover {
-            color: var(--accent);
-            transform: rotate(10deg);
         }
 
         .settings-btn {
@@ -123,432 +106,16 @@
             color: var(--accent);
         }
 
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px 8px;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .stat-icon {
-            font-size: 24px;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-period {
-            font-size: 9px;
-            color: var(--text-light);
-            opacity: 0.8;
-            margin-top: 4px;
-        }
-
-        /* Product List Header */
-        .list-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .list-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .filter-icon {
-            font-size: 20px;
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.3s;
-            padding: 8px;
-            border-radius: 50%;
-        }
-
-        .filter-icon:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        /* Product List */
-        .product-list {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
-        .product-item {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-            animation: fadeIn 0.3s;
-        }
-
-        .product-item:hover {
-            box-shadow: var(--shadow-md);
-            border-color: var(--accent);
-        }
-
-        .product-image {
-            width: 70px;
-            height: 70px;
-            border-radius: 12px;
-            background: var(--accent-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 30px;
-            flex-shrink: 0;
-        }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
-        }
-
-        .product-details {
-            flex: 1;
-        }
-
-        .product-name {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 6px;
-        }
-
-        .product-attributes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-
-        .attribute-tag {
-            background: var(--bg);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            color: var(--text-light);
-            border: 1px solid var(--border);
-        }
-
-        .attribute-tag i {
-            color: var(--accent);
-            margin-right: 4px;
-            font-size: 10px;
-        }
-
-        .product-price {
-            font-weight: 700;
-            color: var(--accent);
-            font-size: 16px;
-        }
-
-        .product-menu {
-            color: var(--text-light);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .product-menu:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        .product-menu.active {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        /* Dropdown menu */
-        .dropdown-menu {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 8px;
-            min-width: 150px;
-            box-shadow: var(--shadow-md);
-            z-index: 10;
+        /* Content Pages */
+        .page {
             display: none;
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 10px 12px;
-            font-size: 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .dropdown-item:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        .dropdown-item i {
-            width: 18px;
-            color: var(--accent);
-        }
-
-        /* Filter Modal */
-        .filter-modal {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            border-radius: 20px 20px 0 0;
-            padding: 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            z-index: 2000;
+            animation: fadeIn 0.3s ease;
             max-width: 600px;
             margin: 0 auto;
-            border-top: 1px solid var(--border);
         }
 
-        .filter-modal.open {
-            transform: translateY(0);
-        }
-
-        .filter-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .filter-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .close-filter {
-            cursor: pointer;
-            font-size: 22px;
-        }
-
-        .filter-option {
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .filter-option:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        .filter-option.selected {
-            color: var(--accent);
-            font-weight: 500;
-        }
-
-        /* Settings Panel */
-        .settings-panel {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 85%;
-            max-width: 400px;
-            height: 100vh;
-            background: var(--bg-card);
-            z-index: 2000;
-            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 25px;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.2);
-            overflow-y: auto;
-            border-left: 1px solid var(--border);
-        }
-
-        .settings-panel.open {
-            right: 0;
-            animation: slideIn 0.4s;
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .panel-section {
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
-        }
-
-        .panel-section h3 {
-            font-size: 16px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent);
-        }
-
-        .lang-options {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .lang-option {
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .lang-option:hover {
-            border-color: var(--accent);
-        }
-
-        .lang-option.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .theme-options {
-            display: flex;
-            gap: 15px;
-        }
-
-        .theme-option {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-
-        .theme-option:hover {
-            border-color: var(--accent);
-        }
-
-        .theme-option.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .plan-card, .ad-card {
-            background: var(--bg);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .plan-card:hover, .ad-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .checkbox-item input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--accent);
-        }
-
-        /* Add Button */
-        .add-btn {
-            position: fixed;
-            bottom: 85px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--gradient);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255,152,0,0.4);
-            transition: all 0.3s;
-            z-index: 90;
-        }
-
-        .add-btn:hover {
-            transform: scale(1.1) rotate(90deg);
+        .page.active {
+            display: block;
         }
 
         /* Bottom Navigation */
@@ -571,6 +138,10 @@
             font-size: 22px;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
         }
 
         .nav-item:hover {
@@ -580,6 +151,344 @@
 
         .nav-item.active {
             color: var(--accent);
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-icon {
+            font-size: 20px;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-light);
+        }
+
+        /* Product List */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .product-list {
+            padding: 0 16px;
+        }
+
+        .product-item {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .product-menu {
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* Chat Page */
+        .chat-list {
+            padding: 16px;
+        }
+
+        .chat-item {
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .chat-last {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .chat-badge {
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        /* Statistics Page */
+        .stats-page {
+            padding: 16px;
+        }
+
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+        }
+
+        .chart-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .chart-bar {
+            height: 30px;
+            background: var(--accent-light);
+            border-radius: 6px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-size: 13px;
+        }
+
+        /* Profile Page */
+        .profile-header {
+            background: var(--bg-card);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .profile-bio {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .profile-menu {
+            background: var(--bg-card);
+            margin-top: 10px;
+        }
+
+        .profile-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--bg-card);
+            z-index: 2000;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 25px;
+            overflow-y: auto;
+            border-left: 1px solid var(--border);
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .panel-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        .panel-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .lang-option {
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .lang-option.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .theme-option {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .theme-option.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Add Button */
+        .add-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,152,0,0.4);
+            z-index: 90;
         }
 
         /* Modal */
@@ -606,20 +515,13 @@
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            animation: scaleIn 0.3s;
         }
 
         .form-group {
             margin-bottom: 15px;
         }
 
-        .form-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .form-input, .form-textarea {
+        .form-input {
             width: 100%;
             padding: 12px;
             border: 1px solid var(--border);
@@ -637,12 +539,6 @@
             color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255,152,0,0.4);
         }
     </style>
 </head>
@@ -652,521 +548,253 @@
     <div class="app-bar">
         <div class="logo">Bozorcha</div>
         <div class="header-actions">
-            <i class="fas fa-globe lang-btn" id="langBtn"></i>
-            <i class="fas fa-cog settings-btn" id="settingsBtn"></i>
+            <i class="fas fa-globe icon-btn" onclick="openSettings()"></i>
+            <i class="fas fa-cog settings-btn icon-btn" id="settingsBtn" onclick="toggleSettings()"></i>
         </div>
     </div>
 
-    <!-- Stats Cards (ҳамаи омор барои имрӯз) -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-box"></i></div>
-            <span class="stat-value" id="statProducts">24</span>
-            <span class="stat-label" id="statProductsLabel">Маҳсулот</span>
-            <span class="stat-period">имрӯз</span>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-            <span class="stat-value" id="statOrders">8</span>
-            <span class="stat-label" id="statOrdersLabel">Фармоиш</span>
-            <span class="stat-period">имрӯз</span>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-            <span class="stat-value" id="statSales">1250</span>
-            <span class="stat-label" id="statSalesLabel">Фурӯш</span>
-            <span class="stat-period">имрӯз</span>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-users"></i></div>
-            <span class="stat-value" id="statSubscribers">2</span>
-            <span class="stat-label" id="statSubscribersLabel">Обуначӣ</span>
-            <span class="stat-period">имрӯз</span>
-        </div>
-    </div>
-
-    <!-- Product List Header -->
-    <div class="list-header">
-        <div class="list-title" id="listTitle">Рӯйхати Маҳсулот</div>
-        <i class="fas fa-filter filter-icon" id="filterBtn"></i>
-    </div>
-
-    <!-- Product List -->
-    <div class="product-list" id="productList">
-        <!-- Маҳсулотҳо тавассути JavaScript илова мешаванд -->
-    </div>
-
-    <!-- Filter Modal -->
-    <div class="filter-modal" id="filterModal">
-        <div class="filter-header">
-            <span class="filter-title" id="filterTitle">Филтр</span>
-            <i class="fas fa-times close-filter" onclick="closeFilter()"></i>
-        </div>
-        <div id="filterOptions">
-            <!-- Динамикӣ илова мешавад -->
-        </div>
-    </div>
-
-    <!-- Settings Panel -->
-    <div class="settings-panel" id="settingsPanel">
-        <div class="panel-header">
-            <span id="settingsTitle">Танзимот</span>
-            <i class="fas fa-times" id="closeSettings"></i>
-        </div>
-
-        <div class="panel-section">
-            <h3><i class="fas fa-globe"></i> <span id="langSection">Забон</span></h3>
-            <div class="lang-options" id="langOptions">
-                <div class="lang-option active" data-lang="tg">Тоҷикӣ</div>
-                <div class="lang-option" data-lang="ru">Русский</div>
-                <div class="lang-option" data-lang="en">English</div>
+    <!-- Pages -->
+    <div id="homePage" class="page active">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-box"></i></div>
+                <span class="stat-value" id="statProducts">24</span>
+                <span class="stat-label">Маҳсулот</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                <span class="stat-value" id="statOrders">8</span>
+                <span class="stat-label">Фармоиш</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <span class="stat-value" id="statSales">1250</span>
+                <span class="stat-label">Фурӯш</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <span class="stat-value" id="statSubscribers">2</span>
+                <span class="stat-label">Обуна</span>
             </div>
         </div>
 
-        <div class="panel-section">
-            <h3><i class="fas fa-palette"></i> <span id="themeSection">Тема</span></h3>
-            <div class="theme-options">
-                <div class="theme-option active" data-theme="light">
-                    <i class="fas fa-sun"></i> <span id="lightText">Равшан</span>
+        <div class="section-header">
+            <div class="section-title">Рӯйхати Маҳсулот</div>
+            <i class="fas fa-filter icon-btn"></i>
+        </div>
+
+        <div class="product-list" id="productList">
+            <!-- Динамикӣ -->
+        </div>
+    </div>
+
+    <div id="chatPage" class="page">
+        <div class="section-header">
+            <div class="section-title">Паёмҳо</div>
+        </div>
+        <div class="chat-list">
+            <div class="chat-item">
+                <div class="chat-avatar"><i class="fas fa-user"></i></div>
+                <div class="chat-info">
+                    <div class="chat-name">Азиза Раҳимова</div>
+                    <div class="chat-last">Ассалому алейкум, ин маҳсулот...</div>
                 </div>
-                <div class="theme-option" data-theme="dark">
-                    <i class="fas fa-moon"></i> <span id="darkText">Торик</span>
+                <div class="chat-badge">2</div>
+            </div>
+            <div class="chat-item">
+                <div class="chat-avatar"><i class="fas fa-user"></i></div>
+                <div class="chat-info">
+                    <div class="chat-name">Фирӯз Каримов</div>
+                    <div class="chat-last">Нархашро кам мекунед?</div>
+                </div>
+            </div>
+            <div class="chat-item">
+                <div class="chat-avatar"><i class="fas fa-user"></i></div>
+                <div class="chat-info">
+                    <div class="chat-name">Мадина Солеҳова</div>
+                    <div class="chat-last">Ташаккур, фармоиш гирифтам</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="panel-section">
-            <h3><i class="fas fa-crown"></i> <span id="plansSection">Планҳои обуна</span></h3>
-            <div class="plan-card" data-plan="free">
-                <div class="plan-name">Free</div>
-                <div class="plan-price">0 с/моҳ</div>
-                <div class="plan-features">✅ То 20 маҳсулот • 5% комиссия</div>
-            </div>
-            <div class="plan-card" data-plan="basic">
-                <div class="plan-name">Basic</div>
-                <div class="plan-price">19 с/моҳ</div>
-                <div class="plan-features">✅ То 50 маҳсулот • 4% комиссия • Analytics</div>
-            </div>
-            <div class="plan-card" data-plan="pro">
-                <div class="plan-name">Pro</div>
-                <div class="plan-price">99 с/моҳ</div>
-                <div class="plan-features">✅ То 200 маҳсулот • 3% комиссия • AI • 3D</div>
-            </div>
-            <div class="plan-card" data-plan="ultra">
-                <div class="plan-name">Ultra</div>
-                <div class="plan-price">299 с/моҳ</div>
-                <div class="plan-features">✅ Бемаҳдуд • 2% комиссия • AI пурра • 3D</div>
-            </div>
+    <div id="statsPage" class="page">
+        <div class="section-header">
+            <div class="section-title">Статистика</div>
         </div>
+        <div class="stats-page">
+            <div class="stats-card">
+                <div class="stats-row">
+                    <span>Фурӯши имрӯз</span>
+                    <span style="color:var(--accent); font-weight:700;">1,250 с</span>
+                </div>
+                <div class="stats-row">
+                    <span>Фурӯши ҳафта</span>
+                    <span>8,450 с</span>
+                </div>
+                <div class="stats-row">
+                    <span>Фурӯши моҳ</span>
+                    <span>32,500 с</span>
+                </div>
+            </div>
 
-        <div class="panel-section">
-            <h3><i class="fas fa-chart-line"></i> <span id="adsSection">Реклама</span></h3>
-            <div class="ad-card" data-ad="plus">
-                <div class="ad-name">Plus</div>
-                <div class="ad-price">6 с/рӯз</div>
-                <div class="ad-features">📢 Маҳсулот дар саҳифаи асосӣ боло меравад</div>
+            <div class="stats-card">
+                <h3 style="margin-bottom:15px;">Маҳсулоти беҳтарин</h3>
+                <div class="chart-item">
+                    <span style="width:80px;">iPhone 15</span>
+                    <div class="chart-bar" style="width:200px;">45%</div>
+                </div>
+                <div class="chart-item">
+                    <span style="width:80px;">Футболка</span>
+                    <div class="chart-bar" style="width:150px;">30%</div>
+                </div>
+                <div class="chart-item">
+                    <span style="width:80px;">Кроссовки</span>
+                    <div class="chart-bar" style="width:120px;">25%</div>
+                </div>
             </div>
-            <div class="ad-card" data-ad="pro">
-                <div class="ad-name">Pro</div>
-                <div class="ad-price">14 с/рӯз</div>
-                <div class="ad-features">🎯 Боло + ба аудиторияи мушаххас</div>
-            </div>
-            <div class="ad-card" data-ad="ultra">
-                <div class="ad-name">Ultra</div>
-                <div class="ad-price">30 с/рӯз</div>
-                <div class="ad-features">🏆 Мағоза дар ТОП, поиск аввал, тавсияҳо</div>
-            </div>
-        </div>
 
-        <div class="panel-section">
-            <h3><i class="fas fa-bell"></i> <span id="notifSection">Огоҳиномаҳо</span></h3>
-            <div class="checkbox-item">
-                <input type="checkbox" id="notifEmail" checked>
-                <label for="notifEmail" id="notifEmailLabel">Почта</label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="notifSms" checked>
-                <label for="notifSms" id="notifSmsLabel">SMS</label>
-            </div>
-        </div>
-
-        <div class="panel-section">
-            <h3><i class="fas fa-lock"></i> <span id="privacySection">Махфият</span></h3>
-            <div class="checkbox-item">
-                <input type="checkbox" id="privacyProfile" checked>
-                <label for="privacyProfile" id="privacyLabel">Профили оммавӣ</label>
+            <div class="stats-card">
+                <h3 style="margin-bottom:15px;">Обуначӣ</h3>
+                <div class="stats-row">
+                    <span>Имрӯз</span>
+                    <span style="color:var(--accent);">+2</span>
+                </div>
+                <div class="stats-row">
+                    <span>Ҳафта</span>
+                    <span>+15</span>
+                </div>
+                <div class="stats-row">
+                    <span>Моҳ</span>
+                    <span>+48</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Add Product Button -->
+    <div id="profilePage" class="page">
+        <div class="profile-header">
+            <div class="profile-avatar"><i class="fas fa-store"></i></div>
+            <div class="profile-name">Мағозаи ман</div>
+            <div class="profile-bio">Либос, телефон, пойафзол</div>
+        </div>
+        <div class="profile-menu">
+            <div class="profile-item">
+                <i class="fas fa-user" style="color:var(--accent);"></i>
+                <span>Маълумоти шахсӣ</span>
+            </div>
+            <div class="profile-item">
+                <i class="fas fa-map-marker-alt" style="color:var(--accent);"></i>
+                <span>Суроғаи мағоза</span>
+            </div>
+            <div class="profile-item">
+                <i class="fas fa-credit-card" style="color:var(--accent);"></i>
+                <span>Пардохт</span>
+            </div>
+            <div class="profile-item">
+                <i class="fas fa-cog" style="color:var(--accent);"></i>
+                <span>Танзимот</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Button -->
     <div class="add-btn" id="addBtn">
         <i class="fas fa-plus"></i>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <i class="fas fa-home nav-item active"></i>
-        <i class="fas fa-search nav-item"></i>
-        <i class="fas fa-heart nav-item"></i>
-        <i class="fas fa-user nav-item"></i>
+        <div class="nav-item active" onclick="switchPage('home')">
+            <i class="fas fa-home"></i>
+            <span class="nav-label">Асосӣ</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('chat')">
+            <i class="fas fa-comment"></i>
+            <span class="nav-label">Паём</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('stats')">
+            <i class="fas fa-chart-bar"></i>
+            <span class="nav-label">Омор</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('profile')">
+            <i class="fas fa-user"></i>
+            <span class="nav-label">Профил</span>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="panel-header">
+            <span>Танзимот</span>
+            <i class="fas fa-times" onclick="closeSettings()"></i>
+        </div>
+        <div class="panel-section">
+            <h3>Забон</h3>
+            <div>
+                <span class="lang-option active">Тоҷикӣ</span>
+                <span class="lang-option">Русский</span>
+                <span class="lang-option">English</span>
+            </div>
+        </div>
+        <div class="panel-section">
+            <h3>Тема</h3>
+            <div style="display:flex; gap:10px;">
+                <div class="theme-option active">Равшан</div>
+                <div class="theme-option">Торик</div>
+            </div>
+        </div>
     </div>
 
     <!-- Add Product Modal -->
     <div class="modal" id="addModal">
         <div class="modal-content">
-            <div class="panel-header" style="margin-bottom: 20px;">
-                <span id="modalTitle">Иловаи маҳсулот</span>
-                <i class="fas fa-times" onclick="closeAddModal()"></i>
+            <h3 style="margin-bottom:20px;">Иловаи маҳсулот</h3>
+            <div class="form-group">
+                <input type="text" class="form-input" placeholder="Ном">
             </div>
-            <div id="categoryPath" style="font-size:12px; color:var(--accent); margin-bottom:10px;"></div>
-            <div id="modalBody"></div>
+            <div class="form-group">
+                <input type="number" class="form-input" placeholder="Нарх">
+            </div>
+            <div class="form-group">
+                <textarea class="form-input" placeholder="Тавсиф"></textarea>
+            </div>
+            <button class="btn">Сабт</button>
         </div>
     </div>
 
     <script>
-        // Supabase client
-        const supabaseClient = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-        );
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page + 'Page').classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
 
-        let currentLang = 'tg';
-        let currentCategoryPath = [];
-        let products = [];
-        let categories = [];
-        let currentFilter = null;
+        function openSettings() {
+            document.getElementById('settingsPanel').classList.add('open');
+        }
 
-        const translations = {
-            tg: {
-                products: 'Маҳсулот',
-                orders: 'Фармоиш',
-                sales: 'Фурӯш',
-                subscribers: 'Обуначӣ',
-                listTitle: 'Рӯйхати Маҳсулот',
-                filter: 'Филтр',
-                settings: 'Танзимот',
-                language: 'Забон',
-                theme: 'Тема',
-                light: 'Равшан',
-                dark: 'Торик',
-                plans: 'Планҳои обуна',
-                ads: 'Реклама',
-                notifications: 'Огоҳиномаҳо',
-                privacy: 'Махфият',
-                email: 'Почта',
-                sms: 'SMS',
-                publicProfile: 'Профили оммавӣ',
-                addProduct: 'Иловаи маҳсулот',
-                save: 'Сабт кардан',
-                cancel: 'Бекор кардан',
-                edit: 'Таҳрир',
-                delete: 'Пок кардан'
-            },
-            ru: {
-                products: 'Товары',
-                orders: 'Заказы',
-                sales: 'Продажи',
-                subscribers: 'Подписчики',
-                listTitle: 'Список товаров',
-                filter: 'Фильтр',
-                settings: 'Настройки',
-                language: 'Язык',
-                theme: 'Тема',
-                light: 'Светлая',
-                dark: 'Темная',
-                plans: 'Планы подписки',
-                ads: 'Реклама',
-                notifications: 'Уведомления',
-                privacy: 'Конфиденциальность',
-                email: 'Почта',
-                sms: 'SMS',
-                publicProfile: 'Публичный профиль',
-                addProduct: 'Добавить товар',
-                save: 'Сохранить',
-                cancel: 'Отмена',
-                edit: 'Редактировать',
-                delete: 'Удалить'
-            },
-            en: {
-                products: 'Products',
-                orders: 'Orders',
-                sales: 'Sales',
-                subscribers: 'Subscribers',
-                listTitle: 'Product List',
-                filter: 'Filter',
-                settings: 'Settings',
-                language: 'Language',
-                theme: 'Theme',
-                light: 'Light',
-                dark: 'Dark',
-                plans: 'Subscription Plans',
-                ads: 'Advertising',
-                notifications: 'Notifications',
-                privacy: 'Privacy',
-                email: 'Email',
-                sms: 'SMS',
-                publicProfile: 'Public Profile',
-                addProduct: 'Add Product',
-                save: 'Save',
-                cancel: 'Cancel',
-                edit: 'Edit',
-                delete: 'Delete'
-            }
-        };
+        function closeSettings() {
+            document.getElementById('settingsPanel').classList.remove('open');
+            document.getElementById('settingsBtn').classList.remove('active');
+        }
 
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCategories();
-            loadProducts();
-            initUI();
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('open');
+            document.getElementById('settingsBtn').classList.toggle('active');
+        }
+
+        document.getElementById('addBtn').addEventListener('click', () => {
+            document.getElementById('addModal').classList.add('open');
         });
 
-        function initUI() {
-            // Language
-            document.querySelectorAll('.lang-option').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentLang = this.dataset.lang;
-                    applyLanguage();
-                });
-            });
-
-            // Theme
-            document.querySelectorAll('.theme-option').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.theme-option').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    document.body.setAttribute('data-theme', this.dataset.theme);
-                });
-            });
-
-            // Settings panel
-            document.getElementById('settingsBtn').addEventListener('click', () => {
-                document.getElementById('settingsPanel').classList.toggle('open');
-                document.getElementById('settingsBtn').classList.toggle('active');
-            });
-            document.getElementById('closeSettings').addEventListener('click', () => {
-                document.getElementById('settingsPanel').classList.remove('open');
-                document.getElementById('settingsBtn').classList.remove('active');
-            });
-
-            // Filter
-            document.getElementById('filterBtn').addEventListener('click', () => {
-                document.getElementById('filterModal').classList.toggle('open');
-            });
-
-            // Language button
-            document.getElementById('langBtn').addEventListener('click', () => {
-                document.getElementById('settingsPanel').classList.add('open');
-                document.getElementById('settingsBtn').classList.add('active');
-            });
-
-            // Add button
-            document.getElementById('addBtn').addEventListener('click', openAddModal);
-
-            // Apply language
-            applyLanguage();
-        }
-
-        function applyLanguage() {
-            const t = translations[currentLang];
-            document.getElementById('statProductsLabel').innerText = t.products;
-            document.getElementById('statOrdersLabel').innerText = t.orders;
-            document.getElementById('statSalesLabel').innerText = t.sales;
-            document.getElementById('statSubscribersLabel').innerText = t.subscribers;
-            document.getElementById('listTitle').innerText = t.listTitle;
-            document.getElementById('filterTitle').innerText = t.filter;
-            document.getElementById('settingsTitle').innerText = t.settings;
-            document.getElementById('langSection').innerText = t.language;
-            document.getElementById('themeSection').innerText = t.theme;
-            document.getElementById('lightText').innerText = t.light;
-            document.getElementById('darkText').innerText = t.dark;
-            document.getElementById('plansSection').innerText = t.plans;
-            document.getElementById('adsSection').innerText = t.ads;
-            document.getElementById('notifSection').innerText = t.notifications;
-            document.getElementById('privacySection').innerText = t.privacy;
-            document.getElementById('notifEmailLabel').innerText = t.email;
-            document.getElementById('notifSmsLabel').innerText = t.sms;
-            document.getElementById('privacyLabel').innerText = t.publicProfile;
-            document.getElementById('modalTitle').innerText = t.addProduct;
-        }
-
-        async function loadCategories() {
-            const { data, error } = await supabaseClient
-                .from('categories')
-                .select('*');
-            if (!error) categories = data;
-        }
-
-        async function loadProducts() {
-            const { data, error } = await supabaseClient
-                .from('products')
-                .select('*')
-                .order('created_at', { ascending: false });
-            if (!error) {
-                products = data;
-                displayProducts();
-                updateStats();
+        window.onclick = (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('open');
             }
-        }
-
-        function displayProducts() {
-            const container = document.getElementById('productList');
-            container.innerHTML = '';
-
-            let filtered = products;
-            if (currentFilter) {
-                filtered = products.filter(p => p.category_id === currentFilter);
-            }
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-light);">Маҳсулот нест</div>`;
-                return;
-            }
-
-            filtered.forEach(product => {
-                const item = document.createElement('div');
-                item.className = 'product-item';
-                item.innerHTML = `
-                    <div class="product-image">
-                        ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '<i class="fas fa-box"></i>'}
-                    </div>
-                    <div class="product-details">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-attributes">
-                            ${product.attributes ? Object.entries(product.attributes).map(([key, val]) => 
-                                `<span class="attribute-tag"><i class="fas fa-tag"></i> ${val}</span>`
-                            ).join('') : ''}
-                        </div>
-                        <div class="product-price">${product.price} с</div>
-                    </div>
-                    <div class="product-menu" onclick="toggleMenu(this)">
-                        <i class="fas fa-ellipsis-v"></i>
-                        <div class="dropdown-menu">
-                            <div class="dropdown-item" onclick="editProduct('${product.id}')"><i class="fas fa-edit"></i> Таҳрир</div>
-                            <div class="dropdown-item" onclick="deleteProduct('${product.id}')"><i class="fas fa-trash"></i> Пок</div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function toggleMenu(el) {
-            const menu = el.querySelector('.dropdown-menu');
-            menu.classList.toggle('show');
-        }
-
-        function editProduct(id) {
-            alert('Таҳрири маҳсулот ' + id);
-        }
-
-        async function deleteProduct(id) {
-            if (confirm('Мутмаин ҳастед?')) {
-                const { error } = await supabaseClient.from('products').delete().eq('id', id);
-                if (!error) loadProducts();
-            }
-        }
-
-        function updateStats() {
-            // Санҷидани омори имрӯз (барои соддагӣ ҳамаи маҳсулот)
-            document.getElementById('statProducts').innerText = products.length;
-            document.getElementById('statSales').innerText = products.reduce((sum, p) => sum + (p.price || 0), 0);
-            document.getElementById('statOrders').innerText = Math.floor(Math.random() * 10);
-            document.getElementById('statSubscribers').innerText = '2';
-        }
-
-        // Modal functions
-        function openAddModal() {
-            document.getElementById('addModal').classList.add('open');
-            currentCategoryPath = [];
-            document.getElementById('categoryPath').innerText = '';
-            loadCategoryTree(null);
-        }
-
-        function closeAddModal() {
-            document.getElementById('addModal').classList.remove('open');
-        }
-
-        async function loadCategoryTree(parentId) {
-            const body = document.getElementById('modalBody');
-            body.innerHTML = '<div style="padding:20px; text-align:center;">Боргирӣ...</div>';
-
-            let query = supabaseClient.from('categories').select('*');
-            if (parentId) query = query.eq('parent_id', parentId);
-            else query = query.is('parent_id', null);
-
-            const { data, error } = await query;
-
-            if (data && data.length > 0) {
-                body.innerHTML = '';
-                data.forEach(cat => {
-                    const div = document.createElement('div');
-                    div.className = 'category-row';
-                    div.innerHTML = `${cat.name_tg} <i class="fas fa-chevron-right"></i>`;
-                    div.onclick = () => {
-                        currentCategoryPath.push(cat.name_tg);
-                        document.getElementById('categoryPath').innerText = currentCategoryPath.join(' > ');
-                        loadCategoryTree(cat.id);
-                    };
-                    body.appendChild(div);
-                });
-            } else {
-                showProductForm(parentId);
-            }
-        }
-
-        async function showProductForm(catId) {
-            const body = document.getElementById('modalBody');
-            const { data: fields } = await supabaseClient
-                .from('category_fields')
-                .select('*')
-                .eq('category_id', catId);
-
-            let html = `
-                <div class="form-group"><input type="text" class="form-input" id="prodName" placeholder="Ном"></div>
-                <div class="form-group"><input type="number" class="form-input" id="prodPrice" placeholder="Нарх"></div>
-            `;
-
-            if (fields) {
-                fields.forEach(f => {
-                    html += `<div class="form-group"><input type="${f.field_type}" class="form-input" id="field_${f.id}" placeholder="${f.label_tg}"></div>`;
-                });
-            }
-
-            html += `<div class="form-group"><textarea class="form-textarea" id="prodDesc" placeholder="Тавсиф"></textarea></div>`;
-            html += `<button class="btn" onclick="saveProduct(${catId})">${translations[currentLang].save}</button>`;
-
-            body.innerHTML = html;
-        }
-
-        async function saveProduct(catId) {
-            const name = document.getElementById('prodName').value;
-            const price = document.getElementById('prodPrice').value;
-            if (!name || !price) return alert('Ном ва нарх ҳатмианд');
-
-            const product = {
-                name,
-                price: parseFloat(price),
-                category_id: catId,
-                description: document.getElementById('prodDesc').value,
-                created_at: new Date()
-            };
-
-            const { error } = await supabaseClient.from('products').insert([product]);
-            if (!error) {
-                closeAddModal();
-                loadProducts();
-            }
-        }
-
-        // Filter functions
-        function closeFilter() {
-            document.getElementById('filterModal').classList.remove('open');
-        }
+        };
     </script>
 </body>
 </html>
-```
