@@ -88,7 +88,6 @@
             font-weight: 600;
         }
 
-        /* Content */
         .content {
             flex: 1;
             padding: 20px 16px;
@@ -232,6 +231,7 @@
             cursor: not-allowed;
         }
 
+        /* Category Grid */
         .category-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -325,7 +325,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="app-bar">
         <div class="back-btn" onclick="goBack()">
             <i class="fas fa-arrow-left"></i>
@@ -334,20 +333,17 @@
         <div style="width: 40px;"></div>
     </div>
 
-    <!-- Content -->
     <div class="content">
         <div class="error-message" id="errorMessage"></div>
         <div class="success-message" id="successMessage"></div>
 
         <div class="section-title">Маълумоти маҳсулот</div>
 
-        <!-- Loading -->
         <div id="loading" class="loading">
             <i class="fas fa-spinner"></i>
             <p>Боргирии категорияҳо...</p>
         </div>
 
-        <!-- Form (пас аз бор шудани категорияҳо намоён мешавад) -->
         <div id="formContainer" style="display: none;">
             <!-- Category Grid -->
             <div class="form-group">
@@ -404,13 +400,12 @@
     </div>
 
     <script>
-        // ==================== SUPABASE ====================
+        // Supabase client
         const supabaseClient = supabase.createClient(
             'https://seagtlaujnnhoyitgsdd.supabase.co',
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         );
 
-        // ==================== ГЛОБАЛ ВАРС ====================
         let categories = [];
         let subcategories = [];
         let selectedCategory = null;
@@ -418,19 +413,11 @@
         let uploadedFiles = [];
         let attributeFields = [];
 
-        // ==================== БОРКУНӢ ====================
+        // Load main categories
         document.addEventListener('DOMContentLoaded', async () => {
             await loadCategories();
         });
 
-        // Гирфтани паём барои ивази тема
-        window.addEventListener('message', function(event) {
-            if (event.data.type === 'theme') {
-                document.body.setAttribute('data-theme', event.data.theme);
-            }
-        });
-
-        // ==================== КАТЕГОРИЯҲО ====================
         async function loadCategories() {
             try {
                 const { data, error } = await supabaseClient
@@ -480,8 +467,9 @@
                 
                 document.getElementById('subcategoryContainer').classList.add('show');
                 
-                // Бор кардани майдонҳои хосиятҳо
-                await loadCategoryFields(parentId);
+                // Load fields for this category (if no subcategories, load for parent)
+                const categoryId = subcategories.length > 0 ? parentId : selectedCategory;
+                await loadCategoryFields(categoryId);
                 
             } catch (error) {
                 showError('Хатогӣ дар боркунии зеркатегорияҳо: ' + error.message);
@@ -505,7 +493,6 @@
             }
         }
 
-        // ==================== ДИСПЛЕЙ ====================
         function displayCategories() {
             const grid = document.getElementById('categoryGrid');
             grid.innerHTML = '';
@@ -535,6 +522,9 @@
             selectedCategory = catId;
             selectedSubcategory = null;
             
+            // Clear attributes container
+            document.getElementById('attributesContainer').innerHTML = '';
+            
             // Load subcategories
             loadSubcategories(catId);
         }
@@ -561,6 +551,8 @@
                             <option value="">Интихоб кунед...</option>
                         </select>
                     `;
+                } else if (field.field_type === 'textarea') {
+                    inputHtml = `<textarea class="form-textarea" id="attr_${field.id}" placeholder="${field.label_tg}"></textarea>`;
                 } else {
                     inputHtml = `<input type="${field.field_type}" class="form-input" id="attr_${field.id}" placeholder="${field.label_tg}">`;
                 }
@@ -574,7 +566,7 @@
             });
         }
 
-        // ==================== АКСҲО ====================
+        // Image upload
         document.getElementById('imageUploadArea').addEventListener('click', () => {
             document.getElementById('imageInput').click();
         });
@@ -630,7 +622,6 @@
             });
         }
 
-        // ==================== САБТ ====================
         async function saveProduct() {
             const name = document.getElementById('productName').value;
             const price = document.getElementById('productPrice').value;
@@ -654,13 +645,11 @@
             
             const categoryId = subcategory || selectedCategory;
             
-            // Disable button
             const btn = document.getElementById('saveBtn');
             btn.disabled = true;
             btn.innerText = 'Сабт шуда истодааст...';
             
             try {
-                // First, upload images if any
                 let imageUrls = [];
                 
                 if (uploadedFiles.length > 0) {
@@ -680,7 +669,6 @@
                     }
                 }
                 
-                // Collect attributes
                 const attributes = {};
                 attributeFields.forEach(field => {
                     const input = document.getElementById(`attr_${field.id}`);
@@ -689,7 +677,6 @@
                     }
                 });
                 
-                // Save product
                 const productData = {
                     name: name,
                     price: parseFloat(price),
@@ -707,7 +694,6 @@
                 
                 if (error) throw error;
                 
-                // Show success
                 const successMsg = document.getElementById('successMessage');
                 successMsg.innerText = '✅ Маҳсулот бомуваффақият сабт шуд!';
                 successMsg.classList.add('show');
@@ -725,7 +711,6 @@
             }
         }
 
-        // ==================== ДИГАР ====================
         function goBack() {
             window.location.href = 'home.html';
         }
