@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Статистика - Bozorcha</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --bg: #f8fafc;
+            --bg-card: #ffffff;
+            --text: #0f172a;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --accent: #ff9800;
+            --accent-light: #fff3e0;
+            --accent-dark: #f57c00;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.05);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .date-badge {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .date-badge i {
+            font-size: 14px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 16px 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-trend {
+            font-size: 10px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        /* Stats Card */
+        .stats-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stats-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stats-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-card-title i {
+            color: var(--accent);
+        }
+
+        .stats-more {
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .stats-more:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-row:last-child {
+            border-bottom: none;
+        }
+
+        .stats-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .stats-value {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .stats-value.accent {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .stats-badge {
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 15px 0 10px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        /* Chart Items */
+        .chart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .chart-label {
+            width: 100px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .chart-bar-container {
+            flex: 1;
+            height: 36px;
+            background: var(--bg);
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .chart-bar {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 15px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            transition: width 0.5s ease;
+        }
+
+        .chart-value {
+            min-width: 50px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--bg-card);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+
+        .timeline-date {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .timeline-content {
+            background: var(--bg);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .timeline-subtitle {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .timeline-amount {
+            color: var(--accent);
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        /* Category Grid */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .category-item {
+            background: var(--bg);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            font-size: 28px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .category-count {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* Period Selector */
+        .period-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--bg-card);
+            padding: 6px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .period-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 30px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+        }
+
+        .period-btn.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="page-header">
+        <div class="page-title">Статистика</div>
+        <div class="date-badge">
+            <i class="fas fa-calendar-alt"></i>
+            <span id="currentDate"></span>
+        </div>
+    </div>
+
+    <!-- Period Selector -->
+    <div class="period-selector">
+        <div class="period-btn active" onclick="changePeriod('day')">Имрӯз</div>
+        <div class="period-btn" onclick="changePeriod('week')">Ҳафта</div>
+        <div class="period-btn" onclick="changePeriod('month')">Моҳ</div>
+        <div class="period-btn" onclick="changePeriod('year')">Сол</div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+            <span class="stat-value" id="totalSales">12,450</span>
+            <span class="stat-label">Фурӯши умумӣ</span>
+            <div class="stat-trend trend-up">
+                <i class="fas fa-arrow-up"></i> +15.3%
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+            <span class="stat-value" id="totalOrders">124</span>
+            <span class="stat-label">Фармоишҳо</span>
+            <div class="stat-trend trend-up">
+                <i class="fas fa-arrow-up"></i> +8.2%
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <span class="stat-value" id="totalCustomers">89</span>
+            <span class="stat-label">Муштарӣ</span>
+            <div class="stat-trend trend-up">
+                <i class="fas fa-arrow-up"></i> +12%
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-star"></i></div>
+            <span class="stat-value" id="avgRating">4.8</span>
+            <span class="stat-label">Рейтинг</span>
+            <div class="stat-trend trend-up">
+                <i class="fas fa-arrow-up"></i> +0.3
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Chart -->
+    <div class="stats-card">
+        <div class="stats-card-header">
+            <div class="stats-card-title">
+                <i class="fas fa-chart-line"></i>
+                <span>Фурӯш аз рӯи рӯзҳо</span>
+            </div>
+            <div class="stats-more" onclick="showDetailedChart()">
+                <i class="fas fa-expand"></i>
+            </div>
+        </div>
+        <div class="chart-item">
+            <span class="chart-label">Душанбе</span>
+            <div class="chart-bar-container">
+                <div class="chart-bar" style="width: 65%;">1,850 с</div>
+            </div>
+            <span class="chart-value">1,850 с</span>
+        </div>
+        <div class="chart-item">
+            <span class="chart-label">Сешанбе</span>
+            <div class="chart-bar-container">
+                <div class="chart-bar" style="width: 48%;">1,380 с</div>
+            </div>
+            <span class="chart-value">1,380 с</span>
+        </div>
+        <div class="chart-item">
+            <span class="chart-label">Чоршанбе</span>
+            <div class="chart-bar-container">
+                <div class="chart-bar" style="width: 72%;">2,050 с</div>
+            </div>
+            <span class="chart-value">2,050 с</span>
+        </div>
+        <div class="chart-item">
+            <span class="chart-label">Панҷшанбе</span>
+            <div class="chart-bar-container">
+                <div class="chart-bar" style="width: 55%;">1,570 с</div>
+            </div>
+            <span class="chart-value">1,570 с</span>
+        </div>
+        <div class="chart-item">
+            <span class="chart-label">Ҷумъа</span>
+            <div class="chart-bar-container">
+                <div class="chart-bar" style="width: 82%;">2,340 с</div>
+            </div>
+            <span class="chart-value">2,340 с</span>
+        </div>
+        <div class="chart-item">
+            <span class="chart-label">Шанбе</span>
+            <div class="chart-bar-container">
+                <div class="chart-bar" style="width: 90%;">2,570 с</div>
+            </div>
+            <span class="chart-value">2,570 с</span>
+        </div>
+        <div class="chart-item">
+            <span class="chart-label">Якшанбе</span>
+            <div class="chart-bar-container">
+                <div class="chart-bar" style="width: 58%;">1,660 с</div>
+            </div>
+            <span class="chart-value">1,660 с</span>
+        </div>
+    </div>
+
+    <!-- Best Products & Categories -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <!-- Best Products -->
+        <div class="stats-card">
+            <div class="stats-card-header">
+                <div class="stats-card-title">
+                    <i class="fas fa-crown"></i>
+                    <span>Беҳтаринҳо</span>
+                </div>
+                <div class="stats-more" onclick="viewAllProducts()">
+                    Ҳама <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">iPhone 15 Pro</span>
+                <span class="stats-value accent">12,500 с</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Футболка Adidas</span>
+                <span class="stats-value accent">4,350 с</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Кроссовки Nike</span>
+                <span class="stats-value accent">3,600 с</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Сумка</span>
+                <span class="stats-value accent">2,240 с</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Соати Smart</span>
+                <span class="stats-value accent">1,890 с</span>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="stats-card">
+            <div class="stats-card-header">
+                <div class="stats-card-title">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Категорияҳо</span>
+                </div>
+                <div class="stats-more" onclick="viewAllCategories()">
+                    Ҳама <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">📱 Телефонҳо</span>
+                <span class="stats-value">34%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 34%;"></div>
+                </div>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">👕 Либос</span>
+                <span class="stats-value">28%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 28%;"></div>
+                </div>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">👟 Пойафзол</span>
+                <span class="stats-value">22%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 22%;"></div>
+                </div>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">💄 Косметика</span>
+                <span class="stats-value">16%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 16%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline - Recent Sales -->
+    <div class="stats-card" style="margin-top: 20px;">
+        <div class="stats-card-header">
+            <div class="stats-card-title">
+                <i class="fas fa-history"></i>
+                <span>Таърихи фурӯш</span>
+            </div>
+            <div class="stats-badge">12 нав</div>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">Имрӯз, 14:30</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">iPhone 15 Pro</div>
+                    <div class="timeline-subtitle">Харидор: Азиза Р.</div>
+                    <div class="timeline-amount">12,500 с</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Имрӯз, 11:20</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Футболка Adidas</div>
+                    <div class="timeline-subtitle">Харидор: Фирӯз К.</div>
+                    <div class="timeline-amount">150 с</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Ди рӯз, 16:45</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Кроссовки Nike</div>
+                    <div class="timeline-subtitle">Харидор: Мадина С.</div>
+                    <div class="timeline-amount">450 с</div>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Ди рӯз, 09:15</div>
+                <div class="timeline-content">
+                    <div class="timeline-title">Сумка</div>
+                    <div class="timeline-subtitle">Харидор: Раҳим Қ.</div>
+                    <div class="timeline-amount">80 с</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Stats -->
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px;">
+        <div class="stats-card">
+            <div class="stats-card-title" style="margin-bottom: 16px;">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Ҷуғрофия</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Душанбе</span>
+                <span class="stats-value">48%</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Хуҷанд</span>
+                <span class="stats-value">22%</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Бохтар</span>
+                <span class="stats-value">15%</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Кӯлоб</span>
+                <span class="stats-value">10%</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">Дигар</span>
+                <span class="stats-value">5%</span>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <div class="stats-card-title" style="margin-bottom: 16px;">
+                <i class="fas fa-credit-card"></i>
+                <span>Усули пардохт</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">💳 Корти банкӣ</span>
+                <span class="stats-value">52%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 52%;"></div>
+                </div>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">💰 Пулӣ</span>
+                <span class="stats-value">38%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 38%;"></div>
+                </div>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">📱 Alif</span>
+                <span class="stats-value">10%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 10%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Санаи имрӯза
+        function updateDate() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').innerText = now.toLocaleDateString('tg-TJ', options);
+        }
+        updateDate();
+
+        // Гирфтани паём барои ивази тема
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'theme') {
+                document.body.setAttribute('data-theme', event.data.theme);
+            }
+        });
+
+        // Тағйири давра (имрӯз, ҳафта, моҳ, сол)
+        function changePeriod(period) {
+            document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Ин ҷо метавонед маълумотро аз рӯи давра иваз кунед
+            let salesData = {
+                day: { total: '12,450', orders: '124', customers: '89' },
+                week: { total: '78,300', orders: '845', customers: '512' },
+                month: { total: '342,500', orders: '3,840', customers: '2,150' },
+                year: { total: '4.2M', orders: '42,500', customers: '24,800' }
+            };
+            
+            document.getElementById('totalSales').innerText = salesData[period].total;
+            document.getElementById('totalOrders').innerText = salesData[period].orders;
+            document.getElementById('totalCustomers').innerText = salesData[period].customers;
+        }
+
+        // Функсияҳо барои клик
+        function showDetailedChart() {
+            alert('Диаграммаи муфассал дар ҳоли сохтан');
+        }
+
+        function viewAllProducts() {
+            alert('Ҳамаи маҳсулот дар ҳоли сохтан');
+        }
+
+        function viewAllCategories() {
+            alert('Ҳамаи категорияҳо дар ҳоли сохтан');
+        }
+    </script>
+</body>
+</html>
