@@ -1,144 +1,1253 @@
 <!DOCTYPE html>
 <html lang="tg">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bozorcha Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bozorcha - Ultra Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        :root {
+            --bg: #fafafa;
+            --bg-card: #ffffff;
+            --text: #262626;
+            --text-light: #8e8e8e;
+            --accent: #ff9800;
+            --accent-light: #fff3e0;
+            --border: #dbdbdb;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
+        }
 
-<style>
-body{font-family:sans-serif;background:#f4f4f4;margin:0}
-.post{background:white;margin:10px;padding:10px;border-radius:10px}
-input,textarea,button{width:100%;padding:10px;margin-top:10px}
-button{background:#ff9800;color:white;border:none;border-radius:6px}
-</style>
+        [data-theme="dark"] {
+            --bg: #000000;
+            --bg-card: #121212;
+            --text: #ffffff;
+            --text-light: #a8a8a8;
+            --border: #262626;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            padding-bottom: 70px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .app-bar {
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+
+        .icon-btn:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .settings-btn {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .settings-btn.active {
+            transform: rotate(90deg);
+            color: var(--accent);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 20px 10px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 20px;
+            font-weight: bold;
+            display: block;
+            color: var(--accent);
+        }
+
+        .stat-txt {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--bg-card);
+            z-index: 2000;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 25px;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            border-left: 1px solid var(--border);
+        }
+
+        .side-panel.open {
+            right: 0;
+            animation: slideIn 0.4s ease;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .panel-header i {
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .panel-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        .panel-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+        }
+
+        .lang-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .lang-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .theme-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .theme-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .theme-btn:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .theme-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .plan-card, .ad-card {
+            background: var(--bg);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-card:hover, .ad-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .plan-name, .ad-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .plan-price, .ad-price {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .plan-features, .ad-features {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .plan-features i, .ad-features i {
+            color: var(--accent);
+            margin-right: 5px;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .posts-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .post {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+        }
+
+        .post-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .post-menu {
+            cursor: pointer;
+            padding: 5px;
+            color: var(--text-light);
+        }
+
+        .post-image {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 40px;
+            overflow: hidden;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 24px;
+        }
+
+        .post-actions-left {
+            display: flex;
+            gap: 15px;
+        }
+
+        .post-actions i {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .post-actions i:hover {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .post-actions i.liked {
+            color: #ed4956;
+        }
+
+        .post-info {
+            padding: 0 12px 12px;
+        }
+
+        .post-title {
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .post-price {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .post-description {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        .add-btn {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,152,0,0.4);
+            transition: all 0.3s ease;
+            z-index: 90;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-item {
+            color: var(--text-light);
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: scaleIn 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .modal-header i {
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .category-row {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-row:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .category-path {
+            font-size: 12px;
+            color: var(--accent);
+            margin-bottom: 15px;
+            padding: 8px;
+            background: var(--accent-light);
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: var(--gradient);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,152,0,0.4);
+        }
+    </style>
 </head>
+<body data-theme="light">
 
-<body>
+    <div class="app-bar">
+        <div class="logo">Bozorcha</div>
+        <div class="header-actions">
+            <i class="fas fa-heart icon-btn"></i>
+            <i class="fas fa-cog settings-btn icon-btn" id="settingsBtn"></i>
+        </div>
+    </div>
 
-<h2 style="padding:10px">Bozorcha</h2>
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-num" id="statProducts">0</span>
+            <span class="stat-txt" id="statProductsLabel">Маҳсулот</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">4.8</span>
+            <span class="stat-txt" id="statRatingLabel">Рейтинг</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num" id="statSales">0</span>
+            <span class="stat-txt" id="statSalesLabel">Фурӯш</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num" id="statOrders">0</span>
+            <span class="stat-txt" id="statOrdersLabel">Фармоиш</span>
+        </div>
+    </div>
 
-<button onclick="openAddModal()">+ Иловаи маҳсулот</button>
+    <div class="posts-container" id="posts"></div>
 
-<div id="posts"></div>
+    <div class="add-btn" id="addBtn">
+        <i class="fas fa-plus"></i>
+    </div>
 
-<!-- MODAL -->
-<div id="modal" style="display:none;background:#0008;position:fixed;inset:0;padding:20px;">
-<div style="background:white;padding:20px;border-radius:10px">
+    <div class="bottom-nav">
+        <i class="fas fa-home nav-item active"></i>
+        <i class="fas fa-search nav-item"></i>
+        <i class="fas fa-heart nav-item"></i>
+        <i class="fas fa-user nav-item"></i>
+    </div>
 
-<h3>Интихоби категория</h3>
-<div id="categories"></div>
+    <div class="side-panel" id="settingsPanel">
+        <div class="panel-header">
+            <span>Танзимот</span>
+            <i class="fas fa-times" id="closeSettings"></i>
+        </div>
 
-<div id="form"></div>
+        <div class="panel-section">
+            <h3><i class="fas fa-globe"></i> Забон</h3>
+            <div class="lang-buttons">
+                <button class="lang-btn active" data-lang="tg">🇹🇯 Тоҷикӣ</button>
+                <button class="lang-btn" data-lang="ru">🇷🇺 Русский</button>
+                <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+            </div>
+        </div>
 
-<button onclick="closeModal()">Пӯшидан</button>
+        <div class="panel-section">
+            <h3><i class="fas fa-palette"></i> Тема</h3>
+            <div class="theme-buttons">
+                <button class="theme-btn active" data-theme="light">
+                    <i class="fas fa-sun"></i> Равшан
+                </button>
+                <button class="theme-btn" data-theme="dark">
+                    <i class="fas fa-moon"></i> Торик
+                </button>
+            </div>
+        </div>
 
-</div>
-</div>
+        <div class="panel-section">
+            <h3><i class="fas fa-crown"></i> Планҳои обуна</h3>
+            <div class="plan-card" data-plan="free">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">0 с/моҳ</div>
+                <div class="plan-features">✅ То 20 маҳсулот • 5% комиссия</div>
+                <span class="plan-badge">Ҳозир</span>
+            </div>
+            <div class="plan-card" data-plan="basic">
+                <div class="plan-name">Basic</div>
+                <div class="plan-price">19 с/моҳ</div>
+                <div class="plan-features">✅ То 50 маҳсулот • 4% комиссия • Analytics</div>
+                <span class="plan-badge">Интихоб</span>
+            </div>
+            <div class="plan-card" data-plan="pro">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">99 с/моҳ</div>
+                <div class="plan-features">✅ То 200 маҳсулот • 3% комиссия • AI • 3D</div>
+                <span class="plan-badge">Интихоб</span>
+            </div>
+            <div class="plan-card" data-plan="ultra">
+                <div class="plan-name">Ultra</div>
+                <div class="plan-price">299 с/моҳ</div>
+                <div class="plan-features">✅ Бемаҳдуд • 2% комиссия • AI пурра • 3D</div>
+                <span class="plan-badge">Интихоб</span>
+            </div>
+        </div>
 
-<script>
-const SB_URL = "https://seagtlaujnnhoyitgsdd.supabase.co";
-const SB_KEY = "sb_publishable_OILChtOja0i8nIrPZuM_Og_vyfGjfsP";
+        <div class="panel-section">
+            <h3><i class="fas fa-chart-line"></i> Реклама</h3>
+            <div class="ad-card" data-ad="plus">
+                <div class="ad-name">Plus</div>
+                <div class="ad-price">6 с/рӯз</div>
+                <div class="ad-features">📢 Маҳсулот дар саҳифаи асосӣ боло меравад</div>
+                <span class="plan-badge">Харидан</span>
+            </div>
+            <div class="ad-card" data-ad="pro">
+                <div class="ad-name">Pro</div>
+                <div class="ad-price">14 с/рӯз</div>
+                <div class="ad-features">🎯 Боло + ба аудиторияи мушаххас</div>
+                <span class="plan-badge">Харидан</span>
+            </div>
+            <div class="ad-card" data-ad="ultra">
+                <div class="ad-name">Ultra</div>
+                <div class="ad-price">30 с/рӯз</div>
+                <div class="ad-features">🏆 Мағоза дар ТОП, тавсияҳо</div>
+                <span class="plan-badge">Харидан</span>
+            </div>
+        </div>
 
-const db = supabase.createClient(SB_URL, SB_KEY);
+        <div class="panel-section">
+            <h3><i class="fas fa-bell"></i> Огоҳиномаҳо</h3>
+            <div class="checkbox-item">
+                <input type="checkbox" id="notifEmail" checked>
+                <label for="notifEmail">Почта</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="notifSms" checked>
+                <label for="notifSms">SMS</label>
+            </div>
+        </div>
 
-let selectedCategory = null;
+        <div class="panel-section">
+            <h3><i class="fas fa-lock"></i> Махфият</h3>
+            <div class="checkbox-item">
+                <input type="checkbox" id="privacyProfile" checked>
+                <label for="privacyProfile">Профили оммавӣ</label>
+            </div>
+        </div>
+    </div>
 
-function openAddModal(){
-document.getElementById("modal").style.display="block";
-loadCategories(null);
-}
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Иловаи маҳсулот</h2>
+                <i class="fas fa-times" onclick="closeModal()"></i>
+            </div>
+            <div id="categoryPath" class="category-path"></div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
 
-function closeModal(){
-document.getElementById("modal").style.display="none";
-document.getElementById("form").innerHTML="";
-}
+    <div class="modal" id="planModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="planModalTitle"></h2>
+                <i class="fas fa-times" onclick="closePlanModal()"></i>
+            </div>
+            <div id="planModalBody"></div>
+        </div>
+    </div>
 
-async function loadCategories(parent){
-let q = db.from("categories").select("*");
-parent ? q=q.eq("parent_id",parent) : q=q.is("parent_id",null);
+    <script>
+        // Supabase client - дуруст инициализатсия карда шуд
+        const supabaseClient = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
 
-const {data}=await q;
+        let currentLang = 'tg';
+        let categoryHistory = [];
+        let products = [];
 
-const box=document.getElementById("categories");
-box.innerHTML="";
+        const translations = {
+            tg: {
+                products: 'Маҳсулот',
+                rating: 'Рейтинг',
+                sales: 'Фурӯш',
+                orders: 'Фармоиш',
+                settings: 'Танзимот',
+                language: 'Забон',
+                theme: 'Тема',
+                light: 'Равшан',
+                dark: 'Торик',
+                plans: 'Планҳои обуна',
+                ads: 'Реклама',
+                notifications: 'Огоҳиномаҳо',
+                privacy: 'Махфият',
+                email: 'Почта',
+                sms: 'SMS',
+                publicProfile: 'Профили оммавӣ',
+                addProduct: 'Иловаи маҳсулот',
+                selectCategory: 'Интихоби категория',
+                save: 'Сабт кардан',
+                cancel: 'Бекор кардан',
+                buy: 'Харидан',
+                current: 'Ҳозир',
+                select: 'Интихоб',
+                free: 'Озод',
+                basic: 'Асосӣ',
+                pro: 'Касбӣ',
+                ultra: 'Бемисл',
+                plus: 'Plus',
+                proAd: 'Pro',
+                ultraAd: 'Ultra'
+            },
+            ru: {
+                products: 'Товары',
+                rating: 'Рейтинг',
+                sales: 'Продажи',
+                orders: 'Заказы',
+                settings: 'Настройки',
+                language: 'Язык',
+                theme: 'Тема',
+                light: 'Светлая',
+                dark: 'Темная',
+                plans: 'Планы подписки',
+                ads: 'Реклама',
+                notifications: 'Уведомления',
+                privacy: 'Конфиденциальность',
+                email: 'Почта',
+                sms: 'SMS',
+                publicProfile: 'Публичный профиль',
+                addProduct: 'Добавить товар',
+                selectCategory: 'Выбор категории',
+                save: 'Сохранить',
+                cancel: 'Отмена',
+                buy: 'Купить',
+                current: 'Текущий',
+                select: 'Выбрать',
+                free: 'Бесплатный',
+                basic: 'Базовый',
+                pro: 'Профессиональный',
+                ultra: 'Ультра',
+                plus: 'Plus',
+                proAd: 'Pro',
+                ultraAd: 'Ultra'
+            },
+            en: {
+                products: 'Products',
+                rating: 'Rating',
+                sales: 'Sales',
+                orders: 'Orders',
+                settings: 'Settings',
+                language: 'Language',
+                theme: 'Theme',
+                light: 'Light',
+                dark: 'Dark',
+                plans: 'Subscription Plans',
+                ads: 'Advertising',
+                notifications: 'Notifications',
+                privacy: 'Privacy',
+                email: 'Email',
+                sms: 'SMS',
+                publicProfile: 'Public Profile',
+                addProduct: 'Add Product',
+                selectCategory: 'Select Category',
+                save: 'Save',
+                cancel: 'Cancel',
+                buy: 'Buy',
+                current: 'Current',
+                select: 'Select',
+                free: 'Free',
+                basic: 'Basic',
+                pro: 'Pro',
+                ultra: 'Ultra',
+                plus: 'Plus',
+                proAd: 'Pro',
+                ultraAd: 'Ultra'
+            }
+        };
 
-if(data.length===0){
-showForm(parent);
-return;
-}
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+            updateStats();
+            initSettingsPanel();
+            initLanguage();
+            initTheme();
+            initPlansAndAds();
+        });
 
-data.forEach(c=>{
-const b=document.createElement("button");
-b.innerText=c.name_tg;
-b.onclick=()=>loadCategories(c.id);
-box.appendChild(b);
-});
-}
+        function initSettingsPanel() {
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsPanel = document.getElementById('settingsPanel');
+            const closeBtn = document.getElementById('closeSettings');
 
-async function showForm(catId){
-selectedCategory=catId;
+            settingsBtn.addEventListener('click', () => {
+                settingsPanel.classList.toggle('open');
+                settingsBtn.classList.toggle('active');
+            });
 
-document.getElementById("categories").innerHTML="<b>Категория интихоб шуд</b>";
+            closeBtn.addEventListener('click', () => {
+                settingsPanel.classList.remove('open');
+                settingsBtn.classList.remove('active');
+            });
 
-const {data:fields}=await db
-.from("category_fields")
-.select("*")
-.eq("category_id",catId);
+            document.addEventListener('click', (e) => {
+                if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target) && settingsPanel.classList.contains('open')) {
+                    settingsPanel.classList.remove('open');
+                    settingsBtn.classList.remove('active');
+                }
+            });
+        }
 
-let html=`
-<input id="name" placeholder="Ном">
-<input id="price" type="number" placeholder="Нарх">
-`;
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentLang = this.dataset.lang;
+                    applyLanguage();
+                });
+            });
+        }
 
-fields.forEach(f=>{
-html+=`<input id="field_${f.id}" placeholder="${f.label_tg}">`;
-});
+        function applyLanguage() {
+            const t = translations[currentLang];
+            document.getElementById('statProductsLabel').innerText = t.products;
+            document.getElementById('statRatingLabel').innerText = t.rating;
+            document.getElementById('statSalesLabel').innerText = t.sales;
+            document.getElementById('statOrdersLabel').innerText = t.orders;
+            document.querySelector('.panel-header span').innerText = t.settings;
+            document.querySelectorAll('.panel-section h3')[0].innerHTML = `<i class="fas fa-globe"></i> ${t.language}`;
+            document.querySelectorAll('.panel-section h3')[1].innerHTML = `<i class="fas fa-palette"></i> ${t.theme}`;
+            document.querySelectorAll('.panel-section h3')[2].innerHTML = `<i class="fas fa-crown"></i> ${t.plans}`;
+            document.querySelectorAll('.panel-section h3')[3].innerHTML = `<i class="fas fa-chart-line"></i> ${t.ads}`;
+            document.querySelectorAll('.panel-section h3')[4].innerHTML = `<i class="fas fa-bell"></i> ${t.notifications}`;
+            document.querySelectorAll('.panel-section h3')[5].innerHTML = `<i class="fas fa-lock"></i> ${t.privacy}`;
+            document.querySelectorAll('.theme-btn')[0].innerHTML = `<i class="fas fa-sun"></i> ${t.light}`;
+            document.querySelectorAll('.theme-btn')[1].innerHTML = `<i class="fas fa-moon"></i> ${t.dark}`;
+            document.getElementById('modalTitle').innerText = t.addProduct;
 
-html+=`
-<textarea id="desc" placeholder="Тавсиф"></textarea>
-<button onclick="saveProduct()">Сабт</button>
-`;
+            document.querySelectorAll('.plan-card .plan-badge')[0].innerText = t.current;
+            document.querySelectorAll('.plan-card .plan-badge')[1].innerText = t.select;
+            document.querySelectorAll('.plan-card .plan-badge')[2].innerText = t.select;
+            document.querySelectorAll('.plan-card .plan-badge')[3].innerText = t.select;
+            document.querySelectorAll('.ad-card .plan-badge').forEach(badge => badge.innerText = t.buy);
+        }
 
-document.getElementById("form").innerHTML=html;
-}
+        function initTheme() {
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const theme = this.dataset.theme;
+                    document.body.setAttribute('data-theme', theme);
+                });
+            });
+        }
 
-async function saveProduct(){
-const name=document.getElementById("name").value;
-const price=document.getElementById("price").value;
-const desc=document.getElementById("desc").value;
+        function initPlansAndAds() {
+            document.querySelectorAll('.plan-card, .ad-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const isPlan = this.classList.contains('plan-card');
+                    const name = this.querySelector('.plan-name, .ad-name').innerText;
+                    const price = this.querySelector('.plan-price, .ad-price').innerText;
+                    
+                    const modal = document.getElementById('planModal');
+                    const title = document.getElementById('planModalTitle');
+                    const body = document.getElementById('planModalBody');
+                    
+                    title.innerText = name;
+                    
+                    let details = '';
+                    if (isPlan) {
+                        if (name.includes('Free')) {
+                            details = `
+                                <div style="padding:20px 0">
+                                    <p><strong>Имкониятҳо:</strong></p>
+                                    <ul style="list-style:none; padding:0">
+                                        <li>✓ То 20 маҳсулот</li>
+                                        <li>✓ Комиссия 5%</li>
+                                        <li>✗ Реклама нест</li>
+                                        <li>✗ 3D нест</li>
+                                        <li>✗ Analytics нест</li>
+                                    </ul>
+                                    <p style="margin-top:20px; color:var(--accent)">${price}</p>
+                                </div>
+                            `;
+                        } else if (name.includes('Basic')) {
+                            details = `
+                                <div style="padding:20px 0">
+                                    <p><strong>Имкониятҳо:</strong></p>
+                                    <ul style="list-style:none; padding:0">
+                                        <li>✓ То 50 маҳсулот</li>
+                                        <li>✓ Комиссия 4%</li>
+                                        <li>✓ Рекламаи Plus (1/ҳафта)</li>
+                                        <li>✓ Analytics</li>
+                                        <li>✗ 3D нест</li>
+                                    </ul>
+                                    <p style="margin-top:20px; color:var(--accent)">${price}</p>
+                                </div>
+                            `;
+                        } else if (name.includes('Pro')) {
+                            details = `
+                                <div style="padding:20px 0">
+                                    <p><strong>Имкониятҳо:</strong></p>
+                                    <ul style="list-style:none; padding:0">
+                                        <li>✓ То 200 маҳсулот</li>
+                                        <li>✓ Комиссия 3%</li>
+                                        <li>✓ Рекламаи Pro (2/моҳ)</li>
+                                        <li>✓ Analytics + AI маҳдуд</li>
+                                        <li>✓ 3D оддӣ</li>
+                                    </ul>
+                                    <p style="margin-top:20px; color:var(--accent)">${price}</p>
+                                </div>
+                            `;
+                        } else if (name.includes('Ultra')) {
+                            details = `
+                                <div style="padding:20px 0">
+                                    <p><strong>Имкониятҳо:</strong></p>
+                                    <ul style="list-style:none; padding:0">
+                                        <li>✓ Бемаҳдуд маҳсулот</li>
+                                        <li>✓ Комиссия 2%</li>
+                                        <li>✓ Рекламаи Ultra (1/моҳ)</li>
+                                        <li>✓ Analytics + AI пурра</li>
+                                        <li>✓ 3D пурра</li>
+                                    </ul>
+                                    <p style="margin-top:20px; color:var(--accent)">${price}</p>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        if (name.includes('Plus')) {
+                            details = `
+                                <div style="padding:20px 0">
+                                    <p><strong>Тавсиф:</strong> Маҳсулот дар саҳифаи асосӣ боло меравад</p>
+                                    <p><strong>Давомнокӣ:</strong> 1 рӯз</p>
+                                    <p style="margin-top:20px; color:var(--accent)">${price}</p>
+                                </div>
+                            `;
+                        } else if (name.includes('Pro')) {
+                            details = `
+                                <div style="padding:20px 0">
+                                    <p><strong>Тавсиф:</strong> Боло + ба аудиторияи мушаххас нишон дода мешавад</p>
+                                    <p><strong>Давомнокӣ:</strong> 1 рӯз</p>
+                                    <p style="margin-top:20px; color:var(--accent)">${price}</p>
+                                </div>
+                            `;
+                        } else if (name.includes('Ultra')) {
+                            details = `
+                                <div style="padding:20px 0">
+                                    <p><strong>Тавсиф:</strong> Мағоза дар ТОП, поиск аввал, тавсияҳо</p>
+                                    <p><strong>Давомнокӣ:</strong> 1 рӯз</p>
+                                    <p style="margin-top:20px; color:var(--accent)">${price}</p>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    body.innerHTML = details;
+                    modal.classList.add('open');
+                });
+            });
+        }
 
-await db.from("products").insert({
-name:name,
-price:price,
-description:desc,
-category_id:selectedCategory
-});
+        function closePlanModal() {
+            document.getElementById('planModal').classList.remove('open');
+        }
 
-closeModal();
-loadProducts();
-}
+        async function loadProducts() {
+            const { data, error } = await supabaseClient
+                .from('products')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-async function loadProducts(){
-const {data}=await db.from("products").select("*").order("created_at",{ascending:false});
+            if (error) {
+                console.error('Error loading products:', error);
+                return;
+            }
 
-const box=document.getElementById("posts");
-box.innerHTML="";
+            products = data || [];
+            displayProducts();
+            updateStats();
+        }
 
-data.forEach(p=>{
-box.innerHTML+=`
-<div class="post">
-<b>${p.name}</b><br>
-${p.price} c.<br>
-${p.description||""}
-</div>
-`;
-});
-}
+        function displayProducts() {
+            const container = document.getElementById('posts');
+            container.innerHTML = '';
 
-loadProducts();
-</script>
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:50px; color:var(--text-light);">
+                        <i class="fas fa-box-open" style="font-size:48px; margin-bottom:20px;"></i>
+                        <p>${translations[currentLang].products} нест</p>
+                    </div>
+                `;
+                return;
+            }
 
+            products.forEach(product => {
+                const post = document.createElement('div');
+                post.className = 'post';
+                post.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-user">
+                            <div class="post-avatar"><i class="fas fa-store"></i></div>
+                            <span>Мағозаи ман</span>
+                        </div>
+                        <div class="post-menu" onclick="editProduct('${product.id}')">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </div>
+                    </div>
+                    <div class="post-image">
+                        ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '<i class="fas fa-image"></i>'}
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" onclick="likePost(this)"></i>
+                            <i class="far fa-comment"></i>
+                            <i class="far fa-paper-plane"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+                    <div class="post-info">
+                        <div class="post-title">${product.name}</div>
+                        <div class="post-price">${product.price} с.</div>
+                        <div class="post-description">${product.description || ''}</div>
+                    </div>
+                `;
+                container.appendChild(post);
+            });
+        }
+
+        function likePost(el) {
+            el.classList.toggle('fas');
+            el.classList.toggle('far');
+            el.classList.toggle('liked');
+        }
+
+        function editProduct(id) {
+            alert(translations[currentLang].select + ' ' + id);
+        }
+
+        function updateStats() {
+            document.getElementById('statProducts').innerText = products.length;
+        }
+
+        document.getElementById('addBtn').addEventListener('click', openAddModal);
+
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('open');
+            categoryHistory = [];
+            document.getElementById('categoryPath').innerText = '';
+            loadCategories(null);
+        }
+
+        function closeModal() {
+            document.getElementById('addModal').classList.remove('open');
+            document.getElementById('modalBody').innerHTML = '';
+        }
+
+        async function loadCategories(parentId) {
+            const body = document.getElementById('modalBody');
+            body.innerHTML = '<div style="text-align:center; padding:20px;">Боргирӣ...</div>';
+
+            let query = supabaseClient.from('categories').select('*');
+            if (parentId) {
+                query = query.eq('parent_id', parentId);
+            } else {
+                query = query.is('parent_id', null);
+            }
+
+            const { data, error } = await query;
+
+            if (error) {
+                body.innerHTML = `<div style="color:red; padding:20px;">Хатогӣ: ${error.message}</div>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                showProductForm(parentId);
+                return;
+            }
+
+            body.innerHTML = '';
+            data.forEach(cat => {
+                const row = document.createElement('div');
+                row.className = 'category-row';
+                row.innerHTML = `
+                    <span>${cat.name_tg}</span>
+                    <i class="fas fa-chevron-right"></i>
+                `;
+                row.onclick = () => {
+                    categoryHistory.push(cat.name_tg);
+                    document.getElementById('categoryPath').innerText = categoryHistory.join(' > ');
+                    loadCategories(cat.id);
+                };
+                body.appendChild(row);
+            });
+        }
+
+        async function showProductForm(catId) {
+            const body = document.getElementById('modalBody');
+            
+            const { data: fields } = await supabaseClient
+                .from('category_fields')
+                .select('*')
+                .eq('category_id', catId);
+
+            let html = `
+                <div class="form-group">
+                    <label class="form-label">${translations[currentLang].products}</label>
+                    <input type="text" class="form-input" id="productName" placeholder="Ном">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Нарх (c.)</label>
+                    <input type="number" class="form-input" id="productPrice" placeholder="0">
+                </div>
+            `;
+
+            if (fields && fields.length > 0) {
+                fields.forEach(field => {
+                    let inputType = field.field_type || 'text';
+                    html += `
+                        <div class="form-group">
+                            <label class="form-label">${field.label_tg}</label>
+                            <input type="${inputType}" class="form-input" id="field_${field.id}" placeholder="${field.label_tg}">
+                        </div>
+                    `;
+                });
+            }
+
+            html += `
+                <div class="form-group">
+                    <label class="form-label">Тавсиф</label>
+                    <textarea class="form-textarea" id="productDesc" rows="3"></textarea>
+                </div>
+                <button class="btn" onclick="saveProduct(${catId})">${translations[currentLang].save}</button>
+            `;
+
+            body.innerHTML = html;
+        }
+
+        async function saveProduct(catId) {
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+            const desc = document.getElementById('productDesc').value;
+
+            if (!name || !price) {
+                alert('Ном ва нарх ҳатмианд!');
+                return;
+            }
+
+            // Маълумоти маҳсулот
+            const productData = {
+                name: name,
+                price: parseFloat(price),
+                description: desc,
+                category_id: catId,
+                created_at: new Date()
+            };
+
+            const { data, error } = await supabaseClient
+                .from('products')
+                .insert([productData])
+                .select();
+
+            if (error) {
+                alert('Хатогӣ: ' + error.message);
+                return;
+            }
+
+            closeModal();
+            loadProducts();
+        }
+    </script>
 </body>
 </html>
+```
