@@ -51,7 +51,7 @@
             flex-direction: column;
         }
 
-        /* Header */
+        /* App Bar */
         .app-bar {
             background: var(--bg-card);
             height: 60px;
@@ -88,6 +88,42 @@
             font-weight: 600;
         }
 
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-light);
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--accent);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .breadcrumb-separator {
+            color: var(--border);
+        }
+
+        /* Content */
         .content {
             flex: 1;
             padding: 20px 16px;
@@ -96,13 +132,57 @@
             width: 100%;
         }
 
-        .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Category List */
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .category-item:hover {
+            background: var(--accent-light);
+            padding-left: 8px;
+        }
+
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        .category-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .category-arrow {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Product Form */
+        .product-form {
+            margin-top: 20px;
         }
 
         .form-group {
@@ -231,54 +311,6 @@
             cursor: not-allowed;
         }
 
-        /* Category Grid */
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .category-card {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 15px 5px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .category-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .category-card.selected {
-            border-color: var(--accent);
-            background: var(--accent-light);
-        }
-
-        .category-icon {
-            font-size: 24px;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .category-name {
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .subcategory-select {
-            margin-top: 20px;
-            display: none;
-        }
-
-        .subcategory-select.show {
-            display: block;
-        }
-
         .loading {
             text-align: center;
             padding: 40px;
@@ -322,6 +354,10 @@
         .success-message.show {
             display: block;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -333,147 +369,242 @@
         <div style="width: 40px;"></div>
     </div>
 
+    <!-- Breadcrumb -->
+    <div class="breadcrumb" id="breadcrumb"></div>
+
     <div class="content">
         <div class="error-message" id="errorMessage"></div>
         <div class="success-message" id="successMessage"></div>
-
-        <div class="section-title">Маълумоти маҳсулот</div>
 
         <div id="loading" class="loading">
             <i class="fas fa-spinner"></i>
             <p>Боргирии категорияҳо...</p>
         </div>
 
-        <div id="formContainer" style="display: none;">
-            <!-- Category Grid -->
-            <div class="form-group">
-                <label class="form-label"><i class="fas fa-tags"></i> Категория</label>
-                <div class="category-grid" id="categoryGrid"></div>
-            </div>
+        <!-- Category List Container -->
+        <div id="categoryListContainer" class="hidden">
+            <ul class="category-list" id="categoryList"></ul>
+        </div>
 
-            <!-- Subcategory -->
-            <div class="subcategory-select" id="subcategoryContainer">
+        <!-- Product Form Container -->
+        <div id="productFormContainer" class="hidden">
+            <div class="product-form">
+                <!-- Product Name -->
                 <div class="form-group">
-                    <label class="form-label"><i class="fas fa-sitemap"></i> Зеркатегория</label>
-                    <select class="form-select" id="subcategorySelect">
-                        <option value="">Аввал категорияро интихоб кунед</option>
-                    </select>
+                    <label class="form-label"><i class="fas fa-heading"></i> Номи маҳсулот</label>
+                    <input type="text" class="form-input" id="productName" placeholder="Масалан: Футболка Adidas">
                 </div>
-            </div>
 
-            <!-- Product Name -->
-            <div class="form-group">
-                <label class="form-label"><i class="fas fa-heading"></i> Номи маҳсулот</label>
-                <input type="text" class="form-input" id="productName" placeholder="Масалан: Футболка Adidas">
-            </div>
-
-            <!-- Price -->
-            <div class="form-group">
-                <label class="form-label"><i class="fas fa-dollar-sign"></i> Нарх (c.)</label>
-                <input type="number" class="form-input" id="productPrice" placeholder="0">
-            </div>
-
-            <!-- Images -->
-            <div class="form-group">
-                <label class="form-label"><i class="fas fa-image"></i> Аксҳо</label>
-                <div class="image-upload-area" id="imageUploadArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Барои боркунии аксҳо зер кунед</p>
-                    <p style="font-size: 12px;">PNG, JPG, GIF (то 10MB)</p>
+                <!-- Price -->
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-dollar-sign"></i> Нарх (c.)</label>
+                    <input type="number" class="form-input" id="productPrice" placeholder="0">
                 </div>
-                <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
-                <div class="image-preview" id="imagePreview"></div>
+
+                <!-- Images -->
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-image"></i> Аксҳо</label>
+                    <div class="image-upload-area" id="imageUploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Барои боркунии аксҳо зер кунед</p>
+                        <p style="font-size: 12px;">PNG, JPG, GIF (то 10MB)</p>
+                    </div>
+                    <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-align-left"></i> Тавсиф</label>
+                    <textarea class="form-textarea" id="productDesc" placeholder="Тавсифи мухтасар..."></textarea>
+                </div>
+
+                <!-- Dynamic Attributes -->
+                <div id="attributesContainer"></div>
+
+                <!-- Save Button -->
+                <button class="btn" id="saveBtn" onclick="saveProduct()">Сабт кардан</button>
             </div>
-
-            <!-- Description -->
-            <div class="form-group">
-                <label class="form-label"><i class="fas fa-align-left"></i> Тавсиф</label>
-                <textarea class="form-textarea" id="productDesc" placeholder="Тавсифи мухтасар..."></textarea>
-            </div>
-
-            <!-- Attributes (динамикӣ) -->
-            <div id="attributesContainer"></div>
-
-            <!-- Save Button -->
-            <button class="btn" id="saveBtn" onclick="saveProduct()">Сабт кардан</button>
         </div>
     </div>
 
     <script>
-        // Supabase client
         const supabaseClient = supabase.createClient(
             'https://seagtlaujnnhoyitgsdd.supabase.co',
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         );
 
-        let categories = [];
-        let subcategories = [];
-        let selectedCategory = null;
-        let selectedSubcategory = null;
-        let uploadedFiles = [];
+        // Navigation stack: stores category IDs as we drill down
+        let categoryPath = []; // e.g. [12, 34, 56] where 12 is parent, 34 child, etc.
+        let categoriesMap = new Map(); // id -> category object
+        let currentLevelCategories = [];
+        let selectedCategoryId = null;
         let attributeFields = [];
+        let uploadedFiles = [];
 
-        // Load main categories
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadCategories();
+        // For theme changes from parent
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'theme') {
+                document.body.setAttribute('data-theme', event.data.theme);
+            }
         });
 
-        async function loadCategories() {
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadInitialCategories();
+        });
+
+        async function loadInitialCategories() {
+            showLoading();
             try {
+                // Load root categories (parent_id is null)
                 const { data, error } = await supabaseClient
                     .from('categories')
                     .select('*')
-                    .is('parent_id', null);
-                
+                    .is('parent_id', null)
+                    .order('name_tg');
+
                 if (error) throw error;
-                
-                categories = data || [];
-                
-                if (categories.length === 0) {
-                    showError('Ҳеҷ категорияе ёфт нашуд');
-                } else {
-                    displayCategories();
-                }
-                
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('formContainer').style.display = 'block';
-                
+
+                currentLevelCategories = data || [];
+                // Store in map for quick access
+                currentLevelCategories.forEach(cat => categoriesMap.set(cat.id, cat));
+                displayCategories();
+                updateBreadcrumb();
             } catch (error) {
                 showError('Хатогӣ дар боркунии категорияҳо: ' + error.message);
-                console.error(error);
+            } finally {
+                hideLoading();
             }
         }
 
         async function loadSubcategories(parentId) {
+            showLoading();
             try {
                 const { data, error } = await supabaseClient
                     .from('categories')
                     .select('*')
-                    .eq('parent_id', parentId);
-                
+                    .eq('parent_id', parentId)
+                    .order('name_tg');
+
                 if (error) throw error;
-                
-                subcategories = data || [];
-                
-                const select = document.getElementById('subcategorySelect');
-                select.innerHTML = '<option value="">Зеркатегорияро интихоб кунед</option>';
-                
-                subcategories.forEach(sub => {
-                    const option = document.createElement('option');
-                    option.value = sub.id;
-                    option.textContent = sub.name_tg;
-                    select.appendChild(option);
-                });
-                
-                document.getElementById('subcategoryContainer').classList.add('show');
-                
-                // Load fields for this category (if no subcategories, load for parent)
-                const categoryId = subcategories.length > 0 ? parentId : selectedCategory;
-                await loadCategoryFields(categoryId);
-                
+
+                currentLevelCategories = data || [];
+                currentLevelCategories.forEach(cat => categoriesMap.set(cat.id, cat));
+                displayCategories();
+                updateBreadcrumb();
             } catch (error) {
                 showError('Хатогӣ дар боркунии зеркатегорияҳо: ' + error.message);
+            } finally {
+                hideLoading();
             }
+        }
+
+        function displayCategories() {
+            const container = document.getElementById('categoryListContainer');
+            const list = document.getElementById('categoryList');
+            container.classList.remove('hidden');
+            document.getElementById('productFormContainer').classList.add('hidden');
+
+            list.innerHTML = '';
+            if (currentLevelCategories.length === 0) {
+                // No subcategories, so this is a leaf category – show product form
+                showProductFormForCurrentCategory();
+                return;
+            }
+
+            currentLevelCategories.forEach(cat => {
+                const li = document.createElement('li');
+                li.className = 'category-item';
+                li.onclick = () => selectCategory(cat.id);
+                li.innerHTML = `
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-${cat.icon || 'folder'}"></i></div>
+                        <span class="category-name">${cat.name_tg}</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        function selectCategory(catId) {
+            // Push to path
+            categoryPath.push(catId);
+            // Load its children
+            loadSubcategories(catId);
+        }
+
+        function goBack() {
+            if (categoryPath.length === 0) {
+                // At root, go back to home.html
+                window.location.href = 'home.html';
+                return;
+            }
+
+            // Pop last category from path
+            categoryPath.pop();
+
+            if (categoryPath.length === 0) {
+                // Back to root
+                loadInitialCategories();
+            } else {
+                // Load previous level
+                const parentId = categoryPath[categoryPath.length - 1];
+                loadSubcategories(parentId);
+            }
+        }
+
+        function updateBreadcrumb() {
+            const breadcrumb = document.getElementById('breadcrumb');
+            breadcrumb.innerHTML = '';
+
+            // Add "Асосӣ" link
+            const homeSpan = document.createElement('span');
+            homeSpan.className = 'breadcrumb-item';
+            homeSpan.innerText = 'Асосӣ';
+            homeSpan.onclick = () => {
+                categoryPath = [];
+                loadInitialCategories();
+            };
+            breadcrumb.appendChild(homeSpan);
+
+            // Add path items
+            for (let i = 0; i < categoryPath.length; i++) {
+                const catId = categoryPath[i];
+                const cat = categoriesMap.get(catId);
+                if (!cat) continue;
+
+                const sep = document.createElement('span');
+                sep.className = 'breadcrumb-separator';
+                sep.innerText = '›';
+                breadcrumb.appendChild(sep);
+
+                const span = document.createElement('span');
+                span.className = 'breadcrumb-item' + (i === categoryPath.length - 1 ? ' active' : '');
+                span.innerText = cat.name_tg;
+                // Allow navigation to any previous level
+                span.onclick = (function(id, index) {
+                    return function() {
+                        categoryPath = categoryPath.slice(0, index + 1);
+                        loadSubcategories(id);
+                    };
+                })(catId, i);
+                breadcrumb.appendChild(span);
+            }
+        }
+
+        async function showProductFormForCurrentCategory() {
+            // Current leaf category is the last in path
+            if (categoryPath.length === 0) return;
+            const leafCategoryId = categoryPath[categoryPath.length - 1];
+            selectedCategoryId = leafCategoryId;
+
+            // Load category fields
+            await loadCategoryFields(leafCategoryId);
+
+            // Hide category list, show product form
+            document.getElementById('categoryListContainer').classList.add('hidden');
+            document.getElementById('productFormContainer').classList.remove('hidden');
         }
 
         async function loadCategoryFields(categoryId) {
@@ -482,68 +613,31 @@
                     .from('category_fields')
                     .select('*')
                     .eq('category_id', categoryId);
-                
+
                 if (error) throw error;
-                
+
                 attributeFields = data || [];
                 displayAttributes();
-                
             } catch (error) {
                 console.error('Error loading fields:', error);
             }
         }
 
-        function displayCategories() {
-            const grid = document.getElementById('categoryGrid');
-            grid.innerHTML = '';
-            
-            categories.forEach(cat => {
-                const card = document.createElement('div');
-                card.className = 'category-card';
-                card.dataset.id = cat.id;
-                card.onclick = () => selectCategory(cat.id, cat.name_tg);
-                
-                card.innerHTML = `
-                    <div class="category-icon"><i class="fas fa-${cat.icon || 'box'}"></i></div>
-                    <div class="category-name">${cat.name_tg}</div>
-                `;
-                
-                grid.appendChild(card);
-            });
-        }
-
-        function selectCategory(catId, catName) {
-            // Remove selected class from all
-            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
-            
-            // Add selected class to current
-            event.currentTarget.classList.add('selected');
-            
-            selectedCategory = catId;
-            selectedSubcategory = null;
-            
-            // Clear attributes container
-            document.getElementById('attributesContainer').innerHTML = '';
-            
-            // Load subcategories
-            loadSubcategories(catId);
-        }
-
         function displayAttributes() {
             const container = document.getElementById('attributesContainer');
             container.innerHTML = '';
-            
+
             if (attributeFields.length === 0) return;
-            
+
             const title = document.createElement('div');
             title.className = 'form-group';
             title.innerHTML = '<label class="form-label"><i class="fas fa-list"></i> Хусусиятҳо</label>';
             container.appendChild(title);
-            
+
             attributeFields.forEach(field => {
                 const fieldGroup = document.createElement('div');
                 fieldGroup.className = 'form-group';
-                
+
                 let inputHtml = '';
                 if (field.field_type === 'select') {
                     inputHtml = `
@@ -556,12 +650,12 @@
                 } else {
                     inputHtml = `<input type="${field.field_type}" class="form-input" id="attr_${field.id}" placeholder="${field.label_tg}">`;
                 }
-                
+
                 fieldGroup.innerHTML = `
                     <label class="form-label">${field.label_tg}</label>
                     ${inputHtml}
                 `;
-                
+
                 container.appendChild(fieldGroup);
             });
         }
@@ -573,15 +667,15 @@
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
-            
+
             files.forEach(file => {
                 if (file.size > 10 * 1024 * 1024) {
                     showError('Акс набояд аз 10MB калонтар бошад');
                     return;
                 }
-                
+
                 uploadedFiles.push(file);
-                
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const preview = document.getElementById('imagePreview');
@@ -602,7 +696,6 @@
         function removeImage(index) {
             uploadedFiles.splice(index, 1);
             document.getElementById('imagePreview').innerHTML = '';
-            
             // Re-render preview
             uploadedFiles.forEach((file, i) => {
                 const reader = new FileReader();
@@ -626,49 +719,43 @@
             const name = document.getElementById('productName').value;
             const price = document.getElementById('productPrice').value;
             const desc = document.getElementById('productDesc').value;
-            const subcategory = document.getElementById('subcategorySelect').value;
-            
+
             if (!name) {
                 showError('Номи маҳсулотро ворид кунед');
                 return;
             }
-            
             if (!price) {
                 showError('Нархро ворид кунед');
                 return;
             }
-            
-            if (!selectedCategory) {
-                showError('Категорияро интихоб кунед');
+            if (!selectedCategoryId) {
+                showError('Категория интихоб нашудааст');
                 return;
             }
-            
-            const categoryId = subcategory || selectedCategory;
-            
+
             const btn = document.getElementById('saveBtn');
             btn.disabled = true;
             btn.innerText = 'Сабт шуда истодааст...';
-            
+
             try {
                 let imageUrls = [];
-                
                 if (uploadedFiles.length > 0) {
                     for (const file of uploadedFiles) {
                         const fileName = `${Date.now()}_${file.name}`;
                         const { data, error } = await supabaseClient.storage
                             .from('product-images')
                             .upload(fileName, file);
-                        
+
                         if (error) throw error;
-                        
+
                         const { data: urlData } = supabaseClient.storage
                             .from('product-images')
                             .getPublicUrl(fileName);
-                        
+
                         imageUrls.push(urlData.publicUrl);
                     }
                 }
-                
+
                 const attributes = {};
                 attributeFields.forEach(field => {
                     const input = document.getElementById(`attr_${field.id}`);
@@ -676,50 +763,55 @@
                         attributes[field.label_tg] = input.value;
                     }
                 });
-                
+
                 const productData = {
                     name: name,
                     price: parseFloat(price),
-                    category_id: parseInt(categoryId),
+                    category_id: selectedCategoryId,
                     description: desc || null,
                     images: imageUrls,
                     attributes: attributes,
                     created_at: new Date()
                 };
-                
+
                 const { data, error } = await supabaseClient
                     .from('products')
                     .insert([productData])
                     .select();
-                
+
                 if (error) throw error;
-                
+
                 const successMsg = document.getElementById('successMessage');
                 successMsg.innerText = '✅ Маҳсулот бомуваффақият сабт шуд!';
                 successMsg.classList.add('show');
-                
+
                 setTimeout(() => {
-                    goBack();
+                    window.location.href = 'home.html';
                 }, 1500);
-                
+
             } catch (error) {
                 showError('Хатогӣ: ' + error.message);
                 console.error(error);
-                
                 btn.disabled = false;
                 btn.innerText = 'Сабт кардан';
             }
         }
 
-        function goBack() {
-            window.location.href = 'home.html';
+        function showLoading() {
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('categoryListContainer').classList.add('hidden');
+            document.getElementById('productFormContainer').classList.add('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.add('hidden');
         }
 
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
             errorDiv.innerText = '❌ ' + message;
             errorDiv.classList.add('show');
-            
+
             setTimeout(() => {
                 errorDiv.classList.remove('show');
             }, 3000);
