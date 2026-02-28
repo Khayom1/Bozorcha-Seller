@@ -4,469 +4,381 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Панели фурӯшанда</title>
-    <!-- Font Awesome -->
+    <!-- Font Awesome барои иконкаҳо -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* Theme Variables */
         :root {
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-tertiary: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
+            --bg: #f8fafc;
+            --bg-card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
             --accent: #ff9800;
             --accent-light: #fff3e0;
             --accent-dark: #f57c00;
             --border: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            --shadow-lg: 0 10px 30px rgba(0,0,0,0.05);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
-            --gradient: linear-gradient(135deg, var(--accent) 0%, #ff6b6b 100%);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
         }
 
         [data-theme="dark"] {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
             --border: #334155;
-            --shadow-lg: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
             padding-bottom: 80px;
-            min-height: 100vh;
         }
 
-        /* Animations */
+        /* Аниматсияҳо */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes slideIn {
-            from { transform: translateX(-20px); opacity: 0; }
+            from { transform: translateX(20px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
 
-        @keyframes scaleIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(255,152,0,0.3); }
-            50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(255,152,0,0.5); }
-            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255,152,0,0.3); }
-        }
-
-        /* App Bar */
+        /* Апп бар */
         .app-bar {
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             padding: 16px 20px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
-            animation: slideIn 0.5s ease;
         }
 
         .app-title {
             font-size: 24px;
-            font-weight: 800;
+            font-weight: bold;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
-        .header-btn {
-            background: var(--bg-tertiary);
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 500;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
         }
 
-        .header-btn:hover {
+        .icon-btn:hover {
             background: var(--accent-light);
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .header-btn i {
             color: var(--accent);
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
-
-        .header-btn:hover i {
-            transform: rotate(10deg);
+            transform: scale(1.05);
         }
 
         .profile-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 14px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             background: var(--gradient);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 20px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: scaleIn 0.5s ease;
-            box-shadow: 0 4px 15px rgba(255,152,0,0.3);
         }
 
-        .profile-icon:hover {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 8px 25px rgba(255,152,0,0.5);
-        }
-
-        /* Settings Menu */
-        .settings-menu {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            box-shadow: var(--shadow-lg);
-            padding: 20px;
-            display: none;
-            z-index: 1000;
+        /* Менюи забон */
+        .lang-menu {
+            position: absolute;
+            top: 60px;
+            right: 70px;
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            min-width: 280px;
-            animation: scaleIn 0.3s ease;
+            border-radius: 12px;
+            padding: 5px;
+            display: none;
+            box-shadow: var(--shadow);
+            z-index: 150;
         }
 
-        .settings-menu.show {
+        .lang-menu.show {
             display: block;
         }
 
-        .settings-item {
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-            transition: all 0.2s ease;
-        }
-
-        .settings-item:last-child {
-            border-bottom: none;
-        }
-
-        .settings-item-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-primary);
-        }
-
-        .settings-item-title i {
-            color: var(--accent);
-        }
-
-        .theme-options, .lang-options {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .theme-option, .lang-option {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            text-align: center;
+        .lang-option {
+            padding: 10px 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--bg-secondary);
-            font-weight: 500;
-            font-size: 13px;
+            border-radius: 8px;
+            color: var(--text);
         }
 
-        .theme-option.active, .lang-option.active {
-            border-color: var(--accent);
+        .lang-option:hover {
             background: var(--accent-light);
             color: var(--accent);
         }
 
-        .theme-option i {
-            font-size: 18px;
-            display: block;
-            margin-bottom: 4px;
+        .lang-option.active {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: bold;
         }
 
-        .checkbox-item {
+        /* Панели танзимот (слайд аз рост) */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            background: var(--bg-card);
+            box-shadow: -5px 0 30px rgba(0,0,0,0.2);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid var(--border);
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .settings-header i {
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
         }
 
-        .checkbox-item input {
-            width: 18px;
-            height: 18px;
+        .settings-section h3 i {
+            color: var(--accent);
+        }
+
+        .plan-card, .ad-card {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        /* Content */
+        .plan-card:hover, .ad-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .plan-name, .ad-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .plan-price, .ad-price {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* Саҳифаи асосӣ */
         .content {
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
-            animation: fadeIn 0.6s ease;
         }
 
-        /* Welcome Section */
-        .welcome-section {
-            background: var(--gradient);
-            border-radius: 24px;
-            padding: 30px;
-            color: white;
-            margin-bottom: 30px;
-            position: relative;
-            overflow: hidden;
-            animation: scaleIn 0.5s ease;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .welcome-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 50%);
-            animation: float 8s infinite linear;
-        }
-
-        .welcome-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            position: relative;
-        }
-
-        .welcome-subtitle {
-            font-size: 16px;
-            opacity: 0.95;
-            position: relative;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
+        /* Статистика дар боло */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             margin-bottom: 30px;
         }
 
-        .action-btn {
-            flex: 1;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
+        .stat-card {
+            background: var(--bg-card);
             border-radius: 16px;
             padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow-md);
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            background: var(--accent-light);
-            color: var(--accent);
-            box-shadow: 0 10px 30px rgba(255,152,0,0.2);
-        }
-
-        .action-btn i {
-            font-size: 24px;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            animation: fadeIn 0.5s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--gradient);
-            transition: width 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 30px rgba(255,152,0,0.2);
-        }
-
-        .stat-card:hover::before {
-            width: 100%;
-            opacity: 0.1;
+            text-align: center;
         }
 
         .stat-icon {
-            font-size: 30px;
+            font-size: 28px;
             color: var(--accent);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .stat-value {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 5px;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .stat-label {
-            color: var(--text-secondary);
             font-size: 14px;
+            color: var(--text-light);
         }
 
-        /* Section Title */
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
+        /* Постҳо (ба монанди Instagram) */
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .post {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        .post-user {
             display: flex;
             align-items: center;
             gap: 10px;
-            animation: slideIn 0.5s ease;
         }
 
-        .section-title i {
-            color: var(--accent);
-            font-size: 24px;
-        }
-
-        /* Products Grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .product-card {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: 15px;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s ease;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            animation: scaleIn 0.5s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(255,152,0,0.15);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 120px;
-            background: var(--bg-tertiary);
+        .post-avatar {
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
-            margin-bottom: 12px;
+            background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
-            font-size: 30px;
-            overflow: hidden;
+            color: white;
         }
 
-        .product-image img {
+        .post-username {
+            font-weight: bold;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .post-menu {
+            cursor: pointer;
+            padding: 5px;
+            color: var(--text-light);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 300px;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 40px;
+        }
+
+        .post-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .product-name {
-            font-weight: 600;
+        .post-details {
+            padding: 15px;
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
             margin-bottom: 5px;
         }
 
-        .product-price {
+        .post-price {
             color: var(--accent);
-            font-weight: 700;
-            font-size: 18px;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
         }
 
-        /* Modal */
+        .post-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 0 15px 15px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .post-action:hover {
+            color: var(--accent);
+        }
+
+        .post-action.liked {
+            color: #ef4444;
+        }
+
+        /* Модал барои иловаи маҳсулот */
         .modal {
             position: fixed;
             top: 0;
@@ -479,117 +391,95 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            animation: fadeIn 0.3s ease;
         }
 
-        .modal.show {
+        .modal.open {
             display: flex;
         }
 
         .modal-content {
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             border-radius: 24px;
             padding: 30px;
             max-width: 500px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-            animation: scaleIn 0.3s ease;
+            animation: slideIn 0.3s ease;
         }
 
-        .modal-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 20px;
+        .modal-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
 
-        .modal-title i {
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--text-light);
+        }
+
+        .category-tree {
+            margin-bottom: 20px;
+        }
+
+        .category-level {
+            margin-left: 20px;
+            border-left: 2px solid var(--border);
+            padding-left: 15px;
+        }
+
+        .category-item {
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 2px 0;
+        }
+
+        .category-item:hover {
+            background: var(--accent-light);
             color: var(--accent);
         }
 
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
+        .category-item.selected {
+            background: var(--accent-light);
+            color: var(--accent);
+            font-weight: bold;
         }
 
-        .modal-close:hover {
-            color: var(--danger);
-            transform: rotate(90deg);
+        .product-form {
+            margin-top: 20px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .form-label {
             display: block;
             font-weight: 500;
-            margin-bottom: 8px;
-            color: var(--text-primary);
+            margin-bottom: 5px;
         }
 
-        .form-input, .form-textarea {
+        .form-input, .form-select, .form-textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid var(--border);
             border-radius: 12px;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
+            background: var(--bg);
+            color: var(--text);
             font-size: 15px;
-            transition: all 0.3s ease;
         }
 
-        .form-input:focus, .form-textarea:focus {
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
             border-color: var(--accent);
             outline: none;
-        }
-
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .image-upload {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .image-upload:hover {
-            border-color: var(--accent);
-            background: var(--accent-light);
-        }
-
-        .image-upload i {
-            font-size: 40px;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .image-preview {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .image-preview img {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            object-fit: cover;
         }
 
         .btn {
@@ -597,143 +487,78 @@
             padding: 14px;
             border: none;
             border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
             background: var(--gradient);
             color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255,152,0,0.4);
-        }
-
-        .plans-grid, .ads-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .plan-card, .ad-card {
-            background: var(--bg-tertiary);
-            border-radius: 16px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border);
+            font-weight: bold;
             cursor: pointer;
+            transition: 0.3s;
         }
 
-        .plan-card:hover, .ad-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(255,152,0,0.15);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255,152,0,0.4);
         }
 
-        .plan-name, .ad-name {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .plan-price, .ad-price {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .plan-features, .ad-features {
-            list-style: none;
-            margin-bottom: 15px;
-        }
-
-        .plan-features li, .ad-features li {
-            padding: 5px 0;
-            font-size: 13px;
-            color: var(--text-secondary);
+        /* Тугмаи илова */
+        .add-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: var(--gradient);
+            color: white;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255,152,0,0.4);
+            transition: 0.3s;
+            z-index: 90;
         }
 
-        .plan-features i, .ad-features i {
-            color: var(--accent);
+        .add-btn:hover {
+            transform: scale(1.1) rotate(90deg);
         }
 
-        /* Bottom Navigation */
+        /* Навигатсияи поёнӣ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             display: flex;
             justify-content: space-around;
             padding: 12px 0;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-            z-index: 100;
-            backdrop-filter: blur(10px);
             border-top: 1px solid var(--border);
-            animation: fadeIn 0.5s ease;
+            z-index: 100;
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: var(--text-secondary);
+            color: var(--text-light);
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 8px 15px;
-            border-radius: 20px;
-            position: relative;
+            transition: 0.3s;
         }
 
         .nav-item.active {
             color: var(--accent);
-            background: var(--accent-light);
-            transform: translateY(-5px);
         }
 
-        .nav-item:hover {
-            color: var(--accent);
-            transform: translateY(-3px);
-        }
-
-        .nav-icon {
-            font-size: 24px;
+        .nav-item i {
+            font-size: 20px;
             margin-bottom: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-item:hover .nav-icon {
-            transform: scale(1.2) rotate(5deg);
-        }
-
-        .nav-badge {
-            position: absolute;
-            top: -5px;
-            right: 0;
-            background: var(--danger);
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-weight: 600;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .products-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -744,601 +569,776 @@
     <div class="app-bar">
         <div class="app-title">Bozorcha</div>
         <div class="header-actions">
-            <div class="header-btn" onclick="toggleSettingsMenu()">
-                <i class="fas fa-cog"></i>
-                <span>Танзимот</span>
+            <div class="icon-btn" id="themeToggle">
+                <i class="fas fa-moon" id="themeIcon"></i>
             </div>
-            <div class="profile-icon" onclick="navigate('profile')">Ф</div>
+            <div class="icon-btn" id="langToggle">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="icon-btn" id="settingsToggle">
+                <i class="fas fa-sliders-h"></i>
+            </div>
+            <div class="profile-icon">Ф</div>
         </div>
     </div>
 
-    <!-- Settings Menu -->
-    <div class="settings-menu" id="settingsMenu">
-        <div class="settings-item">
-            <div class="settings-item-title"><i class="fas fa-palette"></i> Темаи барнома</div>
-            <div class="theme-options">
-                <div class="theme-option active" onclick="setTheme('light')">
-                    <i class="fas fa-sun"></i> Равшан
+    <!-- Менюи забон -->
+    <div class="lang-menu" id="langMenu">
+        <div class="lang-option active" data-lang="tg">Тоҷикӣ</div>
+        <div class="lang-option" data-lang="ru">Русский</div>
+        <div class="lang-option" data-lang="en">English</div>
+    </div>
+
+    <!-- Панели танзимот (слайд аз рост) -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <span>Танзимот</span>
+            <i class="fas fa-times" id="closeSettings"></i>
+        </div>
+
+        <div class="settings-section">
+            <h3><i class="fas fa-crown"></i> Планҳои обуна</h3>
+            <div class="plan-card" data-plan="free">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">0 с/моҳ</div>
+            </div>
+            <div class="plan-card" data-plan="basic">
+                <div class="plan-name">Basic</div>
+                <div class="plan-price">19 с/моҳ</div>
+            </div>
+            <div class="plan-card" data-plan="pro">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">99 с/моҳ</div>
+            </div>
+            <div class="plan-card" data-plan="ultra">
+                <div class="plan-name">Ultra</div>
+                <div class="plan-price">299 с/моҳ</div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3><i class="fas fa-chart-line"></i> Реклама</h3>
+            <div class="ad-card" data-ad="plus">
+                <div class="ad-name">Plus</div>
+                <div class="ad-price">6 с/рӯз</div>
+            </div>
+            <div class="ad-card" data-ad="pro">
+                <div class="ad-name">Pro</div>
+                <div class="ad-price">14 с/рӯз</div>
+            </div>
+            <div class="ad-card" data-ad="ultra">
+                <div class="ad-name">Ultra</div>
+                <div class="ad-price">30 с/рӯз</div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3><i class="fas fa-palette"></i> Тема</h3>
+            <div class="theme-options" style="display: flex; gap: 10px;">
+                <div class="icon-btn" onclick="setTheme('light')">
+                    <i class="fas fa-sun"></i>
                 </div>
-                <div class="theme-option" onclick="setTheme('dark')">
-                    <i class="fas fa-moon"></i> Торик
+                <div class="icon-btn" onclick="setTheme('dark')">
+                    <i class="fas fa-moon"></i>
                 </div>
             </div>
         </div>
-        <div class="settings-item">
-            <div class="settings-item-title"><i class="fas fa-language"></i> Забон</div>
-            <div class="lang-options">
-                <div class="lang-option active" onclick="setLanguage('tg')">🇹🇯 Тоҷикӣ</div>
-                <div class="lang-option" onclick="setLanguage('ru')">🇷🇺 Русский</div>
-                <div class="lang-option" onclick="setLanguage('en')">🇬🇧 English</div>
-            </div>
+
+        <div class="settings-section">
+            <h3><i class="fas fa-bell"></i> Огоҳиномаҳо</h3>
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" checked> Почта
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" checked> SMS
+            </label>
         </div>
-        <div class="settings-item">
-            <div class="settings-item-title"><i class="fas fa-bell"></i> Огоҳиномаҳо</div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="notifEmail" checked>
-                <label for="notifEmail">Почта</label>
-            </div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="notifSms" checked>
-                <label for="notifSms">SMS</label>
-            </div>
-        </div>
-        <div class="settings-item">
-            <div class="settings-item-title"><i class="fas fa-lock"></i> Махфият</div>
-            <div class="checkbox-item">
-                <input type="checkbox" id="privacyProfile" checked>
-                <label for="privacyProfile">Профили оммавӣ</label>
-            </div>
+
+        <div class="settings-section">
+            <h3><i class="fas fa-lock"></i> Махфият</h3>
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" checked> Профили оммавӣ
+            </label>
         </div>
     </div>
 
-    <!-- Content -->
-    <div class="content">
-        <!-- Welcome Section -->
-        <div class="welcome-section" id="welcome">
-            <h1 class="welcome-title" id="welcomeTitle">Хуш омадед, Ҷонибек!</h1>
-            <p class="welcome-subtitle" id="welcomeSubtitle">Фурӯши имрӯза: 1 250 с | Фармоишҳо: 8</p>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <div class="action-btn" onclick="showPlansModal()">
-                <i class="fas fa-crown"></i>
-                <span>Планҳои обуна</span>
-            </div>
-            <div class="action-btn" onclick="showAdsModal()">
-                <i class="fas fa-chart-line"></i>
-                <span>Реклама</span>
-            </div>
-        </div>
-
-        <!-- Stats Grid -->
+    <!-- Саҳифаи асосӣ -->
+    <div class="content" id="mainContent">
+        <!-- Статистика дар боло -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-box"></i></div>
-                <div class="stat-value" id="statProducts">15</div>
+                <div class="stat-value" id="statProducts">24</div>
                 <div class="stat-label" id="statProductsLabel">Маҳсулот</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-                <div class="stat-value" id="statOrders">8</div>
-                <div class="stat-label" id="statOrdersLabel">Фармоишҳо</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                <div class="stat-value" id="statSales">1,250</div>
-                <div class="stat-label" id="statSalesLabel">Фурӯш (с)</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-star"></i></div>
                 <div class="stat-value" id="statRating">4.8</div>
                 <div class="stat-label" id="statRatingLabel">Рейтинг</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-value" id="statSales">1,250</div>
+                <div class="stat-label" id="statSalesLabel">Фурӯш</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                <div class="stat-value" id="statOrders">8</div>
+                <div class="stat-label" id="statOrdersLabel">Фармоишҳо</div>
+            </div>
         </div>
 
-        <!-- Products Section -->
-        <div class="section-title">
-            <i class="fas fa-boxes"></i>
-            <span>Маҳсулотҳои ман</span>
-        </div>
-        <div class="products-grid" id="productsGrid">
-            <!-- Products will be added here dynamically -->
+        <!-- Постҳо (маҳсулот) -->
+        <div class="posts-container" id="postsContainer">
+            <!-- Маҳсулотҳо тавассути JavaScript илова мешаванд -->
         </div>
     </div>
 
-    <!-- Add Product Button -->
-    <div class="add-button" onclick="showAddProductModal()">
+    <!-- Тугмаи иловаи маҳсулот -->
+    <div class="add-btn" id="addProductBtn">
         <i class="fas fa-plus"></i>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Навигатсияи поёнӣ -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="navigate('dashboard')">
-            <span class="nav-icon"><i class="fas fa-home"></i></span>
+        <div class="nav-item active" data-page="home">
+            <i class="fas fa-home"></i>
             <span>Асосӣ</span>
         </div>
-        <div class="nav-item" onclick="navigate('stats')">
-            <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+        <div class="nav-item" data-page="stats">
+            <i class="fas fa-chart-bar"></i>
             <span>Статистика</span>
-            <span class="nav-badge">3</span>
         </div>
-        <div class="nav-item" onclick="navigate('chat')">
-            <span class="nav-icon"><i class="fas fa-robot"></i></span>
+        <div class="nav-item" data-page="chat">
+            <i class="fas fa-robot"></i>
             <span>AI Чат</span>
         </div>
-        <div class="nav-item" onclick="navigate('profile')">
-            <span class="nav-icon"><i class="fas fa-user"></i></span>
+        <div class="nav-item" data-page="profile">
+            <i class="fas fa-user"></i>
             <span>Профил</span>
         </div>
     </div>
 
-    <!-- Plans Modal -->
-    <div class="modal" id="plansModal">
-        <div class="modal-content">
-            <div class="modal-close" onclick="closeModal('plansModal')">&times;</div>
-            <div class="modal-title">
-                <i class="fas fa-crown"></i>
-                <span>Планҳои обуна</span>
-            </div>
-            <div class="plans-grid">
-                <!-- Free Plan -->
-                <div class="plan-card" onclick="selectPlan('free')">
-                    <div class="plan-name">Free</div>
-                    <div class="plan-price">0 с/моҳ</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> То 20 маҳсулот</li>
-                        <li><i class="fas fa-check"></i> Комиссия 5%</li>
-                        <li><i class="fas fa-times"></i> Реклама нест</li>
-                        <li><i class="fas fa-times"></i> 3D нест</li>
-                        <li><i class="fas fa-times"></i> Analytics нест</li>
-                    </ul>
-                </div>
-                <!-- Basic Plan -->
-                <div class="plan-card" onclick="selectPlan('basic')">
-                    <div class="plan-name">Basic</div>
-                    <div class="plan-price">19 с/моҳ</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> То 50 маҳсулот</li>
-                        <li><i class="fas fa-check"></i> Комиссия 4%</li>
-                        <li><i class="fas fa-check"></i> Рекламаи Plus (1/ҳафта)</li>
-                        <li><i class="fas fa-check"></i> Analytics</li>
-                        <li><i class="fas fa-times"></i> 3D нест</li>
-                    </ul>
-                </div>
-                <!-- Pro Plan -->
-                <div class="plan-card" onclick="selectPlan('pro')">
-                    <div class="plan-name">Pro</div>
-                    <div class="plan-price">99 с/моҳ</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> То 200 маҳсулот</li>
-                        <li><i class="fas fa-check"></i> Комиссия 3%</li>
-                        <li><i class="fas fa-check"></i> Рекламаи Pro (2/моҳ)</li>
-                        <li><i class="fas fa-check"></i> Analytics + AI маҳдуд</li>
-                        <li><i class="fas fa-check"></i> 3D оддӣ</li>
-                    </ul>
-                </div>
-                <!-- Ultra Plan -->
-                <div class="plan-card" onclick="selectPlan('ultra')">
-                    <div class="plan-name">Ultra</div>
-                    <div class="plan-price">299 с/моҳ</div>
-                    <ul class="plan-features">
-                        <li><i class="fas fa-check"></i> Бемаҳдуд маҳсулот</li>
-                        <li><i class="fas fa-check"></i> Комиссия 2%</li>
-                        <li><i class="fas fa-check"></i> Рекламаи Ultra (1/моҳ)</li>
-                        <li><i class="fas fa-check"></i> Analytics + AI пурра</li>
-                        <li><i class="fas fa-check"></i> 3D пурра</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ads Modal -->
-    <div class="modal" id="adsModal">
-        <div class="modal-content">
-            <div class="modal-close" onclick="closeModal('adsModal')">&times;</div>
-            <div class="modal-title">
-                <i class="fas fa-chart-line"></i>
-                <span>Реклама</span>
-            </div>
-            <div class="ads-grid">
-                <!-- Plus Ad -->
-                <div class="ad-card" onclick="buyAd('plus')">
-                    <div class="ad-name">Plus</div>
-                    <div class="ad-price">6 с/рӯз</div>
-                    <ul class="ad-features">
-                        <li><i class="fas fa-check"></i> Маҳсулот дар саҳифаи асосӣ боло меравад</li>
-                    </ul>
-                </div>
-                <!-- Pro Ad -->
-                <div class="ad-card" onclick="buyAd('pro')">
-                    <div class="ad-name">Pro</div>
-                    <div class="ad-price">14 с/рӯз</div>
-                    <ul class="ad-features">
-                        <li><i class="fas fa-check"></i> Боло + ба аудиторияи мушаххас нишон дода мешавад</li>
-                    </ul>
-                </div>
-                <!-- Ultra Ad -->
-                <div class="ad-card" onclick="buyAd('ultra')">
-                    <div class="ad-name">Ultra</div>
-                    <div class="ad-price">30 с/рӯз</div>
-                    <ul class="ad-features">
-                        <li><i class="fas fa-check"></i> Мағоза дар ТОП, поиск аввал, тавсияҳо</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Product Modal -->
+    <!-- Модал барои иловаи маҳсулот -->
     <div class="modal" id="addProductModal">
         <div class="modal-content">
-            <div class="modal-close" onclick="closeModal('addProductModal')">&times;</div>
-            <div class="modal-title">
-                <i class="fas fa-plus-circle"></i>
-                <span>Иловаи маҳсулоти нав</span>
+            <div class="modal-header">
+                <h2 id="modalTitle">Иловаи маҳсулоти нав</h2>
+                <i class="fas fa-times close-modal" onclick="closeModal()"></i>
             </div>
-            <div class="form-group">
-                <label class="form-label">Номи маҳсулот</label>
-                <input type="text" class="form-input" id="productName" placeholder="Масалан: Футболка Adidas">
+            <div class="category-tree" id="categoryTree">
+                <!-- Дарахти категорияҳо тавассути JavaScript сохта мешавад -->
             </div>
-            <div class="form-group">
-                <label class="form-label">Нарх (c)</label>
-                <input type="number" class="form-input" id="productPrice" placeholder="150">
+            <div class="product-form" id="productForm" style="display: none;">
+                <!-- Шакли хосиятҳо тавассути JavaScript сохта мешавад -->
             </div>
-            <div class="form-group">
-                <label class="form-label">Миқдор</label>
-                <input type="number" class="form-input" id="productStock" placeholder="20">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Аксҳо</label>
-                <div class="image-upload" onclick="document.getElementById('productImages').click()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <div>Барои боркунии аксҳо зер кунед</div>
-                </div>
-                <input type="file" id="productImages" multiple accept="image/*" style="display:none" onchange="previewImages(event)">
-                <div class="image-preview" id="imagePreview"></div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Тавсиф</label>
-                <textarea class="form-textarea" id="productDescription" placeholder="Тавсифи мухтасари маҳсулот..."></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Хусусиятҳо (ҳар як дар сатри нав)</label>
-                <textarea class="form-textarea" id="productFeatures" placeholder="Масалан:
-- Мавод: 100% пахта
-- Андоза: S, M, L
-- Ранг: сафед, сиёҳ"></textarea>
-            </div>
-            <button class="btn btn-primary" onclick="addProduct()">Илова кардан</button>
         </div>
     </div>
 
     <script>
-        // Language translations
+        // ==================== ТАРҶУМА ====================
         const translations = {
             tg: {
-                welcomeTitle: 'Хуш омадед, Ҷонибек!',
-                welcomeSubtitle: 'Фурӯши имрӯза: 1 250 с | Фармоишҳо: 8',
-                statProductsLabel: 'Маҳсулот',
-                statOrdersLabel: 'Фармоишҳо',
-                statSalesLabel: 'Фурӯш (с)',
-                statRatingLabel: 'Рейтинг',
+                statProducts: 'Маҳсулот',
+                statRating: 'Рейтинг',
+                statSales: 'Фурӯш',
+                statOrders: 'Фармоишҳо',
                 navHome: 'Асосӣ',
                 navStats: 'Статистика',
                 navChat: 'AI Чат',
                 navProfile: 'Профил',
-                settingsTitle: 'Танзимот',
-                themeTitle: 'Темаи барнома',
-                lightText: 'Равшан',
-                darkText: 'Торик',
-                langTitle: 'Забон',
-                notifTitle: 'Огоҳиномаҳо',
-                notifEmailText: 'Почта',
-                notifSmsText: 'SMS',
-                privacyTitle: 'Махфият',
-                privacyProfileText: 'Профили оммавӣ',
-                plansBtn: 'Планҳои обуна',
-                adsBtn: 'Реклама',
-                addProduct: 'Иловаи маҳсулот'
+                settings: 'Танзимот',
+                plans: 'Планҳои обуна',
+                ads: 'Реклама',
+                theme: 'Тема',
+                notifications: 'Огоҳиномаҳо',
+                privacy: 'Махфият',
+                addProduct: 'Иловаи маҳсулот',
+                close: 'Пӯшидан',
+                selectCategory: 'Категорияро интихоб кунед',
+                categories: {
+                    clothing: 'Либос',
+                    footwear: 'Пойафзол',
+                    electronics: 'Телефон ва аксессуар',
+                    mobile: 'Мобильный телефон',
+                    accessory: 'Аксессуар',
+                    fruits: 'Меваю сабзавот',
+                    cosmetics: 'Косметика'
+                }
             },
             ru: {
-                welcomeTitle: 'Добро пожаловать, Джонибек!',
-                welcomeSubtitle: 'Продажи сегодня: 1 250 с | Заказы: 8',
-                statProductsLabel: 'Товары',
-                statOrdersLabel: 'Заказы',
-                statSalesLabel: 'Продажи (с)',
-                statRatingLabel: 'Рейтинг',
+                statProducts: 'Товары',
+                statRating: 'Рейтинг',
+                statSales: 'Продажи',
+                statOrders: 'Заказы',
                 navHome: 'Главная',
                 navStats: 'Статистика',
                 navChat: 'AI Чат',
                 navProfile: 'Профиль',
-                settingsTitle: 'Настройки',
-                themeTitle: 'Тема приложения',
-                lightText: 'Светлая',
-                darkText: 'Темная',
-                langTitle: 'Язык',
-                notifTitle: 'Уведомления',
-                notifEmailText: 'Почта',
-                notifSmsText: 'SMS',
-                privacyTitle: 'Конфиденциальность',
-                privacyProfileText: 'Публичный профиль',
-                plansBtn: 'Планы подписки',
-                adsBtn: 'Реклама',
-                addProduct: 'Добавить товар'
+                settings: 'Настройки',
+                plans: 'Планы подписки',
+                ads: 'Реклама',
+                theme: 'Тема',
+                notifications: 'Уведомления',
+                privacy: 'Конфиденциальность',
+                addProduct: 'Добавить товар',
+                close: 'Закрыть',
+                selectCategory: 'Выберите категорию',
+                categories: {
+                    clothing: 'Одежда',
+                    footwear: 'Обувь',
+                    electronics: 'Телефоны и аксессуары',
+                    mobile: 'Мобильный телефон',
+                    accessory: 'Аксессуар',
+                    fruits: 'Фрукты и овощи',
+                    cosmetics: 'Косметика'
+                }
             },
             en: {
-                welcomeTitle: 'Welcome, Jonibek!',
-                welcomeSubtitle: 'Today\'s sales: 1 250 с | Orders: 8',
-                statProductsLabel: 'Products',
-                statOrdersLabel: 'Orders',
-                statSalesLabel: 'Sales (с)',
-                statRatingLabel: 'Rating',
+                statProducts: 'Products',
+                statRating: 'Rating',
+                statSales: 'Sales',
+                statOrders: 'Orders',
                 navHome: 'Home',
                 navStats: 'Statistics',
                 navChat: 'AI Chat',
                 navProfile: 'Profile',
-                settingsTitle: 'Settings',
-                themeTitle: 'App Theme',
-                lightText: 'Light',
-                darkText: 'Dark',
-                langTitle: 'Language',
-                notifTitle: 'Notifications',
-                notifEmailText: 'Email',
-                notifSmsText: 'SMS',
-                privacyTitle: 'Privacy',
-                privacyProfileText: 'Public profile',
-                plansBtn: 'Subscription Plans',
-                adsBtn: 'Advertising',
-                addProduct: 'Add Product'
+                settings: 'Settings',
+                plans: 'Subscription Plans',
+                ads: 'Advertising',
+                theme: 'Theme',
+                notifications: 'Notifications',
+                privacy: 'Privacy',
+                addProduct: 'Add Product',
+                close: 'Close',
+                selectCategory: 'Select category',
+                categories: {
+                    clothing: 'Clothing',
+                    footwear: 'Footwear',
+                    electronics: 'Phones & Accessories',
+                    mobile: 'Mobile Phone',
+                    accessory: 'Accessory',
+                    fruits: 'Fruits & Vegetables',
+                    cosmetics: 'Cosmetics'
+                }
             }
         };
 
+        // ==================== КАТЕГОРИЯҲО (JSON) ====================
+        const categories = [
+            {
+                id: 'clothing',
+                name: { tg: 'Либос', ru: 'Одежда', en: 'Clothing' },
+                children: [
+                    {
+                        id: 'clothing_men',
+                        name: { tg: 'Либоси мардона', ru: 'Мужская одежда', en: 'Men\'s clothing' },
+                        fields: ['size', 'material', 'color', 'brand', 'gender']
+                    },
+                    {
+                        id: 'clothing_women',
+                        name: { tg: 'Либоси занона', ru: 'Женская одежда', en: 'Women\'s clothing' },
+                        fields: ['size', 'material', 'color', 'brand', 'gender']
+                    }
+                ]
+            },
+            {
+                id: 'footwear',
+                name: { tg: 'Пойафзол', ru: 'Обувь', en: 'Footwear' },
+                children: [
+                    {
+                        id: 'footwear_sports',
+                        name: { tg: 'Пойафзоли варзишӣ', ru: 'Спортивная обувь', en: 'Sports footwear' },
+                        fields: ['size', 'material', 'color', 'brand', 'type']
+                    },
+                    {
+                        id: 'footwear_classic',
+                        name: { tg: 'Пойафзоли классикӣ', ru: 'Классическая обувь', en: 'Classic footwear' },
+                        fields: ['size', 'material', 'color', 'brand']
+                    }
+                ]
+            },
+            {
+                id: 'electronics',
+                name: { tg: 'Телефон ва аксессуар', ru: 'Телефоны и аксессуары', en: 'Phones & Accessories' },
+                children: [
+                    {
+                        id: 'mobile',
+                        name: { tg: 'Мобильный телефон', ru: 'Мобильный телефон', en: 'Mobile Phone' },
+                        children: [
+                            {
+                                id: 'samsung',
+                                name: { tg: 'Samsung', ru: 'Samsung', en: 'Samsung' },
+                                children: [
+                                    {
+                                        id: 'samsung_s',
+                                        name: { tg: 'Galaxy S', ru: 'Galaxy S', en: 'Galaxy S' },
+                                        children: [
+                                            { id: 'samsung_s23', name: { tg: 'S23', ru: 'S23', en: 'S23' } },
+                                            { id: 'samsung_s24', name: { tg: 'S24', ru: 'S24', en: 'S24' } }
+                                        ]
+                                    },
+                                    {
+                                        id: 'samsung_a',
+                                        name: { tg: 'Galaxy A', ru: 'Galaxy A', en: 'Galaxy A' },
+                                        children: [
+                                            { id: 'samsung_a35', name: { tg: 'A35', ru: 'A35', en: 'A35' } },
+                                            { id: 'samsung_a55', name: { tg: 'A55', ru: 'A55', en: 'A55' } }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                id: 'apple',
+                                name: { tg: 'Apple', ru: 'Apple', en: 'Apple' },
+                                children: [
+                                    {
+                                        id: 'iphone',
+                                        name: { tg: 'iPhone', ru: 'iPhone', en: 'iPhone' },
+                                        children: [
+                                            { id: 'iphone_14', name: { tg: 'iPhone 14', ru: 'iPhone 14', en: 'iPhone 14' } },
+                                            { id: 'iphone_15', name: { tg: 'iPhone 15', ru: 'iPhone 15', en: 'iPhone 15' } }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        fields: ['ram', 'rom', 'imei', 'condition', 'color', 'weight']
+                    },
+                    {
+                        id: 'accessory',
+                        name: { tg: 'Аксессуар', ru: 'Аксессуар', en: 'Accessory' },
+                        fields: ['type', 'material', 'color', 'brand']
+                    }
+                ]
+            },
+            {
+                id: 'fruits',
+                name: { tg: 'Меваю сабзавот', ru: 'Фрукты и овощи', en: 'Fruits & Vegetables' },
+                fields: ['weight', 'type', 'season']
+            },
+            {
+                id: 'cosmetics',
+                name: { tg: 'Косметика', ru: 'Косметика', en: 'Cosmetics' },
+                fields: ['brand', 'volume', 'type', 'skinType']
+            }
+        ];
+
+        // ==================== ТАҒЙИРЁБАНДАҲО ====================
         let currentLang = 'tg';
+        let currentCategoryPath = [];
         let products = JSON.parse(localStorage.getItem('products')) || [];
 
-        // Language functions
-        function toggleSettingsMenu() {
-            document.getElementById('settingsMenu').classList.toggle('show');
-        }
+        // ==================== ФУНКСИЯҲО ====================
 
+        // Забон
         function setLanguage(lang) {
             currentLang = lang;
-            const t = translations[lang];
-            
-            document.getElementById('welcomeTitle').innerText = t.welcomeTitle;
-            document.getElementById('welcomeSubtitle').innerText = t.welcomeSubtitle;
-            document.getElementById('statProductsLabel').innerText = t.statProductsLabel;
-            document.getElementById('statOrdersLabel').innerText = t.statOrdersLabel;
-            document.getElementById('statSalesLabel').innerText = t.statSalesLabel;
-            document.getElementById('statRatingLabel').innerText = t.statRatingLabel;
-            
-            document.querySelectorAll('.nav-item span').forEach((el, index) => {
-                if (index === 0) el.innerText = t.navHome;
-                if (index === 1) el.innerText = t.navStats;
-                if (index === 2) el.innerText = t.navChat;
-                if (index === 3) el.innerText = t.navProfile;
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.remove('active');
+                if (opt.dataset.lang === lang) opt.classList.add('active');
             });
 
-            document.querySelector('.header-btn span').innerText = t.settingsTitle;
-            document.querySelectorAll('.action-btn span')[0].innerText = t.plansBtn;
-            document.querySelectorAll('.action-btn span')[1].innerText = t.adsBtn;
+            // Тарҷумаи матнҳо
+            document.getElementById('statProductsLabel').innerText = translations[lang].statProducts;
+            document.getElementById('statRatingLabel').innerText = translations[lang].statRating;
+            document.getElementById('statSalesLabel').innerText = translations[lang].statSales;
+            document.getElementById('statOrdersLabel').innerText = translations[lang].statOrders;
 
-            // Update settings menu
-            document.querySelectorAll('.settings-item-title')[0].innerHTML = '<i class="fas fa-palette"></i> ' + t.themeTitle;
-            document.querySelectorAll('.settings-item-title')[1].innerHTML = '<i class="fas fa-language"></i> ' + t.langTitle;
-            document.querySelectorAll('.settings-item-title')[2].innerHTML = '<i class="fas fa-bell"></i> ' + t.notifTitle;
-            document.querySelectorAll('.settings-item-title')[3].innerHTML = '<i class="fas fa-lock"></i> ' + t.privacyTitle;
-            
-            document.querySelectorAll('.theme-option')[0].innerHTML = '<i class="fas fa-sun"></i> ' + t.lightText;
-            document.querySelectorAll('.theme-option')[1].innerHTML = '<i class="fas fa-moon"></i> ' + t.darkText;
-            
-            document.querySelectorAll('.lang-option')[0].innerText = '🇹🇯 ' + (lang === 'tg' ? 'Тоҷикӣ' : lang === 'ru' ? 'Таджикский' : 'Tajik');
-            document.querySelectorAll('.lang-option')[1].innerText = '🇷🇺 ' + (lang === 'tg' ? 'Русский' : lang === 'ru' ? 'Русский' : 'Russian');
-            document.querySelectorAll('.lang-option')[2].innerText = '🇬🇧 ' + (lang === 'tg' ? 'Англисӣ' : lang === 'ru' ? 'Английский' : 'English');
-            
-            document.querySelector('.add-button i + span').innerText = t.addProduct;
-            
-            document.getElementById('settingsMenu').classList.remove('show');
+            document.querySelectorAll('.nav-item span').forEach((span, index) => {
+                if (index === 0) span.innerText = translations[lang].navHome;
+                if (index === 1) span.innerText = translations[lang].navStats;
+                if (index === 2) span.innerText = translations[lang].navChat;
+                if (index === 3) span.innerText = translations[lang].navProfile;
+            });
+
+            document.querySelector('.settings-header span').innerText = translations[lang].settings;
+            document.querySelectorAll('.settings-section h3')[0].innerHTML = `<i class="fas fa-crown"></i> ${translations[lang].plans}`;
+            document.querySelectorAll('.settings-section h3')[1].innerHTML = `<i class="fas fa-chart-line"></i> ${translations[lang].ads}`;
+            document.querySelectorAll('.settings-section h3')[2].innerHTML = `<i class="fas fa-palette"></i> ${translations[lang].theme}`;
+            document.querySelectorAll('.settings-section h3')[3].innerHTML = `<i class="fas fa-bell"></i> ${translations[lang].notifications}`;
+            document.querySelectorAll('.settings-section h3')[4].innerHTML = `<i class="fas fa-lock"></i> ${translations[lang].privacy}`;
+
+            document.getElementById('modalTitle').innerText = translations[lang].addProduct;
+
+            // Агар категория интихоб шуда бошад, шаклро аз нав созед
+            if (currentCategoryPath.length > 0) {
+                showProductForm(currentCategoryPath[currentCategoryPath.length - 1]);
+            }
+
+            // Маҳсулотҳоро аз нав нишон диҳед
+            displayProducts();
         }
 
-        // Theme functions
+        // Тема
         function setTheme(theme) {
             document.body.setAttribute('data-theme', theme);
-            document.querySelectorAll('.theme-option').forEach(opt => opt.classList.remove('active'));
-            if (theme === 'light') {
-                document.querySelector('.theme-option:first-child').classList.add('active');
+            const icon = document.getElementById('themeIcon');
+            if (theme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
             } else {
-                document.querySelector('.theme-option:last-child').classList.add('active');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
             }
         }
 
-        // Modal functions
-        function showPlansModal() {
-            document.getElementById('plansModal').classList.add('show');
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            setTheme(current === 'light' ? 'dark' : 'light');
         }
 
-        function showAdsModal() {
-            document.getElementById('adsModal').classList.add('show');
+        // Менюи забон
+        document.getElementById('langToggle').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('langMenu').classList.toggle('show');
+        });
+
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                setLanguage(this.dataset.lang);
+                document.getElementById('langMenu').classList.remove('show');
+            });
+        });
+
+        document.addEventListener('click', function() {
+            document.getElementById('langMenu').classList.remove('show');
+        });
+
+        // Панели танзимот
+        document.getElementById('settingsToggle').addEventListener('click', function() {
+            document.getElementById('settingsPanel').classList.add('open');
+        });
+
+        document.getElementById('closeSettings').addEventListener('click', function() {
+            document.getElementById('settingsPanel').classList.remove('open');
+        });
+
+        // Планҳо ва реклама
+        document.querySelectorAll('.plan-card').forEach(card => {
+            card.addEventListener('click', function() {
+                alert(`Плани ${this.dataset.plan} интихоб шуд`);
+            });
+        });
+
+        document.querySelectorAll('.ad-card').forEach(card => {
+            card.addEventListener('click', function() {
+                alert(`Рекламаи ${this.dataset.ad} харида шуд`);
+            });
+        });
+
+        // Тугмаи иловаи маҳсулот
+        document.getElementById('addProductBtn').addEventListener('click', function() {
+            document.getElementById('addProductModal').classList.add('open');
+            buildCategoryTree();
+        });
+
+        function closeModal() {
+            document.getElementById('addProductModal').classList.remove('open');
+            document.getElementById('productForm').style.display = 'none';
+            currentCategoryPath = [];
         }
 
-        function showAddProductModal() {
-            document.getElementById('addProductModal').classList.add('show');
-        }
+        // Сохтани дарахти категорияҳо
+        function buildCategoryTree(path = []) {
+            const container = document.getElementById('categoryTree');
+            container.innerHTML = '';
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('show');
-        }
+            let currentLevel = categories;
+            let levelContainer = container;
 
-        // Product functions
-        function previewImages(event) {
-            const files = event.target.files;
-            const preview = document.getElementById('imagePreview');
-            preview.innerHTML = '';
-            for (let i = 0; i < files.length; i++) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    preview.appendChild(img);
+            for (let i = 0; i < path.length; i++) {
+                const found = currentLevel.find(c => c.id === path[i]);
+                if (found) {
+                    const div = document.createElement('div');
+                    div.className = 'category-level';
+                    levelContainer.appendChild(div);
+                    levelContainer = div;
+                    currentLevel = found.children || [];
                 }
-                reader.readAsDataURL(files[i]);
+            }
+
+            // Нишон додани категорияҳои сатҳи ҷорӣ
+            if (currentLevel && currentLevel.length > 0) {
+                currentLevel.forEach(cat => {
+                    const catDiv = document.createElement('div');
+                    catDiv.className = 'category-item';
+                    catDiv.innerText = cat.name[currentLang] || cat.name.tg;
+                    catDiv.dataset.id = cat.id;
+                    catDiv.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const newPath = [...path, cat.id];
+                        if (cat.children && cat.children.length > 0) {
+                            buildCategoryTree(newPath);
+                        } else {
+                            // Категорияи ниҳоӣ
+                            currentCategoryPath = newPath;
+                            showProductForm(cat);
+                        }
+                    });
+                    levelContainer.appendChild(catDiv);
+                });
+            } else {
+                // Агар категорияи ниҳоӣ бошад, шаклро нишон диҳед
+                if (path.length > 0) {
+                    const lastCat = findCategoryById(path[path.length - 1]);
+                    if (lastCat) {
+                        showProductForm(lastCat);
+                    }
+                }
             }
         }
 
-        function addProduct() {
-            const name = document.getElementById('productName').value;
-            const price = document.getElementById('productPrice').value;
-            const stock = document.getElementById('productStock').value;
-            const description = document.getElementById('productDescription').value;
-            const features = document.getElementById('productFeatures').value;
-            const images = document.getElementById('productImages').files;
+        function findCategoryById(id) {
+            function search(cats) {
+                for (let cat of cats) {
+                    if (cat.id === id) return cat;
+                    if (cat.children) {
+                        const found = search(cat.children);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            }
+            return search(categories);
+        }
 
-            if (!name || !price || !stock) {
-                alert(currentLang === 'tg' ? 'Ном, нарх ва миқдорро пур кунед' : 
-                      currentLang === 'ru' ? 'Заполните название, цену и количество' : 
-                      'Please fill name, price and stock');
+        // Нишон додани шакли хосиятҳо
+        function showProductForm(category) {
+            const formContainer = document.getElementById('productForm');
+            formContainer.style.display = 'block';
+            formContainer.innerHTML = '';
+
+            const fields = category.fields || [];
+
+            // Номи маҳсулот
+            const nameGroup = document.createElement('div');
+            nameGroup.className = 'form-group';
+            nameGroup.innerHTML = `
+                <label class="form-label">${currentLang === 'tg' ? 'Ном' : currentLang === 'ru' ? 'Название' : 'Name'}</label>
+                <input type="text" class="form-input" id="productName" placeholder="${currentLang === 'tg' ? 'Номи маҳсулот' : currentLang === 'ru' ? 'Название товара' : 'Product name'}">
+            `;
+            formContainer.appendChild(nameGroup);
+
+            // Хосиятҳо
+            fields.forEach(field => {
+                const fieldGroup = document.createElement('div');
+                fieldGroup.className = 'form-group';
+                let label = '';
+                let inputHtml = '';
+
+                switch(field) {
+                    case 'ram':
+                        label = 'RAM';
+                        inputHtml = `<input type="text" class="form-input" id="productRAM" placeholder="4GB, 8GB">`;
+                        break;
+                    case 'rom':
+                        label = 'ROM';
+                        inputHtml = `<input type="text" class="form-input" id="productROM" placeholder="64GB, 128GB">`;
+                        break;
+                    case 'imei':
+                        label = 'IMEI';
+                        inputHtml = `<input type="text" class="form-input" id="productIMEI" placeholder="15 рақам" maxlength="15">`;
+                        break;
+                    case 'condition':
+                        label = currentLang === 'tg' ? 'Ҳолат' : currentLang === 'ru' ? 'Состояние' : 'Condition';
+                        inputHtml = `
+                            <select class="form-select" id="productCondition">
+                                <option value="new">${currentLang === 'tg' ? 'Нав' : currentLang === 'ru' ? 'Новый' : 'New'}</option>
+                                <option value="used">${currentLang === 'tg' ? 'Истифодашуда' : currentLang === 'ru' ? 'Б/у' : 'Used'}</option>
+                            </select>
+                        `;
+                        break;
+                    case 'color':
+                        label = currentLang === 'tg' ? 'Ранг' : currentLang === 'ru' ? 'Цвет' : 'Color';
+                        inputHtml = `<input type="text" class="form-input" id="productColor" placeholder="${currentLang === 'tg' ? 'Ранг' : currentLang === 'ru' ? 'Цвет' : 'Color'}">`;
+                        break;
+                    case 'size':
+                        label = currentLang === 'tg' ? 'Андоза' : currentLang === 'ru' ? 'Размер' : 'Size';
+                        inputHtml = `<input type="text" class="form-input" id="productSize" placeholder="S, M, L, XL">`;
+                        break;
+                    case 'material':
+                        label = currentLang === 'tg' ? 'Мавод' : currentLang === 'ru' ? 'Материал' : 'Material';
+                        inputHtml = `<input type="text" class="form-input" id="productMaterial" placeholder="${currentLang === 'tg' ? 'Мавод' : currentLang === 'ru' ? 'Материал' : 'Material'}">`;
+                        break;
+                    case 'brand':
+                        label = currentLang === 'tg' ? 'Бренд' : currentLang === 'ru' ? 'Бренд' : 'Brand';
+                        inputHtml = `<input type="text" class="form-input" id="productBrand" placeholder="${currentLang === 'tg' ? 'Бренд' : currentLang === 'ru' ? 'Бренд' : 'Brand'}">`;
+                        break;
+                    case 'weight':
+                        label = currentLang === 'tg' ? 'Вазн' : currentLang === 'ru' ? 'Вес' : 'Weight';
+                        inputHtml = `<input type="text" class="form-input" id="productWeight" placeholder="кг/гр">`;
+                        break;
+                    case 'type':
+                        label = currentLang === 'tg' ? 'Намуд' : currentLang === 'ru' ? 'Тип' : 'Type';
+                        inputHtml = `<input type="text" class="form-input" id="productType" placeholder="${currentLang === 'tg' ? 'Намуд' : currentLang === 'ru' ? 'Тип' : 'Type'}">`;
+                        break;
+                    case 'season':
+                        label = currentLang === 'tg' ? 'Мавсим' : currentLang === 'ru' ? 'Сезон' : 'Season';
+                        inputHtml = `<input type="text" class="form-input" id="productSeason" placeholder="${currentLang === 'tg' ? 'Тобистон, зимистон' : currentLang === 'ru' ? 'Лето, зима' : 'Summer, winter'}">`;
+                        break;
+                    case 'gender':
+                        label = currentLang === 'tg' ? 'Ҷинс' : currentLang === 'ru' ? 'Пол' : 'Gender';
+                        inputHtml = `
+                            <select class="form-select" id="productGender">
+                                <option value="men">${currentLang === 'tg' ? 'Мардона' : currentLang === 'ru' ? 'Мужской' : 'Men'}</option>
+                                <option value="women">${currentLang === 'tg' ? 'Занона' : currentLang === 'ru' ? 'Женский' : 'Women'}</option>
+                                <option value="unisex">${currentLang === 'tg' ? 'Унисекс' : currentLang === 'ru' ? 'Унисекс' : 'Unisex'}</option>
+                            </select>
+                        `;
+                        break;
+                    case 'volume':
+                        label = currentLang === 'tg' ? 'Ҳаҷм' : currentLang === 'ru' ? 'Объем' : 'Volume';
+                        inputHtml = `<input type="text" class="form-input" id="productVolume" placeholder="мл/гр">`;
+                        break;
+                    case 'skinType':
+                        label = currentLang === 'tg' ? 'Намуди пӯст' : currentLang === 'ru' ? 'Тип кожи' : 'Skin type';
+                        inputHtml = `<input type="text" class="form-input" id="productSkinType" placeholder="${currentLang === 'tg' ? 'Хушк, равғанин' : currentLang === 'ru' ? 'Сухая, жирная' : 'Dry, oily'}">`;
+                        break;
+                    default:
+                        label = field;
+                        inputHtml = `<input type="text" class="form-input" id="product${field}" placeholder="${field}">`;
+                }
+
+                fieldGroup.innerHTML = `
+                    <label class="form-label">${label}</label>
+                    ${inputHtml}
+                `;
+                formContainer.appendChild(fieldGroup);
+            });
+
+            // Тавсиф
+            const descGroup = document.createElement('div');
+            descGroup.className = 'form-group';
+            descGroup.innerHTML = `
+                <label class="form-label">${currentLang === 'tg' ? 'Тавсиф' : currentLang === 'ru' ? 'Описание' : 'Description'}</label>
+                <textarea class="form-textarea" id="productDescription" rows="3"></textarea>
+            `;
+            formContainer.appendChild(descGroup);
+
+            // Акс
+            const imageGroup = document.createElement('div');
+            imageGroup.className = 'form-group';
+            imageGroup.innerHTML = `
+                <label class="form-label">${currentLang === 'tg' ? 'Аксҳо' : currentLang === 'ru' ? 'Изображения' : 'Images'}</label>
+                <input type="file" class="form-input" id="productImages" multiple accept="image/*">
+            `;
+            formContainer.appendChild(imageGroup);
+
+            // Тугмаи сабт
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'form-group';
+            btnGroup.innerHTML = `<button class="btn" onclick="saveProduct()">${currentLang === 'tg' ? 'Сабт кардан' : currentLang === 'ru' ? 'Сохранить' : 'Save'}</button>`;
+            formContainer.appendChild(btnGroup);
+        }
+
+        // Нишон додани маҳсулотҳо
+        function displayProducts() {
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = '';
+
+            if (products.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-light);">' + 
+                    (currentLang === 'tg' ? 'Ҳеҷ маҳсулоте нест' : 
+                     currentLang === 'ru' ? 'Нет товаров' : 'No products') + '</div>';
                 return;
             }
 
-            // Маҳсулотро ба массив илова мекунем
+            products.forEach(product => {
+                const post = document.createElement('div');
+                post.className = 'post';
+                post.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-user">
+                            <div class="post-avatar"><i class="fas fa-store"></i></div>
+                            <div>
+                                <div class="post-username">Мағозаи шумо</div>
+                                <div class="post-time">${new Date(product.date).toLocaleDateString()}</div>
+                            </div>
+                        </div>
+                        <div class="post-menu" onclick="editProduct('${product.id}')"><i class="fas fa-ellipsis-h"></i></div>
+                    </div>
+                    <div class="post-image">
+                        ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '<i class="fas fa-image"></i>'}
+                    </div>
+                    <div class="post-details">
+                        <div class="post-title">${product.name}</div>
+                        <div class="post-price">${product.price} с</div>
+                        <div style="font-size:14px; color:var(--text-light);">${product.description || ''}</div>
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action"><i class="far fa-heart"></i> 0</div>
+                        <div class="post-action"><i class="far fa-comment"></i> 0</div>
+                        <div class="post-action"><i class="far fa-share-square"></i></div>
+                    </div>
+                `;
+                container.appendChild(post);
+            });
+        }
+
+        // Сабти маҳсулот
+        function saveProduct() {
+            const name = document.getElementById('productName')?.value;
+            if (!name) {
+                alert(currentLang === 'tg' ? 'Номро ворид кунед' : currentLang === 'ru' ? 'Введите название' : 'Enter name');
+                return;
+            }
+
+            // Ҷамъоварии маълумот аз шакл
             const product = {
-                id: Date.now(),
+                id: Date.now().toString(),
                 name: name,
-                price: price,
-                stock: stock,
-                description: description,
-                features: features.split('\n').filter(f => f.trim()),
-                images: []
+                price: document.getElementById('productPrice')?.value || 0,
+                description: document.getElementById('productDescription')?.value || '',
+                category: currentCategoryPath,
+                date: new Date().toISOString(),
+                image: null
             };
 
-            // Аксҳоро барои нишон додан тайёр мекунем (барои соддагӣ, танҳо якумин аксро нигоҳ медорем)
-            if (images.length > 0) {
+            // Акс
+            const fileInput = document.getElementById('productImages');
+            if (fileInput && fileInput.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    product.imageUrl = e.target.result;
+                    product.image = e.target.result;
                     products.push(product);
                     localStorage.setItem('products', JSON.stringify(products));
                     displayProducts();
-                    closeModal('addProductModal');
-                    // Формаро тоза мекунем
-                    document.getElementById('productName').value = '';
-                    document.getElementById('productPrice').value = '';
-                    document.getElementById('productStock').value = '';
-                    document.getElementById('productDescription').value = '';
-                    document.getElementById('productFeatures').value = '';
-                    document.getElementById('imagePreview').innerHTML = '';
-                }
-                reader.readAsDataURL(images[0]);
+                    closeModal();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
             } else {
-                product.imageUrl = null;
                 products.push(product);
                 localStorage.setItem('products', JSON.stringify(products));
                 displayProducts();
-                closeModal('addProductModal');
-                // Формаро тоза мекунем
-                document.getElementById('productName').value = '';
-                document.getElementById('productPrice').value = '';
-                document.getElementById('productStock').value = '';
-                document.getElementById('productDescription').value = '';
-                document.getElementById('productFeatures').value = '';
-                document.getElementById('imagePreview').innerHTML = '';
+                closeModal();
             }
         }
 
-        function displayProducts() {
-            const grid = document.getElementById('productsGrid');
-            grid.innerHTML = '';
-            if (products.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; color:var(--text-muted);">'
-                    + (currentLang === 'tg' ? 'Ҳеҷ маҳсулоте нест' : 
-                       currentLang === 'ru' ? 'Нет товаров' : 
-                       'No products') + '</div>';
-                return;
-            }
-            products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.onclick = () => alert(currentLang === 'tg' ? `Маҳсулот: ${product.name}` : 
-                                            currentLang === 'ru' ? `Товар: ${product.name}` : 
-                                            `Product: ${product.name}`);
-                card.innerHTML = `
-                    <div class="product-image">
-                        ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}">` : '<i class="fas fa-box"></i>'}
-                    </div>
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-price">${product.price} с</div>
-                    <div style="font-size:12px; color:var(--text-muted);">${product.stock} дона</div>
-                `;
-                grid.appendChild(card);
+        function editProduct(id) {
+            alert(currentLang === 'tg' ? 'Таҳрири маҳсулот' : currentLang === 'ru' ? 'Редактировать товар' : 'Edit product');
+        }
+
+        // Навигатсияи поёнӣ
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                const page = this.dataset.page;
+                if (page === 'home') {
+                    // аллакай дар саҳифаи асосӣ
+                } else {
+                    alert(translations[currentLang][`nav${page.charAt(0).toUpperCase() + page.slice(1)}`] + ' дар ҳоли сохтан');
+                }
             });
-        }
-
-        // Plan selection
-        function selectPlan(plan) {
-            alert(currentLang === 'tg' ? `Шумо плани ${plan} -ро интихоб кардед` : 
-                  currentLang === 'ru' ? `Вы выбрали план ${plan}` : 
-                  `You selected the ${plan} plan`);
-            closeModal('plansModal');
-        }
-
-        // Buy ad
-        function buyAd(ad) {
-            alert(currentLang === 'tg' ? `Шумо рекламаи ${ad} -ро харидед` : 
-                  currentLang === 'ru' ? `Вы купили рекламу ${ad}` : 
-                  `You bought ${ad} advertising`);
-            closeModal('adsModal');
-        }
-
-        // Navigation
-        function navigate(page) {
-            switch(page) {
-                case 'dashboard':
-                    window.location.href = 'dashboard.html';
-                    break;
-                case 'stats':
-                    alert(currentLang === 'tg' ? 'Саҳифаи статистика дар ҳоли сохтан аст' : 
-                          currentLang === 'ru' ? 'Страница статистики в разработке' : 
-                          'Statistics page is under construction');
-                    break;
-                case 'chat':
-                    alert(currentLang === 'tg' ? 'AI Чат дар ҳоли сохтан аст' : 
-                          currentLang === 'ru' ? 'AI Чат в разработке' : 
-                          'AI Chat is under construction');
-                    break;
-                case 'profile':
-                    alert(currentLang === 'tg' ? 'Саҳифаи профил дар ҳоли сохтан аст' : 
-                          currentLang === 'ru' ? 'Страница профиля в разработке' : 
-                          'Profile page is under construction');
-                    break;
-            }
-        }
-
-        // Close settings menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.header-btn') && !e.target.closest('.settings-menu')) {
-                document.getElementById('settingsMenu').classList.remove('show');
-            }
         });
 
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('show');
-            }
-        };
+        // Тугмаи тема
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-        // Initialize
+        // Инициализатсия
+        setLanguage('tg');
         displayProducts();
     </script>
-    <!-- Тугмаи тестӣ барои тоза кардан ва тест -->
-<div style="position: fixed; bottom: 80px; left: 20px; z-index: 9999;">
-    <button onclick="resetAndTest()" style="background: linear-gradient(135deg, #ff9800, #ff6b6b); color: white; border: none; padding: 15px 20px; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 20px rgba(255,152,0,0.4); font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
-        <i class="fas fa-sync-alt"></i> Тоза ва тест
-    </button>
-</div>
-
-<script>
 </body>
-    </html>
+</html>
