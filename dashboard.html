@@ -3,1342 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bozorcha - Панели фурӯшанда</title>
-    <!-- Font Awesome барои иконкаҳо -->
+    <title>Bozorcha - Ultra Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
         :root {
-            --bg: #f8fafc;
-            --bg-card: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --accent: #ff9800;
-            --accent-light: #fff3e0;
-            --accent-dark: #f57c00;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
+            --bg: #f0f2f5; --bg-card: #ffffff; --text: #1c1e21; --text-light: #65676b;
+            --accent: #ff9800; --border: #dbdbdb; --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
         }
-
         [data-theme="dark"] {
-            --bg: #0f172a;
-            --bg-card: #1e293b;
-            --text: #f1f5f9;
-            --text-light: #94a3b8;
-            --border: #334155;
+            --bg: #000000; --bg-card: #121212; --text: #ffffff; --text-light: #b0b3b8; --border: #262626;
         }
+        body { background: var(--bg); color: var(--text); padding-bottom: 70px; transition: 0.3s; overflow-x: hidden; }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            transition: background 0.3s, color 0.3s;
-            padding-bottom: 80px;
-        }
-
-        /* Аниматсияҳо */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(20px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Апп бар */
-        .app-bar {
-            background: var(--bg-card);
-            padding: 16px 20px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+        /* Header - Instagram Style */
+        .app-bar { 
+            background: var(--bg-card); height: 60px; display: flex; align-items: center; 
+            justify-content: space-between; padding: 0 15px; position: sticky; top: 0; z-index: 1000;
             border-bottom: 1px solid var(--border);
         }
+        .logo { font-size: 24px; font-weight: bold; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .header-actions { display: flex; gap: 18px; align-items: center; }
+        .header-actions i { font-size: 22px; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .settings-icon.active { transform: rotate(90deg); color: var(--accent); }
 
-        .app-title {
-            font-size: 24px;
-            font-weight: bold;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Stats Grid - Fixed at Top */
+        .stats-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 15px; background: var(--bg-card); }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 18px; font-weight: bold; display: block; }
+        .stat-label { font-size: 11px; color: var(--text-light); }
+
+        /* Posts - Instagram Style */
+        .post { background: var(--bg-card); margin-bottom: 15px; border-bottom: 1px solid var(--border); animation: fadeIn 0.5s ease; }
+        .post-header { display: flex; align-items: center; justify-content: space-between; padding: 12px; }
+        .post-user { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; }
+        .post-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); }
+        .post-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; background: #eee; }
+        
+        .post-actions { padding: 12px; display: flex; justify-content: space-between; font-size: 22px; }
+        .post-actions-left { display: flex; gap: 15px; }
+        .post-actions-left i:hover { color: #ff3040; }
+        
+        .post-info { padding: 0 12px 12px; }
+        .post-title { font-weight: bold; font-size: 15px; margin-bottom: 4px; }
+        .post-price { color: var(--accent); font-weight: bold; }
+
+        /* Side Settings Panel */
+        .side-panel {
+            position: fixed; top: 0; right: -100%; width: 85%; height: 100%; background: var(--bg-card);
+            z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 20px;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+        }
+        .side-panel.open { right: 0; }
+        .panel-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; font-size: 20px; font-weight: bold; }
+        .panel-item { padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; background: var(--bg); cursor: pointer; }
+
+        /* Language Selector - Fixed Bug */
+        .lang-container { display: flex; gap: 10px; padding: 15px; }
+        .lang-btn { 
+            padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); 
+            background: var(--bg-card); cursor: pointer; transition: 0.3s;
+        }
+        .lang-btn.active { background: var(--accent); color: white; border-color: var(--accent); transform: scale(1.05); }
+
+        /* Category Modal */
+        .modal { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; 
+            z-index: 3000; align-items: flex-end; 
+        }
+        .modal-content { 
+            width: 100%; background: var(--bg-card); border-radius: 20px 20px 0 0; 
+            padding: 20px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease;
+        }
+        .category-item { 
+            padding: 15px; border-bottom: 1px solid var(--border); display: flex; 
+            justify-content: space-between; cursor: pointer; 
         }
 
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text);
-        }
-
-        .icon-btn:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-            transform: scale(1.05);
-        }
-
-        .profile-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--gradient);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Менюи забон */
-        .lang-menu {
-            position: absolute;
-            top: 60px;
-            right: 70px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 5px;
-            display: none;
-            box-shadow: var(--shadow);
-            z-index: 150;
-        }
-
-        .lang-menu.show {
-            display: block;
-        }
-
-        .lang-option {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 8px;
-            color: var(--text);
-        }
-
-        .lang-option:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        .lang-option.active {
-            background: var(--accent-light);
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        /* Панели танзимот (слайд аз рост) */
-        .settings-panel {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 300px;
-            height: 100vh;
-            background: var(--bg-card);
-            box-shadow: -5px 0 30px rgba(0,0,0,0.2);
-            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
-            border-left: 1px solid var(--border);
-        }
-
-        .settings-panel.open {
-            right: 0;
-        }
-
-        .settings-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .settings-header i {
-            cursor: pointer;
-            color: var(--text-light);
-        }
-
-        .settings-section {
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
-        }
-
-        .settings-section h3 {
-            margin-bottom: 15px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .settings-section h3 i {
-            color: var(--accent);
-        }
-
-        .plan-card, .ad-card {
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .plan-card:hover, .ad-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .plan-name, .ad-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .plan-price, .ad-price {
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        /* Саҳифаи асосӣ */
-        .content {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Статистика дар боло */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .stat-icon {
-            font-size: 28px;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        /* Постҳо (ба монанди Instagram) */
-        .posts-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .post {
-            background: var(--bg-card);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-        }
-
-        .post-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .post-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .post-username {
-            font-weight: bold;
-        }
-
-        .post-time {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        .post-menu {
-            cursor: pointer;
-            padding: 5px;
-            color: var(--text-light);
-        }
-
-        .post-image {
-            width: 100%;
-            height: 300px;
-            background: var(--bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            font-size: 40px;
-        }
-
-        .post-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .post-details {
-            padding: 15px;
-        }
-
-        .post-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .post-price {
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .post-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 0 15px 15px;
-        }
-
-        .post-action {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--text-light);
-            cursor: pointer;
-        }
-
-        .post-action:hover {
-            color: var(--accent);
-        }
-
-        .post-action.liked {
-            color: #ef4444;
-        }
-
-        /* Модал барои иловаи маҳсулот */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal.open {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: slideIn 0.3s ease;
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h2 {
-            font-size: 20px;
-        }
-
-        .close-modal {
-            cursor: pointer;
-            font-size: 24px;
-            color: var(--text-light);
-        }
-
-        .category-tree {
-            margin-bottom: 20px;
-        }
-
-        .category-level {
-            margin-left: 20px;
-            border-left: 2px solid var(--border);
-            padding-left: 15px;
-        }
-
-        .category-item {
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 8px;
-            margin: 2px 0;
-        }
-
-        .category-item:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        .category-item.selected {
-            background: var(--accent-light);
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        .product-form {
-            margin-top: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 15px;
-        }
-
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            border-color: var(--accent);
-            outline: none;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: var(--gradient);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255,152,0,0.4);
-        }
-
-        /* Тугмаи илова */
+        /* Floating Add Button */
         .add-btn {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 30px;
-            background: var(--gradient);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255,152,0,0.4);
-            transition: 0.3s;
-            z-index: 90;
+            position: fixed; bottom: 85px; right: 20px; width: 56px; height: 56px;
+            border-radius: 50%; background: var(--gradient); color: white;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 100;
         }
 
-        .add-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-        }
-
-        /* Навигатсияи поёнӣ */
+        /* Bottom Nav */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid var(--border);
-            z-index: 100;
+            position: fixed; bottom: 0; width: 100%; height: 55px; background: var(--bg-card);
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid var(--border); z-index: 1000;
         }
+        .nav-link { color: var(--text); font-size: 22px; text-decoration: none; }
+        .nav-link.active { color: var(--accent); }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--text-light);
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .nav-item.active {
-            color: var(--accent);
-        }
-
-        .nav-item i {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .form-input { 
+            width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; 
+            border: 1px solid var(--border); background: var(--bg); color: var(--text);
         }
     </style>
 </head>
 <body data-theme="light">
-    <!-- App Bar -->
+
     <div class="app-bar">
-        <div class="app-title">Bozorcha</div>
+        <div class="logo">Bozorcha</div>
         <div class="header-actions">
-            <div class="icon-btn" id="themeToggle">
-                <i class="fas fa-moon" id="themeIcon"></i>
-            </div>
-            <div class="icon-btn" id="langToggle">
-                <i class="fas fa-globe"></i>
-            </div>
-            <div class="icon-btn" id="settingsToggle">
-                <i class="fas fa-sliders-h"></i>
-            </div>
-            <div class="profile-icon">Ф</div>
+            <i class="fas fa-plus-square" onclick="openAddModal()"></i>
+            <i class="fas fa-adjust" onclick="toggleTheme()"></i>
+            <i class="fas fa-th-large settings-icon" id="settingsBtn" onclick="toggleSettings()"></i>
         </div>
     </div>
 
-    <!-- Менюи забон -->
-    <div class="lang-menu" id="langMenu">
-        <div class="lang-option active" data-lang="tg">Тоҷикӣ</div>
-        <div class="lang-option" data-lang="ru">Русский</div>
-        <div class="lang-option" data-lang="en">English</div>
+    <div class="stats-container">
+        <div class="stat-item"><span class="stat-value" id="count-prod">24</span><span class="stat-label">Маҳсулот</span></div>
+        <div class="stat-item"><span class="stat-value">4.8</span><span class="stat-label">Рейтинг</span></div>
+        <div class="stat-item"><span class="stat-value">1.2k</span><span class="stat-label">Фурӯш</span></div>
+        <div class="stat-item"><span class="stat-value">8</span><span class="stat-label">Фармоиш</span></div>
     </div>
 
-    <!-- Панели танзимот (слайд аз рост) -->
-    <div class="settings-panel" id="settingsPanel">
-        <div class="settings-header">
+    <div class="lang-container" id="langBox">
+        <button class="lang-btn active" onclick="changeLang('tg', this)">Тоҷикӣ</button>
+        <button class="lang-btn" onclick="changeLang('ru', this)">Русский</button>
+    </div>
+
+    <div id="posts-feed" class="posts-container">
+        </div>
+
+    <div class="side-panel" id="sidePanel">
+        <div class="panel-header">
+            <i class="fas fa-arrow-left" onclick="toggleSettings()"></i>
             <span>Танзимот</span>
-            <i class="fas fa-times" id="closeSettings"></i>
         </div>
-
-        <div class="settings-section">
-            <h3><i class="fas fa-crown"></i> Планҳои обуна</h3>
-            <div class="plan-card" data-plan="free">
-                <div class="plan-name">Free</div>
-                <div class="plan-price">0 с/моҳ</div>
-            </div>
-            <div class="plan-card" data-plan="basic">
-                <div class="plan-name">Basic</div>
-                <div class="plan-price">19 с/моҳ</div>
-            </div>
-            <div class="plan-card" data-plan="pro">
-                <div class="plan-name">Pro</div>
-                <div class="plan-price">99 с/моҳ</div>
-            </div>
-            <div class="plan-card" data-plan="ultra">
-                <div class="plan-name">Ultra</div>
-                <div class="plan-price">299 с/моҳ</div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3><i class="fas fa-chart-line"></i> Реклама</h3>
-            <div class="ad-card" data-ad="plus">
-                <div class="ad-name">Plus</div>
-                <div class="ad-price">6 с/рӯз</div>
-            </div>
-            <div class="ad-card" data-ad="pro">
-                <div class="ad-name">Pro</div>
-                <div class="ad-price">14 с/рӯз</div>
-            </div>
-            <div class="ad-card" data-ad="ultra">
-                <div class="ad-name">Ultra</div>
-                <div class="ad-price">30 с/рӯз</div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3><i class="fas fa-palette"></i> Тема</h3>
-            <div class="theme-options" style="display: flex; gap: 10px;">
-                <div class="icon-btn" onclick="setTheme('light')">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="icon-btn" onclick="setTheme('dark')">
-                    <i class="fas fa-moon"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="settings-section">
-            <h3><i class="fas fa-bell"></i> Огоҳиномаҳо</h3>
-            <label style="display: flex; align-items: center; gap: 10px;">
-                <input type="checkbox" checked> Почта
-            </label>
-            <label style="display: flex; align-items: center; gap: 10px;">
-                <input type="checkbox" checked> SMS
-            </label>
-        </div>
-
-        <div class="settings-section">
-            <h3><i class="fas fa-lock"></i> Махфият</h3>
-            <label style="display: flex; align-items: center; gap: 10px;">
-                <input type="checkbox" checked> Профили оммавӣ
-            </label>
-        </div>
+        <div class="panel-item"><i class="fas fa-crown"></i> <span>Обунаҳо</span></div>
+        <div class="panel-item"><i class="fas fa-ad"></i> <span>Реклама</span></div>
+        <div class="panel-item"><i class="fas fa-info-circle"></i> <span>Дар бораи мо</span></div>
     </div>
 
-    <!-- Саҳифаи асосӣ -->
-    <div class="content" id="mainContent">
-        <!-- Статистика дар боло -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-box"></i></div>
-                <div class="stat-value" id="statProducts">24</div>
-                <div class="stat-label" id="statProductsLabel">Маҳсулот</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-star"></i></div>
-                <div class="stat-value" id="statRating">4.8</div>
-                <div class="stat-label" id="statRatingLabel">Рейтинг</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                <div class="stat-value" id="statSales">1,250</div>
-                <div class="stat-label" id="statSalesLabel">Фурӯш</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-                <div class="stat-value" id="statOrders">8</div>
-                <div class="stat-label" id="statOrdersLabel">Фармоишҳо</div>
-            </div>
-        </div>
-
-        <!-- Постҳо (маҳсулот) -->
-        <div class="posts-container" id="postsContainer">
-            <!-- Маҳсулотҳо тавассути JavaScript илова мешаванд -->
-        </div>
-    </div>
-
-    <!-- Тугмаи иловаи маҳсулот -->
-    <div class="add-btn" id="addProductBtn">
-        <i class="fas fa-plus"></i>
-    </div>
-
-    <!-- Навигатсияи поёнӣ -->
-    <div class="bottom-nav">
-        <div class="nav-item active" data-page="home">
-            <i class="fas fa-home"></i>
-            <span>Асосӣ</span>
-        </div>
-        <div class="nav-item" data-page="stats">
-            <i class="fas fa-chart-bar"></i>
-            <span>Статистика</span>
-        </div>
-        <div class="nav-item" data-page="chat">
-            <i class="fas fa-robot"></i>
-            <span>AI Чат</span>
-        </div>
-        <div class="nav-item" data-page="profile">
-            <i class="fas fa-user"></i>
-            <span>Профил</span>
-        </div>
-    </div>
-
-    <!-- Модал барои иловаи маҳсулот -->
-    <div class="modal" id="addProductModal">
+    <div class="modal" id="addModal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Иловаи маҳсулоти нав</h2>
-                <i class="fas fa-times close-modal" onclick="closeModal()"></i>
-            </div>
-            <div class="category-tree" id="categoryTree">
-                <!-- Дарахти категорияҳо тавассути JavaScript сохта мешавад -->
-            </div>
-            <div class="product-form" id="productForm" style="display: none;">
-                <!-- Шакли хосиятҳо тавассути JavaScript сохта мешавад -->
-            </div>
+            <div id="modal-header-text" style="font-weight:bold; margin-bottom:15px;">Интихоби категория</div>
+            <div id="category-path" style="color:var(--accent); font-size:12px; margin-bottom:10px;"></div>
+            <div id="modal-body-content">
+                </div>
+            <button onclick="closeAddModal()" style="width:100%; padding:12px; margin-top:10px; border:none; background:#eee; border-radius:8px;">Пӯшидан</button>
         </div>
     </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-link active"><i class="fas fa-home"></i></a>
+        <a href="#" class="nav-link"><i class="fas fa-search"></i></a>
+        <a href="#" class="nav-link"><i class="fas fa-heart"></i></a>
+        <a href="#" class="nav-link"><i class="fas fa-user"></i></a>
+    </nav>
 
     <script>
-        // ==================== ТАРҶУМА ====================
-        const translations = {
-            tg: {
-                statProducts: 'Маҳсулот',
-                statRating: 'Рейтинг',
-                statSales: 'Фурӯш',
-                statOrders: 'Фармоишҳо',
-                navHome: 'Асосӣ',
-                navStats: 'Статистика',
-                navChat: 'AI Чат',
-                navProfile: 'Профил',
-                settings: 'Танзимот',
-                plans: 'Планҳои обуна',
-                ads: 'Реклама',
-                theme: 'Тема',
-                notifications: 'Огоҳиномаҳо',
-                privacy: 'Махфият',
-                addProduct: 'Иловаи маҳсулот',
-                close: 'Пӯшидан',
-                selectCategory: 'Категорияро интихоб кунед',
-                categories: {
-                    clothing: 'Либос',
-                    footwear: 'Пойафзол',
-                    electronics: 'Телефон ва аксессуар',
-                    mobile: 'Мобильный телефон',
-                    accessory: 'Аксессуар',
-                    fruits: 'Меваю сабзавот',
-                    cosmetics: 'Косметика'
-                }
-            },
-            ru: {
-                statProducts: 'Товары',
-                statRating: 'Рейтинг',
-                statSales: 'Продажи',
-                statOrders: 'Заказы',
-                navHome: 'Главная',
-                navStats: 'Статистика',
-                navChat: 'AI Чат',
-                navProfile: 'Профиль',
-                settings: 'Настройки',
-                plans: 'Планы подписки',
-                ads: 'Реклама',
-                theme: 'Тема',
-                notifications: 'Уведомления',
-                privacy: 'Конфиденциальность',
-                addProduct: 'Добавить товар',
-                close: 'Закрыть',
-                selectCategory: 'Выберите категорию',
-                categories: {
-                    clothing: 'Одежда',
-                    footwear: 'Обувь',
-                    electronics: 'Телефоны и аксессуары',
-                    mobile: 'Мобильный телефон',
-                    accessory: 'Аксессуар',
-                    fruits: 'Фрукты и овощи',
-                    cosmetics: 'Косметика'
-                }
-            },
-            en: {
-                statProducts: 'Products',
-                statRating: 'Rating',
-                statSales: 'Sales',
-                statOrders: 'Orders',
-                navHome: 'Home',
-                navStats: 'Statistics',
-                navChat: 'AI Chat',
-                navProfile: 'Profile',
-                settings: 'Settings',
-                plans: 'Subscription Plans',
-                ads: 'Advertising',
-                theme: 'Theme',
-                notifications: 'Notifications',
-                privacy: 'Privacy',
-                addProduct: 'Add Product',
-                close: 'Close',
-                selectCategory: 'Select category',
-                categories: {
-                    clothing: 'Clothing',
-                    footwear: 'Footwear',
-                    electronics: 'Phones & Accessories',
-                    mobile: 'Mobile Phone',
-                    accessory: 'Accessory',
-                    fruits: 'Fruits & Vegetables',
-                    cosmetics: 'Cosmetics'
-                }
-            }
-        };
+        // --- SUPABASE CONFIG ---
+        const SB_URL = 'https://seagtlaujnnhoyitgsdd.supabase.co';
+        const SB_KEY = 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP';
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        // ==================== КАТЕГОРИЯҲО (JSON) ====================
-        const categories = [
-            {
-                id: 'clothing',
-                name: { tg: 'Либос', ru: 'Одежда', en: 'Clothing' },
-                children: [
-                    {
-                        id: 'clothing_men',
-                        name: { tg: 'Либоси мардона', ru: 'Мужская одежда', en: 'Men\'s clothing' },
-                        fields: ['size', 'material', 'color', 'brand', 'gender']
-                    },
-                    {
-                        id: 'clothing_women',
-                        name: { tg: 'Либоси занона', ru: 'Женская одежда', en: 'Women\'s clothing' },
-                        fields: ['size', 'material', 'color', 'brand', 'gender']
-                    }
-                ]
-            },
-            {
-                id: 'footwear',
-                name: { tg: 'Пойафзол', ru: 'Обувь', en: 'Footwear' },
-                children: [
-                    {
-                        id: 'footwear_sports',
-                        name: { tg: 'Пойафзоли варзишӣ', ru: 'Спортивная обувь', en: 'Sports footwear' },
-                        fields: ['size', 'material', 'color', 'brand', 'type']
-                    },
-                    {
-                        id: 'footwear_classic',
-                        name: { tg: 'Пойафзоли классикӣ', ru: 'Классическая обувь', en: 'Classic footwear' },
-                        fields: ['size', 'material', 'color', 'brand']
-                    }
-                ]
-            },
-            {
-                id: 'electronics',
-                name: { tg: 'Телефон ва аксессуар', ru: 'Телефоны и аксессуары', en: 'Phones & Accessories' },
-                children: [
-                    {
-                        id: 'mobile',
-                        name: { tg: 'Мобильный телефон', ru: 'Мобильный телефон', en: 'Mobile Phone' },
-                        children: [
-                            {
-                                id: 'samsung',
-                                name: { tg: 'Samsung', ru: 'Samsung', en: 'Samsung' },
-                                children: [
-                                    {
-                                        id: 'samsung_s',
-                                        name: { tg: 'Galaxy S', ru: 'Galaxy S', en: 'Galaxy S' },
-                                        children: [
-                                            { id: 'samsung_s23', name: { tg: 'S23', ru: 'S23', en: 'S23' } },
-                                            { id: 'samsung_s24', name: { tg: 'S24', ru: 'S24', en: 'S24' } }
-                                        ]
-                                    },
-                                    {
-                                        id: 'samsung_a',
-                                        name: { tg: 'Galaxy A', ru: 'Galaxy A', en: 'Galaxy A' },
-                                        children: [
-                                            { id: 'samsung_a35', name: { tg: 'A35', ru: 'A35', en: 'A35' } },
-                                            { id: 'samsung_a55', name: { tg: 'A55', ru: 'A55', en: 'A55' } }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                id: 'apple',
-                                name: { tg: 'Apple', ru: 'Apple', en: 'Apple' },
-                                children: [
-                                    {
-                                        id: 'iphone',
-                                        name: { tg: 'iPhone', ru: 'iPhone', en: 'iPhone' },
-                                        children: [
-                                            { id: 'iphone_14', name: { tg: 'iPhone 14', ru: 'iPhone 14', en: 'iPhone 14' } },
-                                            { id: 'iphone_15', name: { tg: 'iPhone 15', ru: 'iPhone 15', en: 'iPhone 15' } }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ],
-                        fields: ['ram', 'rom', 'imei', 'condition', 'color', 'weight']
-                    },
-                    {
-                        id: 'accessory',
-                        name: { tg: 'Аксессуар', ru: 'Аксессуар', en: 'Accessory' },
-                        fields: ['type', 'material', 'color', 'brand']
-                    }
-                ]
-            },
-            {
-                id: 'fruits',
-                name: { tg: 'Меваю сабзавот', ru: 'Фрукты и овощи', en: 'Fruits & Vegetables' },
-                fields: ['weight', 'type', 'season']
-            },
-            {
-                id: 'cosmetics',
-                name: { tg: 'Косметика', ru: 'Косметика', en: 'Cosmetics' },
-                fields: ['brand', 'volume', 'type', 'skinType']
-            }
-        ];
-
-        // ==================== ТАҒЙИРЁБАНДАҲО ====================
         let currentLang = 'tg';
-        let currentCategoryPath = [];
-        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let categoryHistory = [];
 
-        // ==================== ФУНКСИЯҲО ====================
-
-        // Забон
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('.lang-option').forEach(opt => {
-                opt.classList.remove('active');
-                if (opt.dataset.lang === lang) opt.classList.add('active');
-            });
-
-            // Тарҷумаи матнҳо
-            document.getElementById('statProductsLabel').innerText = translations[lang].statProducts;
-            document.getElementById('statRatingLabel').innerText = translations[lang].statRating;
-            document.getElementById('statSalesLabel').innerText = translations[lang].statSales;
-            document.getElementById('statOrdersLabel').innerText = translations[lang].statOrders;
-
-            document.querySelectorAll('.nav-item span').forEach((span, index) => {
-                if (index === 0) span.innerText = translations[lang].navHome;
-                if (index === 1) span.innerText = translations[lang].navStats;
-                if (index === 2) span.innerText = translations[lang].navChat;
-                if (index === 3) span.innerText = translations[lang].navProfile;
-            });
-
-            document.querySelector('.settings-header span').innerText = translations[lang].settings;
-            document.querySelectorAll('.settings-section h3')[0].innerHTML = `<i class="fas fa-crown"></i> ${translations[lang].plans}`;
-            document.querySelectorAll('.settings-section h3')[1].innerHTML = `<i class="fas fa-chart-line"></i> ${translations[lang].ads}`;
-            document.querySelectorAll('.settings-section h3')[2].innerHTML = `<i class="fas fa-palette"></i> ${translations[lang].theme}`;
-            document.querySelectorAll('.settings-section h3')[3].innerHTML = `<i class="fas fa-bell"></i> ${translations[lang].notifications}`;
-            document.querySelectorAll('.settings-section h3')[4].innerHTML = `<i class="fas fa-lock"></i> ${translations[lang].privacy}`;
-
-            document.getElementById('modalTitle').innerText = translations[lang].addProduct;
-
-            // Агар категория интихоб шуда бошад, шаклро аз нав созед
-            if (currentCategoryPath.length > 0) {
-                showProductForm(currentCategoryPath[currentCategoryPath.length - 1]);
-            }
-
-            // Маҳсулотҳоро аз нав нишон диҳед
-            displayProducts();
-        }
-
-        // Тема
-        function setTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            const icon = document.getElementById('themeIcon');
-            if (theme === 'dark') {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
+        // --- CORE FUNCTIONS ---
+        function toggleSettings() {
+            const panel = document.getElementById('sidePanel');
+            const icon = document.getElementById('settingsBtn');
+            panel.classList.toggle('open');
+            icon.classList.toggle('active');
         }
 
         function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            setTheme(current === 'light' ? 'dark' : 'light');
+            const body = document.body;
+            const theme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', theme);
         }
 
-        // Менюи забон
-        document.getElementById('langToggle').addEventListener('click', function(e) {
-            e.stopPropagation();
-            document.getElementById('langMenu').classList.toggle('show');
-        });
-
-        document.querySelectorAll('.lang-option').forEach(opt => {
-            opt.addEventListener('click', function() {
-                setLanguage(this.dataset.lang);
-                document.getElementById('langMenu').classList.remove('show');
-            });
-        });
-
-        document.addEventListener('click', function() {
-            document.getElementById('langMenu').classList.remove('show');
-        });
-
-        // Панели танзимот
-        document.getElementById('settingsToggle').addEventListener('click', function() {
-            document.getElementById('settingsPanel').classList.add('open');
-        });
-
-        document.getElementById('closeSettings').addEventListener('click', function() {
-            document.getElementById('settingsPanel').classList.remove('open');
-        });
-
-        // Планҳо ва реклама
-        document.querySelectorAll('.plan-card').forEach(card => {
-            card.addEventListener('click', function() {
-                alert(`Плани ${this.dataset.plan} интихоб шуд`);
-            });
-        });
-
-        document.querySelectorAll('.ad-card').forEach(card => {
-            card.addEventListener('click', function() {
-                alert(`Рекламаи ${this.dataset.ad} харида шуд`);
-            });
-        });
-
-        // Тугмаи иловаи маҳсулот
-        document.getElementById('addProductBtn').addEventListener('click', function() {
-            document.getElementById('addProductModal').classList.add('open');
-            buildCategoryTree();
-        });
-
-        function closeModal() {
-            document.getElementById('addProductModal').classList.remove('open');
-            document.getElementById('productForm').style.display = 'none';
-            currentCategoryPath = [];
+        function changeLang(lang, btn) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // Refresh content if needed
         }
 
-        // Сохтани дарахти категорияҳо
-        function buildCategoryTree(path = []) {
-            const container = document.getElementById('categoryTree');
-            container.innerHTML = '';
+        // --- POSTS SYSTEM (INSTAGRAM STYLE) ---
+        const dummyProducts = [
+            { name: 'iPhone 15 Pro', price: '12,500', img: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Nike Air Max', price: '1,200', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=500' }
+        ];
 
-            let currentLevel = categories;
-            let levelContainer = container;
+        function loadPosts() {
+            const feed = document.getElementById('posts-feed');
+            feed.innerHTML = dummyProducts.map(p => `
+                <div class="post">
+                    <div class="post-header">
+                        <div class="post-user"><div class="post-avatar"></div><span>Мағозаи Ман</span></div>
+                        <i class="fas fa-ellipsis-v"></i>
+                    </div>
+                    <img src="${p.img}" class="post-img">
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart"></i>
+                            <i class="far fa-comment"></i>
+                            <i class="far fa-paper-plane"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+                    <div class="post-info">
+                        <div class="post-title">${p.name}</div>
+                        <div class="post-price">${p.price} c.</div>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-            for (let i = 0; i < path.length; i++) {
-                const found = currentLevel.find(c => c.id === path[i]);
-                if (found) {
+        // --- ADVANCED CATEGORY SYSTEM ---
+        function openAddModal() {
+            document.getElementById('addModal').style.display = 'flex';
+            categoryHistory = [];
+            loadCategories(null);
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+        }
+
+        async function loadCategories(parentId) {
+            const container = document.getElementById('modal-body-content');
+            container.innerHTML = '<p>Боргирӣ...</p>';
+
+            let query = _supabase.from('categories').select('*');
+            parentId ? query = query.eq('parent_id', parentId) : query = query.is('parent_id', null);
+
+            const { data, error } = await query;
+
+            if (data && data.length > 0) {
+                container.innerHTML = '';
+                data.forEach(cat => {
                     const div = document.createElement('div');
-                    div.className = 'category-level';
-                    levelContainer.appendChild(div);
-                    levelContainer = div;
-                    currentLevel = found.children || [];
-                }
-            }
-
-            // Нишон додани категорияҳои сатҳи ҷорӣ
-            if (currentLevel && currentLevel.length > 0) {
-                currentLevel.forEach(cat => {
-                    const catDiv = document.createElement('div');
-                    catDiv.className = 'category-item';
-                    catDiv.innerText = cat.name[currentLang] || cat.name.tg;
-                    catDiv.dataset.id = cat.id;
-                    catDiv.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const newPath = [...path, cat.id];
-                        if (cat.children && cat.children.length > 0) {
-                            buildCategoryTree(newPath);
-                        } else {
-                            // Категорияи ниҳоӣ
-                            currentCategoryPath = newPath;
-                            showProductForm(cat);
-                        }
-                    });
-                    levelContainer.appendChild(catDiv);
+                    div.className = 'category-item';
+                    div.innerHTML = `<span>${cat.name_tg}</span> <i class="fas fa-chevron-right"></i>`;
+                    div.onclick = () => {
+                        categoryHistory.push(cat.name_tg);
+                        document.getElementById('category-path').innerText = categoryHistory.join(' > ');
+                        loadCategories(cat.id);
+                    };
+                    container.appendChild(div);
                 });
             } else {
-                // Агар категорияи ниҳоӣ бошад, шаклро нишон диҳед
-                if (path.length > 0) {
-                    const lastCat = findCategoryById(path[path.length - 1]);
-                    if (lastCat) {
-                        showProductForm(lastCat);
-                    }
-                }
+                renderFinalForm(parentId);
             }
         }
 
-        function findCategoryById(id) {
-            function search(cats) {
-                for (let cat of cats) {
-                    if (cat.id === id) return cat;
-                    if (cat.children) {
-                        const found = search(cat.children);
-                        if (found) return found;
-                    }
-                }
-                return null;
-            }
-            return search(categories);
-        }
+        async function renderFinalForm(catId) {
+            const container = document.getElementById('modal-body-content');
+            container.innerHTML = '<h4>Маълумоти маҳсулот</h4><br>';
+            
+            // Гирифтани майдонҳои техникӣ аз Supabase
+            const { data: fields } = await _supabase.from('category_fields').select('*').eq('category_id', catId);
 
-        // Нишон додани шакли хосиятҳо
-        function showProductForm(category) {
-            const formContainer = document.getElementById('productForm');
-            formContainer.style.display = 'block';
-            formContainer.innerHTML = '';
-
-            const fields = category.fields || [];
-
-            // Номи маҳсулот
-            const nameGroup = document.createElement('div');
-            nameGroup.className = 'form-group';
-            nameGroup.innerHTML = `
-                <label class="form-label">${currentLang === 'tg' ? 'Ном' : currentLang === 'ru' ? 'Название' : 'Name'}</label>
-                <input type="text" class="form-input" id="productName" placeholder="${currentLang === 'tg' ? 'Номи маҳсулот' : currentLang === 'ru' ? 'Название товара' : 'Product name'}">
+            let html = `
+                <input type="text" placeholder="Номи маҳсулот" class="form-input">
+                <input type="number" placeholder="Нарх" class="form-input">
             `;
-            formContainer.appendChild(nameGroup);
 
-            // Хосиятҳо
-            fields.forEach(field => {
-                const fieldGroup = document.createElement('div');
-                fieldGroup.className = 'form-group';
-                let label = '';
-                let inputHtml = '';
-
-                switch(field) {
-                    case 'ram':
-                        label = 'RAM';
-                        inputHtml = `<input type="text" class="form-input" id="productRAM" placeholder="4GB, 8GB">`;
-                        break;
-                    case 'rom':
-                        label = 'ROM';
-                        inputHtml = `<input type="text" class="form-input" id="productROM" placeholder="64GB, 128GB">`;
-                        break;
-                    case 'imei':
-                        label = 'IMEI';
-                        inputHtml = `<input type="text" class="form-input" id="productIMEI" placeholder="15 рақам" maxlength="15">`;
-                        break;
-                    case 'condition':
-                        label = currentLang === 'tg' ? 'Ҳолат' : currentLang === 'ru' ? 'Состояние' : 'Condition';
-                        inputHtml = `
-                            <select class="form-select" id="productCondition">
-                                <option value="new">${currentLang === 'tg' ? 'Нав' : currentLang === 'ru' ? 'Новый' : 'New'}</option>
-                                <option value="used">${currentLang === 'tg' ? 'Истифодашуда' : currentLang === 'ru' ? 'Б/у' : 'Used'}</option>
-                            </select>
-                        `;
-                        break;
-                    case 'color':
-                        label = currentLang === 'tg' ? 'Ранг' : currentLang === 'ru' ? 'Цвет' : 'Color';
-                        inputHtml = `<input type="text" class="form-input" id="productColor" placeholder="${currentLang === 'tg' ? 'Ранг' : currentLang === 'ru' ? 'Цвет' : 'Color'}">`;
-                        break;
-                    case 'size':
-                        label = currentLang === 'tg' ? 'Андоза' : currentLang === 'ru' ? 'Размер' : 'Size';
-                        inputHtml = `<input type="text" class="form-input" id="productSize" placeholder="S, M, L, XL">`;
-                        break;
-                    case 'material':
-                        label = currentLang === 'tg' ? 'Мавод' : currentLang === 'ru' ? 'Материал' : 'Material';
-                        inputHtml = `<input type="text" class="form-input" id="productMaterial" placeholder="${currentLang === 'tg' ? 'Мавод' : currentLang === 'ru' ? 'Материал' : 'Material'}">`;
-                        break;
-                    case 'brand':
-                        label = currentLang === 'tg' ? 'Бренд' : currentLang === 'ru' ? 'Бренд' : 'Brand';
-                        inputHtml = `<input type="text" class="form-input" id="productBrand" placeholder="${currentLang === 'tg' ? 'Бренд' : currentLang === 'ru' ? 'Бренд' : 'Brand'}">`;
-                        break;
-                    case 'weight':
-                        label = currentLang === 'tg' ? 'Вазн' : currentLang === 'ru' ? 'Вес' : 'Weight';
-                        inputHtml = `<input type="text" class="form-input" id="productWeight" placeholder="кг/гр">`;
-                        break;
-                    case 'type':
-                        label = currentLang === 'tg' ? 'Намуд' : currentLang === 'ru' ? 'Тип' : 'Type';
-                        inputHtml = `<input type="text" class="form-input" id="productType" placeholder="${currentLang === 'tg' ? 'Намуд' : currentLang === 'ru' ? 'Тип' : 'Type'}">`;
-                        break;
-                    case 'season':
-                        label = currentLang === 'tg' ? 'Мавсим' : currentLang === 'ru' ? 'Сезон' : 'Season';
-                        inputHtml = `<input type="text" class="form-input" id="productSeason" placeholder="${currentLang === 'tg' ? 'Тобистон, зимистон' : currentLang === 'ru' ? 'Лето, зима' : 'Summer, winter'}">`;
-                        break;
-                    case 'gender':
-                        label = currentLang === 'tg' ? 'Ҷинс' : currentLang === 'ru' ? 'Пол' : 'Gender';
-                        inputHtml = `
-                            <select class="form-select" id="productGender">
-                                <option value="men">${currentLang === 'tg' ? 'Мардона' : currentLang === 'ru' ? 'Мужской' : 'Men'}</option>
-                                <option value="women">${currentLang === 'tg' ? 'Занона' : currentLang === 'ru' ? 'Женский' : 'Women'}</option>
-                                <option value="unisex">${currentLang === 'tg' ? 'Унисекс' : currentLang === 'ru' ? 'Унисекс' : 'Unisex'}</option>
-                            </select>
-                        `;
-                        break;
-                    case 'volume':
-                        label = currentLang === 'tg' ? 'Ҳаҷм' : currentLang === 'ru' ? 'Объем' : 'Volume';
-                        inputHtml = `<input type="text" class="form-input" id="productVolume" placeholder="мл/гр">`;
-                        break;
-                    case 'skinType':
-                        label = currentLang === 'tg' ? 'Намуди пӯст' : currentLang === 'ru' ? 'Тип кожи' : 'Skin type';
-                        inputHtml = `<input type="text" class="form-input" id="productSkinType" placeholder="${currentLang === 'tg' ? 'Хушк, равғанин' : currentLang === 'ru' ? 'Сухая, жирная' : 'Dry, oily'}">`;
-                        break;
-                    default:
-                        label = field;
-                        inputHtml = `<input type="text" class="form-input" id="product${field}" placeholder="${field}">`;
-                }
-
-                fieldGroup.innerHTML = `
-                    <label class="form-label">${label}</label>
-                    ${inputHtml}
-                `;
-                formContainer.appendChild(fieldGroup);
-            });
-
-            // Тавсиф
-            const descGroup = document.createElement('div');
-            descGroup.className = 'form-group';
-            descGroup.innerHTML = `
-                <label class="form-label">${currentLang === 'tg' ? 'Тавсиф' : currentLang === 'ru' ? 'Описание' : 'Description'}</label>
-                <textarea class="form-textarea" id="productDescription" rows="3"></textarea>
-            `;
-            formContainer.appendChild(descGroup);
-
-            // Акс
-            const imageGroup = document.createElement('div');
-            imageGroup.className = 'form-group';
-            imageGroup.innerHTML = `
-                <label class="form-label">${currentLang === 'tg' ? 'Аксҳо' : currentLang === 'ru' ? 'Изображения' : 'Images'}</label>
-                <input type="file" class="form-input" id="productImages" multiple accept="image/*">
-            `;
-            formContainer.appendChild(imageGroup);
-
-            // Тугмаи сабт
-            const btnGroup = document.createElement('div');
-            btnGroup.className = 'form-group';
-            btnGroup.innerHTML = `<button class="btn" onclick="saveProduct()">${currentLang === 'tg' ? 'Сабт кардан' : currentLang === 'ru' ? 'Сохранить' : 'Save'}</button>`;
-            formContainer.appendChild(btnGroup);
-        }
-
-        // Нишон додани маҳсулотҳо
-        function displayProducts() {
-            const container = document.getElementById('postsContainer');
-            container.innerHTML = '';
-
-            if (products.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-light);">' + 
-                    (currentLang === 'tg' ? 'Ҳеҷ маҳсулоте нест' : 
-                     currentLang === 'ru' ? 'Нет товаров' : 'No products') + '</div>';
-                return;
+            if (fields) {
+                fields.forEach(f => {
+                    html += `<input type="${f.field_type}" placeholder="${f.label_tg}" class="form-input">`;
+                });
             }
 
-            products.forEach(product => {
-                const post = document.createElement('div');
-                post.className = 'post';
-                post.innerHTML = `
-                    <div class="post-header">
-                        <div class="post-user">
-                            <div class="post-avatar"><i class="fas fa-store"></i></div>
-                            <div>
-                                <div class="post-username">Мағозаи шумо</div>
-                                <div class="post-time">${new Date(product.date).toLocaleDateString()}</div>
-                            </div>
-                        </div>
-                        <div class="post-menu" onclick="editProduct('${product.id}')"><i class="fas fa-ellipsis-h"></i></div>
-                    </div>
-                    <div class="post-image">
-                        ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '<i class="fas fa-image"></i>'}
-                    </div>
-                    <div class="post-details">
-                        <div class="post-title">${product.name}</div>
-                        <div class="post-price">${product.price} с</div>
-                        <div style="font-size:14px; color:var(--text-light);">${product.description || ''}</div>
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action"><i class="far fa-heart"></i> 0</div>
-                        <div class="post-action"><i class="far fa-comment"></i> 0</div>
-                        <div class="post-action"><i class="far fa-share-square"></i></div>
-                    </div>
-                `;
-                container.appendChild(post);
-            });
+            html += `<textarea placeholder="Тавсиф" class="form-input" style="height:80px;"></textarea>`;
+            html += `<button class="lang-btn active" style="width:100%; border-radius:8px;" onclick="alert('Сабт шуд!')">Сабт кардан</button>`;
+            
+            container.innerHTML = html;
         }
 
-        // Сабти маҳсулот
-        function saveProduct() {
-            const name = document.getElementById('productName')?.value;
-            if (!name) {
-                alert(currentLang === 'tg' ? 'Номро ворид кунед' : currentLang === 'ru' ? 'Введите название' : 'Enter name');
-                return;
-            }
-
-            // Ҷамъоварии маълумот аз шакл
-            const product = {
-                id: Date.now().toString(),
-                name: name,
-                price: document.getElementById('productPrice')?.value || 0,
-                description: document.getElementById('productDescription')?.value || '',
-                category: currentCategoryPath,
-                date: new Date().toISOString(),
-                image: null
-            };
-
-            // Акс
-            const fileInput = document.getElementById('productImages');
-            if (fileInput && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    product.image = e.target.result;
-                    products.push(product);
-                    localStorage.setItem('products', JSON.stringify(products));
-                    displayProducts();
-                    closeModal();
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                products.push(product);
-                localStorage.setItem('products', JSON.stringify(products));
-                displayProducts();
-                closeModal();
-            }
-        }
-
-        function editProduct(id) {
-            alert(currentLang === 'tg' ? 'Таҳрири маҳсулот' : currentLang === 'ru' ? 'Редактировать товар' : 'Edit product');
-        }
-
-        // Навигатсияи поёнӣ
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                this.classList.add('active');
-                const page = this.dataset.page;
-                if (page === 'home') {
-                    // аллакай дар саҳифаи асосӣ
-                } else {
-                    alert(translations[currentLang][`nav${page.charAt(0).toUpperCase() + page.slice(1)}`] + ' дар ҳоли сохтан');
-                }
-            });
-        });
-
-        // Тугмаи тема
-        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-        // Инициализатсия
-        setLanguage('tg');
-        displayProducts();
+        // Init
+        window.onload = loadPosts;
     </script>
 </body>
 </html>
