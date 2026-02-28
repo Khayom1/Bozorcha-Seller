@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Асосӣ - Bozorcha</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --bg: #f8fafc;
+            --bg-card: #ffffff;
+            --text: #0f172a;
+            --text-light: #475569;
+            --accent: #ff9800;
+            --accent-light: #fff3e0;
+            --border: #e2e8f0;
+            --shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            padding: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .product-item {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .add-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,152,0,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-box"></i></div>
+            <span class="stat-value">24</span>
+            <span class="stat-label">Маҳсулот</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+            <span class="stat-value">8</span>
+            <span class="stat-label">Фармоиш</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+            <span class="stat-value">1.2k</span>
+            <span class="stat-label">Фурӯш</span>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <span class="stat-value">2</span>
+            <span class="stat-label">Обуначӣ</span>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <span class="section-title">Рӯйхати маҳсулот</span>
+        <i class="fas fa-filter" style="color: var(--accent);"></i>
+    </div>
+
+    <div class="product-list">
+        <div class="product-item">
+            <div class="product-image"><i class="fas fa-tshirt"></i></div>
+            <div class="product-details">
+                <div class="product-name">Футболка Adidas</div>
+                <div class="product-price">150 с</div>
+            </div>
+            <i class="fas fa-ellipsis-v" style="color: var(--text-light);"></i>
+        </div>
+        <div class="product-item">
+            <div class="product-image"><i class="fas fa-shoe-prints"></i></div>
+            <div class="product-details">
+                <div class="product-name">Кроссовки Nike</div>
+                <div class="product-price">450 с</div>
+            </div>
+            <i class="fas fa-ellipsis-v" style="color: var(--text-light);"></i>
+        </div>
+        <div class="product-item">
+            <div class="product-image"><i class="fas fa-mobile-alt"></i></div>
+            <div class="product-details">
+                <div class="product-name">iPhone 15</div>
+                <div class="product-price">12,500 с</div>
+            </div>
+            <i class="fas fa-ellipsis-v" style="color: var(--text-light);"></i>
+        </div>
+    </div>
+
+    <div class="add-btn">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <script>
+        // Гирфтани паём аз саҳифаи асосӣ барои ивази тема
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'theme') {
+                document.body.setAttribute('data-theme', event.data.theme);
+            }
+        });
+    </script>
+</body>
+</html>
