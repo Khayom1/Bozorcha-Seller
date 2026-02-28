@@ -2,8 +2,9 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Асосӣ - Bozorcha</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -18,10 +19,17 @@
             --bg-card: #ffffff;
             --text: #0f172a;
             --text-light: #475569;
+            --text-muted: #64748b;
             --accent: #ff9800;
             --accent-light: #fff3e0;
+            --accent-dark: #f57c00;
             --border: #e2e8f0;
-            --shadow: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.05);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
         }
 
@@ -30,6 +38,7 @@
             --bg-card: #1e293b;
             --text: #f1f5f9;
             --text-light: #94a3b8;
+            --text-muted: #64748b;
             --border: #334155;
         }
 
@@ -37,14 +46,15 @@
             background: var(--bg);
             color: var(--text);
             transition: background 0.3s, color 0.3s;
-            padding: 16px;
+            padding: 0 0 20px 0;
+            min-height: 100vh;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 10px;
+            padding: 16px;
         }
 
         .stat-card {
@@ -53,6 +63,13 @@
             padding: 16px 8px;
             text-align: center;
             border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-icon {
@@ -70,34 +87,69 @@
         .stat-label {
             font-size: 11px;
             color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 20px 0 12px;
+            padding: 16px;
         }
 
         .section-title {
             font-size: 18px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+        .filter-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+
+        .filter-icon:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+            transform: rotate(90deg);
         }
 
         .product-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            padding: 0 16px;
         }
 
         .product-item {
             background: var(--bg-card);
             border-radius: 16px;
             padding: 12px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 12px;
             border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .product-item:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
         }
 
         .product-image {
@@ -109,6 +161,15 @@
             align-items: center;
             justify-content: center;
             color: var(--accent);
+            font-size: 24px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .product-details {
@@ -117,12 +178,75 @@
 
         .product-name {
             font-weight: 600;
+            font-size: 15px;
             margin-bottom: 4px;
         }
 
         .product-price {
-            color: var(--accent);
             font-weight: 700;
+            color: var(--accent);
+            font-size: 15px;
+        }
+
+        .product-menu {
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .product-menu:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 40px;
+            top: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 150px;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 12px;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-item:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .dropdown-item i {
+            width: 18px;
+            color: var(--accent);
+        }
+
+        .dropdown-item.danger:hover {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .dropdown-item.danger i {
+            color: var(--danger);
         }
 
         .add-btn {
@@ -140,6 +264,80 @@
             font-size: 24px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(255,152,0,0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        /* Filter Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 30px;
+            padding: 25px;
+            max-width: 400px;
+            width: 90%;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-header i {
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .filter-option {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-option:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .filter-option:last-child {
+            border-bottom: none;
+        }
+
+        .filter-option i {
+            margin-right: 10px;
+            color: var(--accent);
         }
     </style>
 </head>
@@ -147,69 +345,224 @@
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-box"></i></div>
-            <span class="stat-value">24</span>
+            <span class="stat-value" id="statProducts">0</span>
             <span class="stat-label">Маҳсулот</span>
         </div>
         <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-            <span class="stat-value">8</span>
+            <span class="stat-value" id="statOrders">0</span>
             <span class="stat-label">Фармоиш</span>
         </div>
         <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-            <span class="stat-value">1.2k</span>
+            <span class="stat-value" id="statSales">0</span>
             <span class="stat-label">Фурӯш</span>
         </div>
         <div class="stat-card">
             <div class="stat-icon"><i class="fas fa-users"></i></div>
-            <span class="stat-value">2</span>
+            <span class="stat-value" id="statSubscribers">0</span>
             <span class="stat-label">Обуначӣ</span>
         </div>
     </div>
 
     <div class="section-header">
-        <span class="section-title">Рӯйхати маҳсулот</span>
-        <i class="fas fa-filter" style="color: var(--accent);"></i>
-    </div>
-
-    <div class="product-list">
-        <div class="product-item">
-            <div class="product-image"><i class="fas fa-tshirt"></i></div>
-            <div class="product-details">
-                <div class="product-name">Футболка Adidas</div>
-                <div class="product-price">150 с</div>
-            </div>
-            <i class="fas fa-ellipsis-v" style="color: var(--text-light);"></i>
+        <div class="section-title">
+            <i class="fas fa-list"></i>
+            Рӯйхати Маҳсулот
         </div>
-        <div class="product-item">
-            <div class="product-image"><i class="fas fa-shoe-prints"></i></div>
-            <div class="product-details">
-                <div class="product-name">Кроссовки Nike</div>
-                <div class="product-price">450 с</div>
-            </div>
-            <i class="fas fa-ellipsis-v" style="color: var(--text-light);"></i>
-        </div>
-        <div class="product-item">
-            <div class="product-image"><i class="fas fa-mobile-alt"></i></div>
-            <div class="product-details">
-                <div class="product-name">iPhone 15</div>
-                <div class="product-price">12,500 с</div>
-            </div>
-            <i class="fas fa-ellipsis-v" style="color: var(--text-light);"></i>
+        <div class="filter-icon" onclick="openFilterModal()">
+            <i class="fas fa-filter"></i>
         </div>
     </div>
 
-    <div class="add-btn">
+    <div class="product-list" id="productList">
+        <div style="text-align:center; padding:40px; color:var(--text-muted);">
+            <i class="fas fa-box-open" style="font-size:48px; margin-bottom:16px;"></i>
+            <p>Ҳеҷ маҳсулоте нест</p>
+        </div>
+    </div>
+
+    <div class="add-btn" onclick="window.location.href='addProduct.html'">
         <i class="fas fa-plus"></i>
     </div>
 
+    <!-- Filter Modal -->
+    <div class="modal" id="filterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Филтр</span>
+                <i class="fas fa-times" onclick="closeFilterModal()"></i>
+            </div>
+            <div class="filter-option" onclick="filterProducts('all')">
+                <i class="fas fa-list"></i> Ҳамаи маҳсулот
+            </div>
+            <div class="filter-option" onclick="filterProducts('cheap')">
+                <i class="fas fa-angle-down"></i> Арзонтарин
+            </div>
+            <div class="filter-option" onclick="filterProducts('expensive')">
+                <i class="fas fa-angle-up"></i> Гаронтарин
+            </div>
+            <div class="filter-option" onclick="filterProducts('new')">
+                <i class="fas fa-clock"></i> Навтарин
+            </div>
+            <div class="filter-option" onclick="filterProducts('old')">
+                <i class="fas fa-history"></i> Кӯҳнатарин
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Гирфтани паём аз саҳифаи асосӣ барои ивази тема
+        const supabaseClient = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        let products = [];
+        let originalProducts = [];
+
         window.addEventListener('message', function(event) {
             if (event.data.type === 'theme') {
                 document.body.setAttribute('data-theme', event.data.theme);
             }
         });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadProducts();
+        });
+
+        async function loadProducts() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                products = data || [];
+                originalProducts = [...products];
+                displayProducts(products);
+                updateStats();
+            } catch (error) {
+                console.error('Error loading products:', error);
+            }
+        }
+
+        function displayProducts(productsToShow) {
+            const container = document.getElementById('productList');
+            
+            if (!productsToShow || productsToShow.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:var(--text-muted);">
+                        <i class="fas fa-box-open" style="font-size:48px; margin-bottom:16px;"></i>
+                        <p>Ҳеҷ маҳсулоте нест</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            productsToShow.forEach(product => {
+                html += `
+                    <div class="product-item">
+                        <div class="product-image">
+                            ${product.images && product.images[0] ? `<img src="${product.images[0]}" alt="${product.name}">` : '<i class="fas fa-box"></i>'}
+                        </div>
+                        <div class="product-details">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">${product.price} с</div>
+                        </div>
+                        <div class="product-menu" onclick="toggleMenu(this)">
+                            <i class="fas fa-ellipsis-v"></i>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item" onclick="editProduct('${product.id}')"><i class="fas fa-edit"></i> Таҳрир</div>
+                                <div class="dropdown-item danger" onclick="deleteProduct('${product.id}')"><i class="fas fa-trash"></i> Пок</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updateStats() {
+            document.getElementById('statProducts').innerText = products.length;
+            
+            const totalSales = products.reduce((sum, p) => sum + (p.price || 0), 0);
+            document.getElementById('statSales').innerText = totalSales.toLocaleString();
+            
+            document.getElementById('statOrders').innerText = products.filter(p => p.status === 'ordered').length || 0;
+            document.getElementById('statSubscribers').innerText = products.filter(p => p.subscribed).length || 0;
+        }
+
+        function toggleMenu(element) {
+            const menu = element.querySelector('.dropdown-menu');
+            menu.classList.toggle('show');
+            
+            document.addEventListener('click', function closeMenu(e) {
+                if (!element.contains(e.target)) {
+                    menu.classList.remove('show');
+                    document.removeEventListener('click', closeMenu);
+                }
+            });
+        }
+
+        function editProduct(id) {
+            alert('Таҳрири маҳсулот ID: ' + id);
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Мутмаин ҳастед, ки ин маҳсулотро пок кардан мехоҳед?')) {
+                try {
+                    const { error } = await supabaseClient
+                        .from('products')
+                        .delete()
+                        .eq('id', id);
+                    
+                    if (error) throw error;
+                    
+                    await loadProducts();
+                } catch (error) {
+                    alert('Хатогӣ: ' + error.message);
+                }
+            }
+        }
+
+        // Filter functions
+        function openFilterModal() {
+            document.getElementById('filterModal').classList.add('open');
+        }
+
+        function closeFilterModal() {
+            document.getElementById('filterModal').classList.remove('open');
+        }
+
+        function filterProducts(type) {
+            let filtered = [...originalProducts];
+            
+            switch(type) {
+                case 'all':
+                    filtered = originalProducts;
+                    break;
+                case 'cheap':
+                    filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+                    break;
+                case 'expensive':
+                    filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+                    break;
+                case 'new':
+                    filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    break;
+                case 'old':
+                    filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                    break;
+            }
+            
+            products = filtered;
+            displayProducts(products);
+            closeFilterModal();
+        }
     </script>
 </body>
 </html>
