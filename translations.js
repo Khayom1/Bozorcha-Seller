@@ -52,3 +52,27 @@ const translations = {
         errorNotExists: 'Number not found'
     }
 };
+// translations.js
+const translations = {
+    tg: {
+        welcomeTitle: 'Ба Bozorcha хуш омадед!',
+        welcomeText: 'Барои оғози фурӯш ё харид, лутфан сабти ном кунед ё ба ҳисобатон дохил шавед',
+        registerBtn: 'Сабти ном',
+        loginBtn: 'Дохилшавӣ',
+        footer: '© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.'
+    },
+    ru: {
+        welcomeTitle: 'Добро пожаловать в Bozorcha!',
+        welcomeText: 'Чтобы начать продавать или покупать, зарегистрируйтесь или войдите в аккаунт',
+        registerBtn: 'Регистрация',
+        loginBtn: 'Вход',
+        footer: '© 2026 Bozorcha. Все права защищены.'
+    },
+    en: {
+        welcomeTitle: 'Welcome to Bozorcha!',
+        welcomeText: 'To start selling or buying, please register or log in',
+        registerBtn: 'Register',
+        loginBtn: 'Login',
+        footer: '© 2026 Bozorcha. All rights reserved.'
+    }
+};
