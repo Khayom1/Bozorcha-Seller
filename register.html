@@ -6,7 +6,6 @@
     <title>Регистратсия - Bozorcha</title>
     <!-- Библиотекаҳо -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="translations.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -56,7 +55,6 @@
             overflow: hidden;
         }
 
-        /* Header */
         .app-bar {
             display: flex;
             align-items: center;
@@ -105,7 +103,6 @@
         }
         .theme-icon.rotate { transform: rotate(180deg); }
 
-        /* Менюи забон */
         .lang-menu {
             position: absolute;
             top: 70px;
@@ -142,7 +139,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Логотип бо аниматсияи касбӣ */
         .logo-main {
             padding: 30px 30px 10px;
             text-align: center;
@@ -193,7 +189,6 @@
             100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
         }
 
-        /* Аниматсияи доимӣ барои доираҳо */
         .circle-pulse {
             animation: gentlePulse 3s ease-in-out infinite;
             animation-delay: 2.5s;
@@ -204,7 +199,6 @@
             50% { transform: scale(1.02); filter: brightness(1.08); }
         }
 
-        /* Контент */
         .content {
             padding: 10px 24px 30px;
         }
@@ -496,21 +490,82 @@
     </div>
 
     <script>
+        // ---------- ТАРҶУМАҲО ----------
+        const translations = {
+            tg: {
+                welcomeTitle: 'Ба Bozorcha хуш омадед!',
+                welcomeText: 'Барои оғози фурӯш ё харид, лутфан сабти ном кунед ё ба ҳисобатон дохил шавед',
+                registerBtn: 'Сабти ном',
+                loginBtn: 'Дохилшавӣ',
+                phoneLabel: 'Рақами телефон',
+                example: 'Намуна: 901 23 45 67',
+                terms: 'Ман қоидаҳои истифодабариро қабул мекунам',
+                nextRegister: 'Сабти ном',
+                nextLogin: 'Дохилшавӣ',
+                linkPrefix: 'Аллакай ҳисоб доред?',
+                linkLogin: 'Дохил шавед',
+                linkRegister: 'Сабти ном кунед',
+                footer: '© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.',
+                errorDigits: 'Рақам бояд 9 рақам бошад',
+                errorExists: 'Ин рақам аллакай сабт шудааст',
+                errorNotExists: 'Ин рақам ёфт нашуд'
+            },
+            ru: {
+                welcomeTitle: 'Добро пожаловать в Bozorcha!',
+                welcomeText: 'Чтобы начать продавать или покупать, зарегистрируйтесь или войдите в аккаунт',
+                registerBtn: 'Регистрация',
+                loginBtn: 'Вход',
+                phoneLabel: 'Номер телефона',
+                example: 'Пример: 901 23 45 67',
+                terms: 'Я принимаю правила использования',
+                nextRegister: 'Зарегистрироваться',
+                nextLogin: 'Войти',
+                linkPrefix: 'Уже есть аккаунт?',
+                linkLogin: 'Войдите',
+                linkRegister: 'Зарегистрируйтесь',
+                footer: '© 2026 Bozorcha. Все права защищены.',
+                errorDigits: 'Номер должен содержать 9 цифр',
+                errorExists: 'Этот номер уже зарегистрирован',
+                errorNotExists: 'Номер не найден'
+            },
+            en: {
+                welcomeTitle: 'Welcome to Bozorcha!',
+                welcomeText: 'To start selling or buying, please register or log in',
+                registerBtn: 'Register',
+                loginBtn: 'Login',
+                phoneLabel: 'Phone number',
+                example: 'Example: 901 23 45 67',
+                terms: 'I accept the terms of use',
+                nextRegister: 'Register',
+                nextLogin: 'Login',
+                linkPrefix: 'Already have an account?',
+                linkLogin: 'Log in',
+                linkRegister: 'Register',
+                footer: '© 2026 Bozorcha. All rights reserved.',
+                errorDigits: 'Number must be 9 digits',
+                errorExists: 'This number is already registered',
+                errorNotExists: 'Number not found'
+            }
+        };
+
+        // ---------- SUPABASE ----------
         const supabaseClient = supabase.createClient(
             'https://seagtlaujnnhoyitgsdd.supabase.co',
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         );
 
+        // ---------- ТАҒЙИРЁБАНДАҲО ----------
         let currentLang = localStorage.getItem('bozorcha_lang') || 'tg';
         let currentTheme = localStorage.getItem('bozorcha_theme') || 'light';
-        let activeTab = 'register';
+        let activeTab = 'register'; // 'register' ё 'login'
 
+        // Танзими ибтидоӣ
         document.body.setAttribute('data-theme', currentTheme);
         updateThemeIcon();
         applyLanguage(currentLang);
         setActiveTab(activeTab);
 
-        // Элементҳо
+        // ---------- ЭЛЕМЕНТҲО ----------
         const themeBtn = document.getElementById('themeBtn');
         const themeIcon = document.getElementById('themeIcon');
         const langBtn = document.getElementById('langBtn');
@@ -526,7 +581,7 @@
         const toggleLink = document.getElementById('linkAction');
         const linkText = document.getElementById('linkText');
 
-        // Забон
+        // ---------- ЗАБОН ----------
         langBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             langMenu.classList.toggle('show');
@@ -586,7 +641,7 @@
             nextBtn.innerText = activeTab === 'register' ? t.nextRegister : t.nextLogin;
         }
 
-        // Тема
+        // ---------- ТЕМА ----------
         themeBtn.addEventListener('click', () => {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', currentTheme);
@@ -604,7 +659,7 @@
             setTimeout(() => themeIcon.classList.remove('rotate'), 500);
         }
 
-        // Таб
+        // ---------- ТАБ (САБТИ НОМ / ДОХИЛШАВӢ) ----------
         function setActiveTab(tab) {
             activeTab = tab;
             if (tab === 'register') {
@@ -629,7 +684,7 @@
             setActiveTab(activeTab === 'register' ? 'login' : 'register');
         });
 
-        // Санҷиши рақам
+        // ---------- САНҶИШИ РАҚАМ ----------
         function validatePhone(phone) {
             const digits = phone.replace(/\D/g, '');
             return digits.length === 9;
@@ -670,7 +725,7 @@
 
         agreeCheck.addEventListener('change', checkForm);
 
-        // Тугмаи давом
+        // ---------- ТУГМАИ ДАВОМ ----------
         nextBtn.addEventListener('click', async () => {
             const digits = phoneInput.value.replace(/\D/g, '');
             if (!validatePhone(digits)) {
