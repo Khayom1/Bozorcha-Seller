@@ -3,207 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bozorcha Seller - Professional Core</title>
+    <title>Bozorcha Seller - Pro Core v2</title>
     <style>
         :root {
-            /* Light Theme - High Contrast */
-            --bg: #F4F7FA;
-            --surface: #FFFFFF;
+            --bg: #FFFFFF;
+            --surface: #F8F9FA;
             --text-primary: #1A1C1E;
             --text-secondary: #6C757D;
             --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
-            --btn-secondary: #F8F9FA;
-            --border: #E9ECEF;
-            --shadow: 0 20px 40px rgba(0,0,0,0.05);
+            --border: #EEEEEE;
+            --shadow: 0 15px 35px rgba(0,0,0,0.05);
+            --splash-bg: #FFFFFF;
         }
 
         [data-theme="dark"] {
-            /* Dark Theme - OLED Optimized */
             --bg: #0A0A0B;
             --surface: #161618;
             --text-primary: #F8F9FA;
             --text-secondary: #ADB5BD;
-            --accent-gradient: linear-gradient(135deg, #F093FB 0%, #F5576C 100%); /* Adjusted for Dark */
-            --btn-secondary: #212529;
             --border: #2C2E33;
-            --shadow: 0 20px 40px rgba(0,0,0,0.4);
+            --shadow: 0 15px 35px rgba(0,0,0,0.3);
+            --splash-bg: #000000;
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, sans-serif;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s ease, color 0.5s ease, border 0.5s ease;
         }
 
         body {
             background-color: var(--bg);
             color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
         }
 
-        /* --- LOADING STAGE (SPLASH) --- */
+        /* --- SPLASH SCREEN (WHITE BG) --- */
         #splash {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            position: fixed; inset: 0;
+            background: var(--splash-bg);
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease;
         }
 
-        .splash-svg {
-            width: 120px;
-            overflow: visible;
-        }
+        .splash-svg { width: 130px; }
 
         .path-draw {
-            fill: none;
-            stroke: #FF9F43;
-            stroke-width: 2;
-            stroke-dasharray: 500;
-            stroke-dashoffset: 500;
-            animation: draw 2.5s ease-in-out forwards;
+            fill: none; stroke: #FF9F43; stroke-width: 2;
+            stroke-dasharray: 600; stroke-dashoffset: 600;
+            animation: draw 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        @keyframes draw {
-            to { stroke-dashoffset: 0; }
-        }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
 
         .fill-animate {
             opacity: 0;
-            animation: fadeIn 1s ease forwards 2s;
+            animation: fadeIn 0.8s ease forwards 1.8s;
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { to { opacity: 1; } }
 
         /* --- MAIN UI --- */
         #app {
-            width: 100%;
-            max-width: 420px;
-            padding: 24px;
-            opacity: 0;
-            transform: translateY(30px);
+            width: 100%; max-width: 400px; padding: 20px;
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        #app.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        #app.visible { opacity: 1; transform: translateY(0); }
 
         .card {
             background: var(--surface);
-            border-radius: 32px;
-            padding: 40px 32px;
+            border-radius: 35px; padding: 40px 30px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
-            position: relative;
+            text-align: center;
         }
 
-        .nav-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 48px;
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 45px;
         }
 
-        .brand-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .controls { display: flex; gap: 10px; position: relative; }
+
+        /* LANGUAGE DROPDOWN */
+        .dropdown { position: relative; }
+        .dropdown-menu {
+            position: absolute; top: 55px; right: 0;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 15px; box-shadow: var(--shadow);
+            display: none; flex-direction: column; overflow: hidden; z-index: 100;
         }
-
-        .brand-logo { width: 42px; height: 42px; }
-
-        .brand-name {
-            font-size: 22px;
-            font-weight: 800;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .dropdown-menu.show { display: flex; }
+        .dropdown-item {
+            padding: 12px 20px; cursor: pointer; font-weight: 700; font-size: 14px;
         }
+        .dropdown-item:hover { background: var(--accent-gradient); color: white; }
 
-        .controls { display: flex; gap: 8px; }
-
-        .icon-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            background: var(--btn-secondary);
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
+        /* THEME TOGGLE ANIMATION */
+        .theme-btn {
+            width: 48px; height: 48px; border-radius: 15px;
+            background: var(--bg); border: 1px solid var(--border);
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            position: relative; overflow: hidden;
         }
-
-        .icon-btn:hover { transform: scale(1.05); }
-
-        .welcome-section {
-            text-align: left;
-            margin-bottom: 40px;
+        .theme-icon-box {
+            position: relative; width: 20px; height: 20px;
         }
-
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 8px;
+        .sun, .moon {
+            position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);
         }
+        [data-theme="light"] .sun { transform: translateY(0) rotate(0); opacity: 1; }
+        [data-theme="light"] .moon { transform: translateY(30px) rotate(-90deg); opacity: 0; }
+        [data-theme="dark"] .sun { transform: translateY(-30px) rotate(90deg); opacity: 0; }
+        [data-theme="dark"] .moon { transform: translateY(0) rotate(0); opacity: 1; }
 
-        .welcome-sub {
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
-
-        .action-group {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        .welcome-text { margin: 30px 0; }
+        .welcome-title { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+        .welcome-sub { color: var(--text-secondary); font-size: 15px; }
 
         .btn {
-            width: 100%;
-            padding: 20px;
-            border-radius: 18px;
-            font-size: 16px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            width: 100%; padding: 18px; border-radius: 18px;
+            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
+            margin-bottom: 15px; transition: transform 0.2s;
         }
+        .btn-reg { background: var(--accent-gradient); color: white; }
+        .btn-login { background: transparent; border: 1.5px solid var(--border); color: var(--text-primary); }
+        .btn:active { transform: scale(0.97); }
 
-        .btn-primary {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2);
-        }
-
-        .btn-secondary {
-            background: var(--btn-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .btn:active { transform: scale(0.98); }
-
-        /* Language Badge */
-        .lang-badge {
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
+        footer {
+            margin-top: 30px; color: var(--text-secondary);
+            font-size: 12px; font-weight: 500;
         }
     </style>
 </head>
@@ -225,108 +157,93 @@
 
     <div id="app">
         <div class="card">
-            <header class="nav-header">
-                <div class="brand-box">
-                    <svg class="brand-logo" viewBox="0 0 200 200">
+            <header>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <svg width="35" height="35" viewBox="0 0 200 200">
                         <path d="M 10 60 C 30 10 140 0 185 60 Z" fill="#f4ce9b"/>
-                        <path d="M 10 60 A 28.5 28.5 0 0 0 68.3 60 Z" fill="#ee8031"/>
-                        <path d="M 68.3 60 A 28.5 28.5 0 0 0 126.6 60 Z" fill="#ee8031"/>
-                        <path d="M 126.6 60 A 28.5 28.5 0 0 0 185 60 Z" fill="#ee8031"/>
                         <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
-                        <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
                     </svg>
-                    <span class="brand-name">Bozorcha</span>
+                    <span style="font-weight: 900; font-size: 20px;">Bozorcha</span>
                 </div>
                 <div class="controls">
-                    <button class="icon-btn" id="langBtn" title="Change Language">
-                        <span class="lang-badge" id="langText">TJ</span>
-                    </button>
-                    <button class="icon-btn" id="themeBtn" title="Toggle Theme">
-                        <span id="themeIcon">🌙</span>
+                    <div class="dropdown">
+                        <button class="theme-btn" id="langBtn"><b id="currentLang">TJ</b></button>
+                        <div class="dropdown-menu" id="langMenu">
+                            <div class="dropdown-item" onclick="setLang('tj')">TJ</div>
+                            <div class="dropdown-item" onclick="setLang('ru')">RU</div>
+                            <div class="dropdown-item" onclick="setLang('en')">EN</div>
+                        </div>
+                    </div>
+                    <button class="theme-btn" id="themeBtn">
+                        <div class="theme-icon-box">
+                            <span class="sun">☀️</span>
+                            <span class="moon">🌙</span>
+                        </div>
                     </button>
                 </div>
             </header>
 
-            <section class="welcome-section">
-                <h1 class="welcome-title" id="ui-title">Хуш омадед!</h1>
-                <p class="welcome-sub" id="ui-subtitle">Барои оғоз ба система ворид шавед ё сабти ном кунед.</p>
-            </section>
-
-            <div class="action-group">
-                <button class="btn btn-primary" id="ui-reg">Сабти ном</button>
-                <button class="btn btn-secondary" id="ui-login">Дохилшавӣ</button>
+            <div class="welcome-text">
+                <h1 class="welcome-title" id="txtTitle">Хуш омадед!</h1>
+                <p class="welcome-sub" id="txtSub">Барои оғоз ворид шавед ё сабти ном кунед.</p>
             </div>
+
+            <button class="btn btn-reg" id="txtReg">Сабти ном</button>
+            <button class="btn btn-login" id="txtLogin">Дохилшавӣ</button>
+
+            <footer id="txtFooter">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
         </div>
     </div>
 
     <script>
-        // 1. Core State Management
-        const state = {
-            theme: localStorage.getItem('theme') || 'light',
-            lang: localStorage.getItem('lang') || 'tj',
-            langs: ['tj', 'ru', 'en'],
-            translations: {
-                tj: { title: "Хуш омадед!", sub: "Барои оғоз ба система ворид шавед.", reg: "Сабти ном", login: "Дохилшавӣ" },
-                ru: { title: "Добро пожаловать!", sub: "Войдите или зарегистрируйтесь для начала.", reg: "Регистрация", login: "Вход" },
-                en: { title: "Welcome!", sub: "Login or register to get started.", reg: "Register", login: "Login" }
+        const i18n = {
+            tj: { title: "Хуш омадед!", sub: "Барои оғоз ворид шавед ё сабти ном кунед.", reg: "Сабти ном", login: "Дохилшавӣ", footer: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд." },
+            ru: { title: "Добро пожаловать!", sub: "Войдите или зарегистрируйтесь для начала.", reg: "Регистрация", login: "Вход", footer: "© 2026 Bozorcha. Все права защищены." },
+            en: { title: "Welcome!", sub: "Login or register to get started.", reg: "Register", login: "Login", footer: "© 2026 Bozorcha. All rights reserved." }
+        };
+
+        let currentTheme = 'light';
+        let currentLang = 'tj';
+
+        // Splash Transition
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash').style.display = 'none';
+                    document.getElementById('app').classList.add('visible');
+                }, 800);
+            }, 3000);
+        };
+
+        // Theme Toggle
+        document.getElementById('themeBtn').onclick = () => {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', currentTheme);
+        };
+
+        // Language Dropdown
+        document.getElementById('langBtn').onclick = () => {
+            document.getElementById('langMenu').classList.toggle('show');
+        };
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('currentLang').innerText = lang.toUpperCase();
+            document.getElementById('txtTitle').innerText = i18n[lang].title;
+            document.getElementById('txtSub').innerText = i18n[lang].sub;
+            document.getElementById('txtReg').innerText = i18n[lang].reg;
+            document.getElementById('txtLogin').innerText = i18n[lang].login;
+            document.getElementById('txtFooter').innerText = i18n[lang].footer;
+            document.getElementById('langMenu').classList.remove('show');
+        }
+
+        // Close dropdown when clicking outside
+        window.onclick = (e) => {
+            if (!e.target.closest('.dropdown')) {
+                document.getElementById('langMenu').classList.remove('show');
             }
         };
-
-        // 2. Theme Logic
-        const applyTheme = () => {
-            document.body.setAttribute('data-theme', state.theme);
-            document.getElementById('themeIcon').innerText = state.theme === 'light' ? '🌙' : '☀️';
-            localStorage.setItem('theme', state.theme);
-        };
-
-        // 3. Language Logic
-        const applyLang = () => {
-            const t = state.translations[state.lang];
-            document.getElementById('ui-title').innerText = t.title;
-            document.getElementById('ui-subtitle').innerText = t.sub;
-            document.getElementById('ui-reg').innerText = t.reg;
-            document.getElementById('ui-login').innerText = t.login;
-            document.getElementById('langText').innerText = state.lang;
-            localStorage.setItem('lang', state.lang);
-        };
-
-        // 4. Initial Setup & Animation
-        window.addEventListener('load', () => {
-            applyTheme();
-            applyLang();
-
-            // Splash to UI transition
-            setTimeout(() => {
-                const splash = document.getElementById('splash');
-                const app = document.getElementById('app');
-                
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    app.classList.add('active');
-                }, 1000);
-            }, 3500);
-        });
-
-        // 5. Event Listeners (Corrected)
-        document.getElementById('themeBtn').addEventListener('click', () => {
-            state.theme = state.theme === 'light' ? 'dark' : 'light';
-            applyTheme();
-        });
-
-        document.getElementById('langBtn').addEventListener('click', () => {
-            const currentIndex = state.langs.indexOf(state.lang);
-            const nextIndex = (currentIndex + 1) % state.langs.length;
-            state.lang = state.langs[nextIndex];
-            applyLang();
-        });
-
-        // Interaction Feedback
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                console.log(`Action triggered: ${this.id}`);
-            });
-        });
     </script>
 </body>
 </html>
