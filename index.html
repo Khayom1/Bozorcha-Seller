@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Регистратсия</title>
+    <script src="translations.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -219,8 +220,8 @@
         </div>
 
         <div class="content">
-            <h1 class="welcome-title" id="welcomeTitle">Ба Bozorcha хуш омадед!</h1>
-            <p class="welcome-text" id="welcomeText">Барои оғози фурӯш ё харид, лутфан сабти ном кунед ё ба ҳисобатон дохил шавед</p>
+            <h1 class="welcome-title" id="welcomeTitle"></h1>
+            <p class="welcome-text" id="welcomeText"></p>
             
             <div class="auth-buttons">
                 <button class="auth-btn register" onclick="window.location.href='step2.html'">Сабти ном</button>
@@ -228,43 +229,18 @@
             </div>
         </div>
 
-        <div class="footer" id="footer">© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
+        <div class="footer" id="footer"></div>
     </div>
 
     <script>
-        // Тарҷумаҳо
-        const translations = {
-            tg: {
-                welcomeTitle: 'Ба Bozorcha хуш омадед!',
-                welcomeText: 'Барои оғози фурӯш ё харид, лутфан сабти ном кунед ё ба ҳисобатон дохил шавед',
-                registerBtn: 'Сабти ном',
-                loginBtn: 'Дохилшавӣ',
-                footer: '© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.'
-            },
-            ru: {
-                welcomeTitle: 'Добро пожаловать в Bozorcha!',
-                welcomeText: 'Чтобы начать продавать или покупать, зарегистрируйтесь или войдите в аккаунт',
-                registerBtn: 'Регистрация',
-                loginBtn: 'Вход',
-                footer: '© 2026 Bozorcha. Все права защищены.'
-            },
-            en: {
-                welcomeTitle: 'Welcome to Bozorcha!',
-                welcomeText: 'To start selling or buying, please register or log in',
-                registerBtn: 'Register',
-                loginBtn: 'Login',
-                footer: '© 2026 Bozorcha. All rights reserved.'
-            }
-        };
-
         // Тағйирёбандаҳо
         let currentLang = localStorage.getItem('bozorcha_lang') || 'tg';
         let currentTheme = localStorage.getItem('bozorcha_theme') || 'light';
 
         // Танзими ибтидоӣ
         document.body.setAttribute('data-theme', currentTheme);
-        applyLanguage(currentLang);
         updateThemeIcon();
+        applyLanguage(currentLang);
 
         // Элементҳо
         const themeBtn = document.getElementById('themeBtn');
@@ -282,7 +258,11 @@
         });
 
         function updateThemeIcon() {
-            themeIcon.className = currentTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            if (currentTheme === 'light') {
+                themeIcon.className = 'fas fa-moon';
+            } else {
+                themeIcon.className = 'fas fa-sun';
+            }
         }
 
         // Тугмаи забон
