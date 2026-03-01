@@ -2,118 +2,195 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bozorcha Seller - Қадами 4</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Тасдиқи код - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
-        body{background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px;}
-        .container{width:100%;max-width:380px;background:white;border-radius:20px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.1);}
-        .upload-btn{display:block;width:100%;padding:16px;margin-bottom:10px;border:2px dashed #ccc;border-radius:12px;text-align:center;cursor:pointer;}
-        .upload-btn.done{border-color:#4caf50;background:#e8f5e9;color:#2e7d32;}
-        input[type="file"]{display:none;}
-        .submit-button{width:100%;padding:16px;background:#ff9800;color:white;border:none;border-radius:12px;font-size:18px;font-weight:bold;margin-top:15px;cursor:pointer;}
-        .submit-button:disabled{background:#ccc;cursor:not-allowed;}
-    </style>
-</head>
-<body>
-<div class="container">
-    <div style="font-weight:bold; margin-bottom:15px;">Тасдиқи шахсият</div>
-    <label class="upload-btn" id="lbl1">Акси пеши паспорт <input type="file" accept="image/*" onchange="storeFile(this,'doc_front','lbl1')"></label>
-    <label class="upload-btn" id="lbl2">Акси пушти паспорт <input type="file" accept="image/*" onchange="storeFile(this,'doc_back','lbl2')"></label>
-    <label class="upload-btn" id="lbl3">Селфи бо паспорт <input type="file" accept="image/*" onchange="storeFile(this,'doc_selfie','lbl3')"></label>
-
-    <div style="margin:15px 0;">
-        <label><input type="checkbox" id="d1"> Доставкаи шахсӣ</label><br>
-        <label><input type="checkbox" id="d2"> Тавассути почта</label>
-    </div>
-
-    <button class="submit-button" id="submitBtn">Фиристодан</button>
-</div>
-
-<script>
-const supabaseClient = supabase.createClient(
-    'https://seagtlaujnnhoyitgsdd.supabase.co',
-    'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-);
-
-let selectedFiles = {doc_front:null, doc_back:null, doc_selfie:null};
-
-function storeFile(input, key, labelId){
-    const file = input.files[0];
-    if(file) {
-        selectedFiles[key] = file;
-        const lbl = document.getElementById(labelId);
-        lbl.classList.add("done");
-        lbl.innerText = "✓ " + file.name.substring(0, 15);
-    }
-}
-
-document.getElementById("submitBtn").onclick = async function(){
-    if(!selectedFiles.doc_front || !selectedFiles.doc_back || !selectedFiles.doc_selfie){
-        alert("Ҳамаи аксҳоро интихоб кунед.");
-        return;
-    }
-
-    this.disabled = true;
-    this.innerText = "Бор шуда истодааст...";
-
-    try {
-        // ХОНДАНИ МАЪЛУМОТ АЗ STEP 3
-        const rawData = localStorage.getItem('temp_seller_info');
-        if(!rawData) throw new Error("Маълумоти Step 3 ёфт нашуд.");
-        const info = JSON.parse(rawData);
-
-        // ФУНКСИЯИ БОРКУНИИ АКС БА STORAGE
-        async function uploadOne(file, folder){
-            const fileName = Date.now() + "_" + file.name.replace(/\s/g, '_');
-            const { data, error } = await supabaseClient.storage
-                .from("documents")
-                .upload(folder + "/" + fileName, file);
-            if(error) throw error;
-            return data.path;
+        :root {
+            --bg: #FFFFFF;
+            --surface: #F8F9FA;
+            --text-primary: #1A1C1E;
+            --text-secondary: #6C757D;
+            --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
+            --border: #EEEEEE;
+            --shadow: 0 15px 35px rgba(0,0,0,0.05);
         }
 
-        // БОРКУНИИ ҲАМАИ АКСҲО
-        const [p1, p2, p3] = await Promise.all([
-            uploadOne(selectedFiles.doc_front, "passports"),
-            uploadOne(selectedFiles.doc_back, "passports"),
-            uploadOne(selectedFiles.doc_selfie, "selfies")
-        ]);
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --surface: #161618;
+            --text-primary: #F8F9FA;
+            --text-secondary: #ADB5BD;
+            --border: #2C2E33;
+            --shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
 
-        const deliveries = [];
-        if(document.getElementById("d1").checked) deliveries.push("Шахсӣ");
-        if(document.getElementById("d2").checked) deliveries.push("Почта");
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
 
-        // САБТ ДАР БАЗА (TABLE: sellers)
-        const { error: dbError } = await supabaseClient.from("sellers").insert([{
-            name: info.name,
-            surname: info.surname,
-            phone: info.phone,
-            city: info.city,
-            district: info.district,
-            street: info.street,
-            house: info.house,
-            shop: info.shop,
-            doc_front: p1,
-            doc_back: p2,
-            doc_selfie: p3,
-            delivery_methods: deliveries,
-            status: 'pending'
-        }]);
+        body {
+            background-color: var(--bg); color: var(--text-primary);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
 
-        if(dbError) throw dbError;
+        /* --- LOGO ANIMATION --- */
+        .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
+        @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
 
-        alert("Бақайдгирӣ бо муваффақият анҷом ёфт!");
-        localStorage.clear();
-        window.location.href = "dashboard.html";
+        .card {
+            background: var(--surface); border-radius: 35px; padding: 40px 30px;
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            max-width: 400px; width: 100%; position: relative; text-align: center;
+        }
 
-    } catch(err) {
-        alert("Хатогӣ: " + err.message);
-        this.disabled = false;
-        this.innerText = "Фиристодан";
-    }
-};
-</script>
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+
+        .back-btn {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: var(--bg); border: 1px solid var(--border);
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-size: 20px; color: var(--text-primary);
+        }
+
+        .controls { display: flex; gap: 8px; }
+        .icon-btn {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: var(--bg); border: 1px solid var(--border);
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-size: 18px; position: relative; overflow: hidden;
+        }
+
+        .theme-icon-box { position: relative; width: 20px; height: 20px; }
+        .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
+        [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
+        [data-theme="light"] .moon { transform: translateY(25px); opacity: 0; }
+        [data-theme="dark"] .sun { transform: translateY(-25px); opacity: 0; }
+        [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
+
+        .title { font-size: 22px; font-weight: 800; margin-bottom: 8px; text-align: left; }
+        .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; text-align: left; line-height: 1.4; }
+
+        .otp-input-container {
+            background: var(--bg); border: 2px solid var(--border); border-radius: 20px;
+            padding: 15px; margin-bottom: 10px; display: flex; justify-content: center;
+        }
+        .otp-input-container:focus-within { border-color: #FF9F43; }
+        
+        input {
+            width: 100%; border: none; outline: none; background: transparent;
+            color: var(--text-primary); font-size: 24px; font-weight: 800;
+            text-align: center; letter-spacing: 12px;
+        }
+
+        .btn {
+            width: 100%; padding: 20px; border-radius: 20px;
+            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
+            margin-top: 20px; transition: transform 0.2s, opacity 0.3s;
+        }
+        .btn-primary { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
+        .btn-primary.disabled { opacity: 0.5; pointer-events: none; }
+
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="card">
+        <header>
+            <div class="header-left">
+                <button class="back-btn" onclick="history.back()">←</button>
+                <svg width="45" height="45" viewBox="0 0 200 200">
+                    <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
+                    <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                    <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+                </svg>
+            </div>
+            <div class="controls">
+                <button class="icon-btn" id="langDisplay">🇹🇯</button>
+                <button class="icon-btn" id="themeBtn">
+                    <div class="theme-icon-box">
+                        <span class="sun">☀️</span>
+                        <span class="moon">🌙</span>
+                    </div>
+                </button>
+            </div>
+        </header>
+
+        <h1 class="title" id="t-title">Тасдиқи код</h1>
+        <p class="subtitle" id="t-sub">Коди 6-рақамаро ворид кунед</p>
+
+        <div class="otp-input-container">
+            <input type="text" id="otp" placeholder="••••••" maxlength="6" inputmode="numeric">
+        </div>
+
+        <button class="btn btn-primary disabled" id="verifyBtn">Тасдиқ</button>
+        <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
+    </div>
+
+    <script>
+        const _supabase = supabase.createClient(
+            'https://seagtiaujnnhayitgsdd.supabase.co', 
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        const i18n = {
+            tj: { title: "Тасдиқи код", sub: "Коди 6-рақамаро ворид кунед", btn: "Тасдиқ", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", flag: "🇹🇯", loading: "Дар ҳоли тасдиқ..." },
+            ru: { title: "Подтверждение", sub: "Введите 6-значный код", btn: "Подтвердить", foot: "© 2026 Bozorcha. Все права защищены.", flag: "🇷🇺", loading: "Проверка..." },
+            en: { title: "Verification", sub: "Enter the 6-digit code", btn: "Verify", foot: "© 2026 Bozorcha. All rights reserved.", flag: "🇬🇧", loading: "Verifying..." }
+        };
+
+        const otpInput = document.getElementById('otp');
+        const verifyBtn = document.getElementById('verifyBtn');
+
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const savedLang = localStorage.getItem('lang') || 'tj';
+            document.body.setAttribute('data-theme', savedTheme);
+            applyLang(savedLang);
+        };
+
+        function applyLang(lang) {
+            const d = i18n[lang];
+            document.getElementById('langDisplay').innerText = d.flag;
+            document.getElementById('t-title').innerText = d.title;
+            document.getElementById('t-sub').innerText = d.sub;
+            document.getElementById('verifyBtn').innerText = d.btn;
+            document.getElementById('t-foot').innerText = d.foot;
+        }
+
+        otpInput.addEventListener('input', () => {
+            otpInput.value = otpInput.value.replace(/\D/g, '');
+            verifyBtn.classList.toggle('disabled', otpInput.value.length !== 6);
+        });
+
+        verifyBtn.onclick = async () => {
+            const code = otpInput.value;
+            const phone = localStorage.getItem('userPhone');
+            const lang = localStorage.getItem('lang') || 'tj';
+
+            verifyBtn.innerText = i18n[lang].loading;
+            verifyBtn.classList.add('disabled');
+
+            const { data, error } = await _supabase.auth.verifyOtp({
+                phone: phone,
+                token: code,
+                type: 'sms'
+            });
+
+            if (error) {
+                alert("Хатогӣ: " + error.message);
+                verifyBtn.innerText = i18n[lang].btn;
+                verifyBtn.classList.remove('disabled');
+            } else {
+                window.location.href = 'home.html';
+            }
+        };
+
+        document.getElementById('themeBtn').onclick = () => {
+            const target = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
+        };
+    </script>
 </body>
 </html>
