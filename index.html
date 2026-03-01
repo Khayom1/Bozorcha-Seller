@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Регистратсия</title>
-    <script src="translations.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -62,8 +61,19 @@
             border-bottom: 1px solid var(--border);
         }
 
-        .logo {
-            font-size: 24px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-svg {
+            width: 50px;
+            height: 50px;
+        }
+
+        .logo-text {
+            font-size: 22px;
             font-weight: 700;
             background: linear-gradient(135deg, #ff9800, #ff6b6b);
             -webkit-background-clip: text;
@@ -202,7 +212,97 @@
 <body data-theme="light">
     <div class="container">
         <div class="header">
-            <div class="logo">Bozorcha</div>
+            <div class="logo-container">
+                <!-- SVG-и аниматсионии шумо -->
+                <svg class="logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="cinematic-glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    
+                    <style>
+                        .stage {
+                            transform-origin: 100px 100px;
+                            animation: cameraReveal 4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+                        }
+
+                        .outline {
+                            fill: none;
+                            stroke-width: 1.5;
+                            stroke-dasharray: 400;
+                            stroke-dashoffset: 400;
+                            stroke-linecap: round;
+                            filter: url(#cinematic-glow);
+                        }
+
+                        .outline-b {
+                            stroke: #f4ce9b;
+                            animation: drawPath 1.8s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+                        }
+
+                        .outline-s {
+                            stroke: #eea54a;
+                            animation: drawPath 1.8s cubic-bezier(0.8, 0, 0.2, 1) 0.8s forwards;
+                        }
+
+                        .solid-fill {
+                            opacity: 0;
+                            transform: scale(0.98);
+                            transform-origin: 100px 100px;
+                        }
+
+                        .fill-b {
+                            animation: solidifyPhase 2s cubic-bezier(0.25, 1, 0.5, 1) 1.5s forwards;
+                        }
+
+                        .fill-s {
+                            animation: solidifyPhase 2s cubic-bezier(0.25, 1, 0.5, 1) 2.2s forwards;
+                        }
+
+                        @keyframes drawPath {
+                            0% { stroke-dashoffset: 400; opacity: 1; }
+                            80% { stroke-dashoffset: 0; opacity: 1; }
+                            100% { stroke-dashoffset: 0; opacity: 0; }
+                        }
+
+                        @keyframes solidifyPhase {
+                            0% { opacity: 0; transform: scale(0.95); filter: brightness(2); }
+                            50% { opacity: 1; transform: scale(1.02); filter: brightness(1.5); }
+                            100% { opacity: 1; transform: scale(1); filter: brightness(1); }
+                        }
+
+                        @keyframes cameraReveal {
+                            0% { transform: scale(0.8) translateY(15px); }
+                            100% { transform: scale(1) translateY(0); }
+                        }
+                    </style>
+
+                    <g class="stage">
+                        <path class="outline outline-b" d="M 10 60 C 30 10 140 0 185 60 Z"/>
+                        <path class="outline outline-b" d="M 10 60 A 28.5 28.5 0 0 0 68.3 60 Z"/>
+                        <path class="outline outline-b" d="M 68.3 60 A 28.5 28.5 0 0 0 126.6 60 Z"/>
+                        <path class="outline outline-b" d="M 126.6 60 A 28.5 28.5 0 0 0 185 60 Z"/>
+                        
+                        <path class="outline outline-s" d="M 25 105 Q 65 140 25 195 L 25 105 Z"/>
+                        <path class="outline outline-s" d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z"/>
+
+                        <g class="solid-fill fill-b">
+                            <path d="M 10 60 C 30 10 140 0 185 60 Z" fill="#f4ce9b"/>
+                            <path d="M 10 60 A 28.5 28.5 0 0 0 68.3 60 Z" fill="#ee8031"/>
+                            <path d="M 68.3 60 A 28.5 28.5 0 0 0 126.6 60 Z" fill="#ee8031"/>
+                            <path d="M 126.6 60 A 28.5 28.5 0 0 0 185 60 Z" fill="#ee8031"/>
+                        </g>
+
+                        <g class="solid-fill fill-s">
+                            <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                            <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+                        </g>
+                    </g>
+                </svg>
+                <span class="logo-text">Bozorcha</span>
+            </div>
             <div class="header-actions">
                 <div class="icon-btn" id="themeBtn">
                     <i class="fas fa-moon" id="themeIcon"></i>
@@ -233,23 +333,43 @@
     </div>
 
     <script>
-        // Тағйирёбандаҳо
+        const translations = {
+            tg: {
+                welcomeTitle: 'Ба Bozorcha хуш омадед!',
+                welcomeText: 'Барои оғози фурӯш ё харид, лутфан сабти ном кунед ё ба ҳисобатон дохил шавед',
+                registerBtn: 'Сабти ном',
+                loginBtn: 'Дохилшавӣ',
+                footer: '© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.'
+            },
+            ru: {
+                welcomeTitle: 'Добро пожаловать в Bozorcha!',
+                welcomeText: 'Чтобы начать продавать или покупать, зарегистрируйтесь или войдите в аккаунт',
+                registerBtn: 'Регистрация',
+                loginBtn: 'Вход',
+                footer: '© 2026 Bozorcha. Все права защищены.'
+            },
+            en: {
+                welcomeTitle: 'Welcome to Bozorcha!',
+                welcomeText: 'To start selling or buying, please register or log in',
+                registerBtn: 'Register',
+                loginBtn: 'Login',
+                footer: '© 2026 Bozorcha. All rights reserved.'
+            }
+        };
+
         let currentLang = localStorage.getItem('bozorcha_lang') || 'tg';
         let currentTheme = localStorage.getItem('bozorcha_theme') || 'light';
 
-        // Танзими ибтидоӣ
         document.body.setAttribute('data-theme', currentTheme);
         updateThemeIcon();
         applyLanguage(currentLang);
 
-        // Элементҳо
         const themeBtn = document.getElementById('themeBtn');
         const themeIcon = document.getElementById('themeIcon');
         const langBtn = document.getElementById('langBtn');
         const langMenu = document.getElementById('langMenu');
         const langOptions = document.querySelectorAll('.lang-option');
 
-        // Тугмаи тема
         themeBtn.addEventListener('click', () => {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', currentTheme);
@@ -258,14 +378,9 @@
         });
 
         function updateThemeIcon() {
-            if (currentTheme === 'light') {
-                themeIcon.className = 'fas fa-moon';
-            } else {
-                themeIcon.className = 'fas fa-sun';
-            }
+            themeIcon.className = currentTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
         }
 
-        // Тугмаи забон
         langBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             langMenu.classList.toggle('show');
