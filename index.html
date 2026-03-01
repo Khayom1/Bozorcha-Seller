@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bozorcha Seller - Registration Core</title>
+    <title>Bozorcha Seller - Core Initialization</title>
     <style>
         :root {
             --bg: #FFFFFF;
@@ -27,35 +27,30 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-primary);
+            background-color: var(--bg); color: var(--text-primary);
             display: flex; justify-content: center; align-items: center;
-            height: 100vh; overflow: hidden;
-            transition: background 0.5s ease;
+            height: 100vh; overflow: hidden; transition: background 0.5s ease, color 0.5s ease;
         }
 
-        /* --- SPLASH SCREEN --- */
         #splash {
             position: fixed; inset: 0; background: #FFFFFF;
             z-index: 1000; display: flex; justify-content: center; align-items: center;
             transition: opacity 0.8s ease;
         }
 
-        /* --- ADVANCED LOGO ANIMATION (WIND EFFECT) --- */
         .logo-container { width: 180px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); }
         
         .awning-physics {
             transform-origin: 225px 50px;
-            animation: aggressiveWind 3s ease-in-out infinite;
+            animation: realWind 3s ease-in-out infinite;
         }
 
-        @keyframes aggressiveWind {
+        @keyframes realWind {
             0%, 100% { transform: rotate(0deg) skewX(0deg); }
-            25% { transform: rotate(4deg) skewX(2deg); }
-            75% { transform: rotate(-3deg) skewX(-1deg); }
+            30% { transform: rotate(5deg) skewX(2deg); }
+            70% { transform: rotate(-4deg) skewX(-1deg); }
         }
 
-        /* --- UI STRUCTURE --- */
         #app {
             width: 100%; max-width: 420px; padding: 20px;
             opacity: 0; transform: translateY(30px);
@@ -64,57 +59,75 @@
         #app.visible { opacity: 1; transform: translateY(0); }
 
         .card {
-            background: var(--surface);
-            border-radius: 42px; padding: 40px 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            text-align: center;
+            background: var(--surface); border-radius: 42px; padding: 40px 30px;
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            text-align: center; transition: background 0.5s ease, border 0.5s ease;
         }
 
         .header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        
         .mini-logo { width: 45px; height: auto; }
 
         .welcome-text h1 { font-size: 30px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.5px; }
         .welcome-text p { color: var(--text-secondary); font-size: 15px; margin-bottom: 35px; line-height: 1.6; }
 
-        /* --- INTERACTIVE ELEMENTS --- */
         .btn-group { display: flex; flex-direction: column; gap: 15px; }
-        
         .btn {
             width: 100%; padding: 20px; border-radius: 20px;
             font-size: 16px; font-weight: 700; border: none; cursor: pointer;
             transition: all 0.3s ease;
         }
-        
         .btn-primary { background: var(--accent); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
-        .btn-secondary { background: transparent; border: 2px solid var(--border); color: var(--text-primary); }
-        
+        .btn-secondary { background: transparent; border: 2px solid var(--border); color: var(--text-primary); transition: border 0.5s ease, color 0.5s ease;}
         .btn:active { transform: scale(0.96); opacity: 0.9; }
 
-        .lang-theme-btns { display: flex; gap: 10px; }
-        .ctrl-btn {
+        .controls { display: flex; gap: 10px; }
+        .icon-btn {
             width: 48px; height: 48px; border-radius: 15px;
             background: var(--bg); border: 1px solid var(--border);
-            cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-size: 20px; position: relative; transition: background 0.5s ease, border 0.5s ease;
         }
+
+        .dropdown { position: relative; }
+        .dropdown-menu {
+            position: absolute; top: 55px; right: 0;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 18px; box-shadow: var(--shadow);
+            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 140px;
+        }
+        .dropdown-menu.show { display: flex; }
+        .dropdown-item {
+            padding: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            font-weight: 600; font-size: 14px; transition: background 0.3s ease;
+        }
+        .dropdown-item:hover { background: var(--accent); color: white; }
+
+        .theme-icon-box { position: relative; width: 22px; height: 22px; }
+        .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
+        [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
+        [data-theme="light"] .moon { transform: translateY(30px); opacity: 0; }
+        [data-theme="dark"] .sun { transform: translateY(-30px); opacity: 0; }
+        [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
     </style>
 </head>
-<body>
+<body data-theme="light">
+
+    <svg style="width:0;height:0;position:absolute;">
+        <defs>
+            <linearGradient id="g1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fbd19d"/><stop offset="100%" stop-color="#f3b469"/></linearGradient>
+            <linearGradient id="g2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f18b37"/><stop offset="100%" stop-color="#e87328"/></linearGradient>
+            <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f9b85c"/><stop offset="100%" stop-color="#eb7b30"/></linearGradient>
+        </defs>
+    </svg>
 
     <div id="splash">
         <div class="logo-container">
-            <svg viewBox="0 0 450 550" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="g1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fbd19d"/><stop offset="100%" stop-color="#f3b469"/></linearGradient>
-                    <linearGradient id="g2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f18b37"/><stop offset="100%" stop-color="#e87328"/></linearGradient>
-                    <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f9b85c"/><stop offset="100%" stop-color="#eb7b30"/></linearGradient>
-                </defs>
+            <svg viewBox="0 0 450 550">
                 <g class="awning-physics">
                     <path d="M60,140 Q60,30 225,30 T390,140 L390,145 L60,145 Z" fill="url(#g1)"/>
                     <path d="M60,145 L390,145 L390,200 C390,260 300,260 300,200 C300,260 210,260 210,200 C210,260 120,260 120,200 L60,200 Z" fill="url(#g2)"/>
                 </g>
-                <g class="base-static">
+                <g>
                     <path d="M85,275 C110,290 145,340 145,430 C145,510 115,550 85,580 L85,275 Z" fill="url(#g3)"/>
                     <path d="M225,320 L285,320 L285,440 C340,440 395,390 410,265 C450,350 420,550 250,550 C150,550 160,510 225,320 Z" fill="url(#g3)"/>
                 </g>
@@ -129,38 +142,58 @@
                     <div class="mini-logo">
                         <svg viewBox="0 0 450 550">
                             <g class="awning-physics">
-                                <path d="M60,140 Q60,30 225,30 T390,140 L390,145 L60,145 Z" fill="#fbd19d"/>
-                                <path d="M60,145 L390,145 L390,200 C390,260 300,260 300,200 C300,260 210,260 210,200 C210,260 120,260 120,200 L60,200 Z" fill="#f18b37"/>
+                                <path d="M60,140 Q60,30 225,30 T390,140 L390,145 L60,145 Z" fill="url(#g1)"/>
+                                <path d="M60,145 L390,145 L390,200 C390,260 300,260 300,200 C300,260 210,260 210,200 C210,260 120,260 120,200 L60,200 Z" fill="url(#g2)"/>
                             </g>
-                            <path d="M85,275 C110,290 145,340 145,430 C145,510 115,550 85,580 L85,275 Z" fill="#f9b85c"/>
-                            <path d="M225,320 L285,320 L285,440 C340,440 395,390 410,265 C450,350 420,550 250,550 C150,550 160,510 225,320 Z" fill="#eb7b30"/>
+                            <g>
+                                <path d="M85,275 C110,290 145,340 145,430 C145,510 115,550 85,580 L85,275 Z" fill="url(#g3)"/>
+                                <path d="M225,320 L285,320 L285,440 C340,440 395,390 410,265 C450,350 420,550 250,550 C150,550 160,510 225,320 Z" fill="url(#g3)"/>
+                            </g>
                         </svg>
                     </div>
-                    <span style="font-weight: 900; font-size: 22px; color: #f18b37;">Bozorcha</span>
+                    <span style="font-weight: 900; font-size: 24px; color: #e87328; letter-spacing: -0.5px;">Bozorcha</span>
                 </div>
-                <div class="lang-theme-btns">
-                    <button class="ctrl-btn">🇹🇯</button>
-                    <button class="ctrl-btn" id="themeToggle">🌙</button>
+                <div class="controls">
+                    <div class="dropdown">
+                        <button class="icon-btn" id="langBtn"><span id="activeFlag">🇹🇯</span></button>
+                        <div class="dropdown-menu" id="langMenu">
+                            <div class="dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
+                            <div class="dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
+                            <div class="dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
+                        </div>
+                    </div>
+                    <button class="icon-btn" id="themeBtn">
+                        <div class="theme-icon-box">
+                            <span class="sun">☀️</span>
+                            <span class="moon">🌙</span>
+                        </div>
+                    </button>
                 </div>
             </header>
 
             <div class="welcome-text">
-                <h1>Хуш омадед!</h1>
-                <p>Ба бузургтарин бозори рақамии фурӯшандагон ҳамроҳ шавед ва тиҷорати худро васеъ кунед.</p>
+                <h1 id="t-title">Хуш омадед!</h1>
+                <p id="t-sub">Барои оғоз ворид шавед ё сабти ном кунед.</p>
             </div>
 
             <div class="btn-group">
-                <button class="btn btn-primary">Сабти ном</button>
-                <button class="btn btn-secondary">Дохилшавӣ</button>
+                <button class="btn btn-primary" id="t-reg">Сабти ном</button>
+                <button class="btn btn-secondary" id="t-login">Дохилшавӣ</button>
             </div>
 
-            <footer style="margin-top: 40px; font-size: 12px; color: var(--text-secondary);">
+            <footer id="t-foot" style="margin-top: 40px; font-size: 13px; color: var(--text-secondary);">
                 © 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.
             </footer>
         </div>
     </div>
 
     <script>
+        const i18n = {
+            tj: { flag: "🇹🇯", title: "Хуш омадед!", sub: "Барои оғоз ворид шавед ё сабти ном кунед.", reg: "Сабти ном", login: "Дохилшавӣ", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд." },
+            ru: { flag: "🇷🇺", title: "Добро пожаловать!", sub: "Войдите или зарегистрируйтесь для начала.", reg: "Регистрация", login: "Вход", foot: "© 2026 Bozorcha. Все права защищены." },
+            en: { flag: "🇬🇧", title: "Welcome!", sub: "Login or register to get started.", reg: "Register", login: "Login", foot: "© 2026 Bozorcha. All rights reserved." }
+        };
+
         window.onload = () => {
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
@@ -171,12 +204,29 @@
             }, 2500);
         };
 
-        document.getElementById('themeToggle').onclick = () => {
-            const body = document.body;
-            const current = body.getAttribute('data-theme');
-            body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-            document.getElementById('themeToggle').innerText = current === 'dark' ? '🌙' : '☀️';
+        document.getElementById('themeBtn').onclick = () => {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
         };
+
+        document.getElementById('langBtn').onclick = (e) => {
+            e.stopPropagation();
+            document.getElementById('langMenu').classList.toggle('show');
+        };
+
+        function setLang(lang) {
+            const d = i18n[lang];
+            document.getElementById('activeFlag').innerText = d.flag;
+            document.getElementById('t-title').innerText = d.title;
+            document.getElementById('t-sub').innerText = d.sub;
+            document.getElementById('t-reg').innerText = d.reg;
+            document.getElementById('t-login').innerText = d.login;
+            document.getElementById('t-foot').innerText = d.foot;
+            document.getElementById('langMenu').classList.remove('show');
+        }
+
+        window.onclick = () => document.getElementById('langMenu').classList.remove('show');
     </script>
 </body>
 </html>
+
