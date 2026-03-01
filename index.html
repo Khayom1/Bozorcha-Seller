@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bozorcha Seller - Pro Core v2</title>
+    <title>Bozorcha Seller - Final Core</title>
     <style>
         :root {
             --bg: #FFFFFF;
@@ -13,7 +13,6 @@
             --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
             --border: #EEEEEE;
             --shadow: 0 15px 35px rgba(0,0,0,0.05);
-            --splash-bg: #FFFFFF;
         }
 
         [data-theme="dark"] {
@@ -23,13 +22,12 @@
             --text-secondary: #ADB5BD;
             --border: #2C2E33;
             --shadow: 0 15px 35px rgba(0,0,0,0.3);
-            --splash-bg: #000000;
         }
 
         * {
             margin: 0; padding: 0; box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            transition: background-color 0.5s ease, color 0.5s ease, border 0.5s ease;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         body {
@@ -39,29 +37,36 @@
             height: 100vh; overflow: hidden;
         }
 
-        /* --- SPLASH SCREEN (WHITE BG) --- */
+        /* --- SPLASH SCREEN --- */
         #splash {
             position: fixed; inset: 0;
-            background: var(--splash-bg);
+            background: #FFFFFF;
             z-index: 1000; display: flex; justify-content: center; align-items: center;
             transition: opacity 0.8s ease;
         }
 
-        .splash-svg { width: 130px; }
+        .splash-svg { width: 140px; }
 
         .path-draw {
-            fill: none; stroke: #FF9F43; stroke-width: 2;
-            stroke-dasharray: 600; stroke-dashoffset: 600;
-            animation: draw 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            fill: none; stroke: #FF9F43; stroke-width: 1.5;
+            stroke-dasharray: 800; stroke-dashoffset: 800;
+            animation: draw 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         @keyframes draw { to { stroke-dashoffset: 0; } }
 
-        .fill-animate {
-            opacity: 0;
-            animation: fadeIn 0.8s ease forwards 1.8s;
+        /* --- LOGO ANIMATION (WIND EFFECT) --- */
+        .awning-part {
+            transform-origin: top center;
+            animation: windSwing 3s ease-in-out infinite;
         }
 
+        @keyframes windSwing {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(3deg) skewX(2deg); }
+        }
+
+        .fill-animate { opacity: 0; animation: fadeIn 0.8s ease forwards 2s; }
         @keyframes fadeIn { to { opacity: 1; } }
 
         /* --- MAIN UI --- */
@@ -75,80 +80,74 @@
 
         .card {
             background: var(--surface);
-            border-radius: 35px; padding: 40px 30px;
+            border-radius: 35px; padding: 45px 30px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             text-align: center;
+            position: relative;
         }
 
         header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 45px;
+            margin-bottom: 50px;
         }
 
-        .controls { display: flex; gap: 10px; position: relative; }
+        .logo-group { display: flex; align-items: center; gap: 12px; }
 
-        /* LANGUAGE DROPDOWN */
+        .controls { display: flex; gap: 10px; }
+
+        .icon-btn {
+            width: 48px; height: 48px; border-radius: 16px;
+            background: var(--bg); border: 1px solid var(--border);
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-size: 20px; position: relative; overflow: hidden;
+        }
+
+        /* DROPDOWN */
         .dropdown { position: relative; }
         .dropdown-menu {
             position: absolute; top: 55px; right: 0;
             background: var(--surface); border: 1px solid var(--border);
-            border-radius: 15px; box-shadow: var(--shadow);
-            display: none; flex-direction: column; overflow: hidden; z-index: 100;
+            border-radius: 18px; box-shadow: var(--shadow);
+            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 120px;
         }
         .dropdown-menu.show { display: flex; }
         .dropdown-item {
-            padding: 12px 20px; cursor: pointer; font-weight: 700; font-size: 14px;
+            padding: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            font-weight: 600; font-size: 14px;
         }
         .dropdown-item:hover { background: var(--accent-gradient); color: white; }
 
-        /* THEME TOGGLE ANIMATION */
-        .theme-btn {
-            width: 48px; height: 48px; border-radius: 15px;
-            background: var(--bg); border: 1px solid var(--border);
-            cursor: pointer; display: flex; justify-content: center; align-items: center;
-            position: relative; overflow: hidden;
-        }
-        .theme-icon-box {
-            position: relative; width: 20px; height: 20px;
-        }
-        .sun, .moon {
-            position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045);
-        }
-        [data-theme="light"] .sun { transform: translateY(0) rotate(0); opacity: 1; }
-        [data-theme="light"] .moon { transform: translateY(30px) rotate(-90deg); opacity: 0; }
-        [data-theme="dark"] .sun { transform: translateY(-30px) rotate(90deg); opacity: 0; }
-        [data-theme="dark"] .moon { transform: translateY(0) rotate(0); opacity: 1; }
+        /* THEME ICON ANIMATION */
+        .theme-icon-box { position: relative; width: 22px; height: 22px; }
+        .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
+        [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
+        [data-theme="light"] .moon { transform: translateY(30px); opacity: 0; }
+        [data-theme="dark"] .sun { transform: translateY(-30px); opacity: 0; }
+        [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
 
-        .welcome-text { margin: 30px 0; }
-        .welcome-title { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
-        .welcome-sub { color: var(--text-secondary); font-size: 15px; }
+        .welcome-title { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
+        .welcome-sub { color: var(--text-secondary); font-size: 16px; margin-bottom: 40px; }
 
         .btn {
-            width: 100%; padding: 18px; border-radius: 18px;
+            width: 100%; padding: 20px; border-radius: 20px;
             font-size: 16px; font-weight: 700; border: none; cursor: pointer;
             margin-bottom: 15px; transition: transform 0.2s;
         }
-        .btn-reg { background: var(--accent-gradient); color: white; }
-        .btn-login { background: transparent; border: 1.5px solid var(--border); color: var(--text-primary); }
-        .btn:active { transform: scale(0.97); }
+        .btn-reg { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
+        .btn-login { background: transparent; border: 2px solid var(--border); color: var(--text-primary); }
+        .btn:active { transform: scale(0.96); }
 
-        footer {
-            margin-top: 30px; color: var(--text-secondary);
-            font-size: 12px; font-weight: 500;
-        }
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 13px; }
     </style>
 </head>
 <body data-theme="light">
 
     <div id="splash">
         <svg class="splash-svg" viewBox="0 0 200 200">
-            <path class="path-draw" d="M 10 60 C 30 10 140 0 185 60 Z M 25 105 Q 65 140 25 195 L 25 105 Z"/>
+            <path class="path-draw" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z"/>
             <g class="fill-animate">
-                <path d="M 10 60 C 30 10 140 0 185 60 Z" fill="#f4ce9b"/>
-                <path d="M 10 60 A 28.5 28.5 0 0 0 68.3 60 Z" fill="#ee8031"/>
-                <path d="M 68.3 60 A 28.5 28.5 0 0 0 126.6 60 Z" fill="#ee8031"/>
-                <path d="M 126.6 60 A 28.5 28.5 0 0 0 185 60 Z" fill="#ee8031"/>
+                <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
                 <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
                 <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
             </g>
@@ -158,23 +157,24 @@
     <div id="app">
         <div class="card">
             <header>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <svg width="35" height="35" viewBox="0 0 200 200">
-                        <path d="M 10 60 C 30 10 140 0 185 60 Z" fill="#f4ce9b"/>
+                <div class="logo-group">
+                    <svg width="45" height="45" viewBox="0 0 200 200">
+                        <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
                         <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                        <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
                     </svg>
-                    <span style="font-weight: 900; font-size: 20px;">Bozorcha</span>
+                    <span style="font-weight: 900; font-size: 22px; letter-spacing: -0.5px;">Bozorcha</span>
                 </div>
                 <div class="controls">
                     <div class="dropdown">
-                        <button class="theme-btn" id="langBtn"><b id="currentLang">TJ</b></button>
+                        <button class="icon-btn" id="langBtn"><span id="activeFlag">🇹🇯</span></button>
                         <div class="dropdown-menu" id="langMenu">
-                            <div class="dropdown-item" onclick="setLang('tj')">TJ</div>
-                            <div class="dropdown-item" onclick="setLang('ru')">RU</div>
-                            <div class="dropdown-item" onclick="setLang('en')">EN</div>
+                            <div class="dropdown-item" onclick="setLang('tj')"><span>🇹🇯</span> Тоҷикӣ</div>
+                            <div class="dropdown-item" onclick="setLang('ru')"><span>🇷🇺</span> Русский</div>
+                            <div class="dropdown-item" onclick="setLang('en')"><span>🇬🇧</span> English</div>
                         </div>
                     </div>
-                    <button class="theme-btn" id="themeBtn">
+                    <button class="icon-btn" id="themeBtn">
                         <div class="theme-icon-box">
                             <span class="sun">☀️</span>
                             <span class="moon">🌙</span>
@@ -183,29 +183,23 @@
                 </div>
             </header>
 
-            <div class="welcome-text">
-                <h1 class="welcome-title" id="txtTitle">Хуш омадед!</h1>
-                <p class="welcome-sub" id="txtSub">Барои оғоз ворид шавед ё сабти ном кунед.</p>
-            </div>
+            <h1 class="welcome-title" id="t-title">Хуш омадед!</h1>
+            <p class="welcome-sub" id="t-sub">Барои оғоз ворид шавед ё сабти ном кунед.</p>
 
-            <button class="btn btn-reg" id="txtReg">Сабти ном</button>
-            <button class="btn btn-login" id="txtLogin">Дохилшавӣ</button>
+            <button class="btn btn-reg" id="t-reg">Сабти ном</button>
+            <button class="btn btn-login" id="t-login">Дохилшавӣ</button>
 
-            <footer id="txtFooter">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
+            <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
         </div>
     </div>
 
     <script>
         const i18n = {
-            tj: { title: "Хуш омадед!", sub: "Барои оғоз ворид шавед ё сабти ном кунед.", reg: "Сабти ном", login: "Дохилшавӣ", footer: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд." },
-            ru: { title: "Добро пожаловать!", sub: "Войдите или зарегистрируйтесь для начала.", reg: "Регистрация", login: "Вход", footer: "© 2026 Bozorcha. Все права защищены." },
-            en: { title: "Welcome!", sub: "Login or register to get started.", reg: "Register", login: "Login", footer: "© 2026 Bozorcha. All rights reserved." }
+            tj: { flag: "🇹🇯", title: "Хуш омадед!", sub: "Барои оғоз ворид шавед ё сабти ном кунед.", reg: "Сабти ном", login: "Дохилшавӣ", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд." },
+            ru: { flag: "🇷🇺", title: "Добро пожаловать!", sub: "Войдите или зарегистрируйтесь для начала.", reg: "Регистрация", login: "Вход", foot: "© 2026 Bozorcha. Все права защищены." },
+            en: { flag: "🇬🇧", title: "Welcome!", sub: "Login or register to get started.", reg: "Register", login: "Login", foot: "© 2026 Bozorcha. All rights reserved." }
         };
 
-        let currentTheme = 'light';
-        let currentLang = 'tj';
-
-        // Splash Transition
         window.onload = () => {
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
@@ -213,37 +207,31 @@
                     document.getElementById('splash').style.display = 'none';
                     document.getElementById('app').classList.add('visible');
                 }, 800);
-            }, 3000);
+            }, 3200);
         };
 
-        // Theme Toggle
         document.getElementById('themeBtn').onclick = () => {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', currentTheme);
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            document.body.setAttribute('data-theme', isDark ? 'light' : 'dark');
         };
 
-        // Language Dropdown
-        document.getElementById('langBtn').onclick = () => {
+        document.getElementById('langBtn').onclick = (e) => {
+            e.stopPropagation();
             document.getElementById('langMenu').classList.toggle('show');
         };
 
         function setLang(lang) {
-            currentLang = lang;
-            document.getElementById('currentLang').innerText = lang.toUpperCase();
-            document.getElementById('txtTitle').innerText = i18n[lang].title;
-            document.getElementById('txtSub').innerText = i18n[lang].sub;
-            document.getElementById('txtReg').innerText = i18n[lang].reg;
-            document.getElementById('txtLogin').innerText = i18n[lang].login;
-            document.getElementById('txtFooter').innerText = i18n[lang].footer;
+            const d = i18n[lang];
+            document.getElementById('activeFlag').innerText = d.flag;
+            document.getElementById('t-title').innerText = d.title;
+            document.getElementById('t-sub').innerText = d.sub;
+            document.getElementById('t-reg').innerText = d.reg;
+            document.getElementById('t-login').innerText = d.login;
+            document.getElementById('t-foot').innerText = d.foot;
             document.getElementById('langMenu').classList.remove('show');
         }
 
-        // Close dropdown when clicking outside
-        window.onclick = (e) => {
-            if (!e.target.closest('.dropdown')) {
-                document.getElementById('langMenu').classList.remove('show');
-            }
-        };
+        window.onclick = () => document.getElementById('langMenu').classList.remove('show');
     </script>
 </body>
 </html>
