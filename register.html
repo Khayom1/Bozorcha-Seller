@@ -3,27 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Регистратсия - Bozorcha</title>
-    <!-- Библиотекаҳо -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Bozorcha - Регистратсия</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         :root {
-            --bg: #f8fafc;
+            --bg: #f5f7fa;
             --bg-card: #ffffff;
-            --text: #0f172a;
-            --text-light: #475569;
+            --text: #1e293b;
+            --text-light: #64748b;
             --accent: #ff9800;
             --accent-light: #fff3e0;
             --border: #e2e8f0;
-            --shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         [data-theme="dark"] {
@@ -37,34 +35,34 @@
         body {
             background: var(--bg);
             color: var(--text);
-            transition: background 0.4s ease, color 0.3s ease;
-            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
+            min-height: 100vh;
             padding: 16px;
         }
 
-        .register-container {
-            max-width: 480px;
+        .container {
+            max-width: 400px;
             width: 100%;
             background: var(--bg-card);
-            border-radius: 40px;
+            border-radius: 24px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             overflow: hidden;
         }
 
-        .app-bar {
+        .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 24px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border);
         }
 
-        .logo-mini {
-            font-size: 22px;
+        .logo {
+            font-size: 24px;
             font-weight: 700;
             background: linear-gradient(135deg, #ff9800, #ff6b6b);
             -webkit-background-clip: text;
@@ -79,181 +77,102 @@
         .icon-btn {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
+            color: var(--text);
             font-size: 18px;
         }
 
         .icon-btn:hover {
             background: var(--accent-light);
             color: var(--accent);
-            border-color: var(--accent);
-            transform: scale(1.05);
         }
-
-        .theme-icon {
-            transition: transform 0.5s ease;
-        }
-        .theme-icon.rotate { transform: rotate(180deg); }
 
         .lang-menu {
             position: absolute;
             top: 70px;
-            right: 24px;
+            right: 20px;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: 12px;
             padding: 8px;
-            box-shadow: var(--shadow);
             display: none;
+            box-shadow: var(--shadow);
             z-index: 100;
-            min-width: 160px;
         }
-        .lang-menu.show { display: block; animation: fadeIn 0.2s; }
+
+        .lang-menu.show {
+            display: block;
+        }
 
         .lang-option {
-            padding: 12px 16px;
+            padding: 10px 20px;
             cursor: pointer;
-            border-radius: 14px;
+            border-radius: 8px;
             transition: all 0.2s;
             color: var(--text);
         }
+
         .lang-option:hover {
             background: var(--accent-light);
             color: var(--accent);
         }
+
         .lang-option.active {
             background: var(--accent);
             color: white;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .logo-main {
-            padding: 30px 30px 10px;
-            text-align: center;
-        }
-
-        .logo-svg {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            margin: 0 auto;
-        }
-
-        /* Аниматсияи қисмҳои логотип */
-        .awning { animation: awningDrop 1.4s cubic-bezier(0.22, 1.05, 0.36, 1) forwards; opacity: 0; transform-origin: top center; }
-        .circle { animation: circleAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; opacity: 0; }
-        .circle1 { animation-delay: 0.6s; }
-        .circle2 { animation-delay: 0.75s; }
-        .circle3 { animation-delay: 0.9s; }
-        .letter-b { animation: letterBAppear 1.2s cubic-bezier(0.15, 0.9, 0.25, 1.05) 1.2s forwards; opacity: 0; transform-origin: left center; }
-        .letter-s { animation: letterSAppear 1.5s cubic-bezier(0.2, 1.1, 0.3, 1) 1.5s forwards; opacity: 0; transform-origin: center; }
-
-        @keyframes awningDrop {
-            0% { opacity: 0; transform: translateY(-80px) scaleX(0.7); }
-            40% { opacity: 0.9; transform: translateY(10px) scaleX(1.02); }
-            70% { transform: translateY(-3px) scaleX(0.99); }
-            100% { opacity: 1; transform: translateY(0) scaleX(1); }
-        }
-
-        @keyframes circleAppear {
-            0% { opacity: 0; transform: scale(0.2) rotate(-30deg); }
-            50% { opacity: 0.8; transform: scale(1.15) rotate(5deg); }
-            85% { transform: scale(0.98) rotate(-1deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
-        }
-
-        @keyframes letterBAppear {
-            0% { opacity: 0; transform: translateX(-40px) rotate(-12deg) scale(0.7); }
-            45% { opacity: 0.9; transform: translateX(8px) rotate(3deg) scale(1.05); }
-            75% { transform: translateX(-2px) rotate(-0.5deg) scale(0.99); }
-            100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
-        }
-
-        @keyframes letterSAppear {
-            0% { opacity: 0; transform: translateX(40px) rotate(12deg) scale(0.6); }
-            35% { opacity: 0.7; transform: translateX(-8px) rotate(-5deg) scale(1.1); }
-            60% { opacity: 0.9; transform: translateX(3px) rotate(2deg) scale(0.98); }
-            85% { transform: translateX(-1px) rotate(-0.5deg) scale(1.01); }
-            100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
-        }
-
-        .circle-pulse {
-            animation: gentlePulse 3s ease-in-out infinite;
-            animation-delay: 2.5s;
-        }
-
-        @keyframes gentlePulse {
-            0%, 100% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.02); filter: brightness(1.08); }
-        }
-
         .content {
-            padding: 10px 24px 30px;
+            padding: 40px 20px;
+            text-align: center;
         }
 
         .welcome-title {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--accent), #ff8566);
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ff9800, #ff6b6b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 0.6s ease forwards;
         }
 
         .welcome-text {
-            font-size: 16px;
             color: var(--text-light);
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 0.6s ease 0.2s forwards;
+            margin-bottom: 40px;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
-        @keyframes slideUpFade {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .auth-toggle {
+        .auth-buttons {
             display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 0.6s ease 0.4s forwards;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .auth-btn {
-            flex: 1;
-            padding: 14px;
+            padding: 16px;
             border-radius: 30px;
+            font-size: 18px;
             font-weight: 600;
-            font-size: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             text-align: center;
-            border: 2px solid transparent;
+            border: none;
         }
 
         .auth-btn.register {
-            background: linear-gradient(135deg, var(--accent), #ff6b6b);
+            background: linear-gradient(135deg, #ff9800, #ff6b6b);
             color: white;
             box-shadow: 0 8px 20px rgba(255,152,0,0.3);
         }
+
         .auth-btn.register:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 28px rgba(255,152,0,0.5);
@@ -261,164 +180,31 @@
 
         .auth-btn.login {
             background: var(--bg);
-            border-color: var(--border);
-            color: var(--text);
-        }
-        .auth-btn.login:hover {
-            background: var(--accent-light);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .input-group {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 0.6s ease 0.6s forwards;
-        }
-
-        .phone-label {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: block;
-            color: var(--text);
-        }
-
-        .phone-input-container {
-            display: flex;
             border: 2px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: border-color 0.3s;
-            margin-bottom: 8px;
-            background: var(--bg);
+            color: var(--text);
         }
-        .phone-input-container:focus-within {
+
+        .auth-btn.login:hover {
             border-color: var(--accent);
-        }
-
-        .country-code {
-            padding: 16px 14px;
-            background: var(--bg-card);
-            border-right: 2px solid var(--border);
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .phone-input {
-            flex: 1;
-            padding: 16px 14px;
-            border: none;
-            outline: none;
-            font-size: 16px;
-            background: transparent;
-            color: var(--text);
-        }
-        .phone-input::placeholder {
-            color: var(--text-light);
-            opacity: 0.6;
-        }
-
-        .example {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-bottom: 16px;
-            padding-left: 14px;
-        }
-
-        .error-message {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 12px;
-            border-radius: 14px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-        }
-        .error-message.show { display: block; }
-
-        .terms {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 24px 0;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 0.6s ease 0.8s forwards;
-        }
-        .terms input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--accent);
-            cursor: pointer;
-        }
-        .terms label {
-            font-size: 14px;
-            color: var(--text);
-        }
-        .terms a {
             color: var(--accent);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .next-btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 30px;
-            background: #ccc;
-            color: white;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: not-allowed;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 0.6s ease 1s forwards;
-        }
-        .next-btn.active {
-            background: linear-gradient(135deg, var(--accent), #ff6b6b);
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255,152,0,0.3);
-        }
-        .next-btn.active:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(255,152,0,0.5);
-        }
-
-        .login-link {
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-light);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 0.6s ease 1.2s forwards;
-        }
-        .login-link a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
         }
 
         .footer {
+            padding: 20px;
             text-align: center;
             font-size: 12px;
             color: var(--text-light);
-            padding: 20px;
             border-top: 1px solid var(--border);
         }
     </style>
 </head>
 <body data-theme="light">
-    <div class="register-container">
-        <div class="app-bar">
-            <div class="logo-mini">Bozorcha</div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Bozorcha</div>
             <div class="header-actions">
                 <div class="icon-btn" id="themeBtn">
-                    <i class="fas fa-moon theme-icon" id="themeIcon"></i>
+                    <i class="fas fa-moon" id="themeIcon"></i>
                 </div>
                 <div class="icon-btn" id="langBtn">
                     <i class="fas fa-globe"></i>
@@ -432,156 +218,68 @@
             <div class="lang-option" data-lang="en">🇬🇧 English</div>
         </div>
 
-        <!-- Логотип бо аниматсия -->
-        <div class="logo-main">
-            <svg class="logo-svg" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#ffb357"/>
-                        <stop offset="50%" stop-color="#ff8a2a"/>
-                        <stop offset="100%" stop-color="#ff4d1a"/>
-                    </linearGradient>
-                </defs>
-                <!-- Сақф -->
-                <path class="awning" d="M80 80H420Q440 80 440 110V150H60V110Q60 80 80 80Z" fill="url(#grad)" opacity="0.95"/>
-                <!-- Доираҳо -->
-                <circle class="circle circle1 circle-pulse" cx="150" cy="160" r="40" fill="url(#grad)"/>
-                <circle class="circle circle2 circle-pulse" cx="250" cy="160" r="40" fill="url(#grad)"/>
-                <circle class="circle circle3 circle-pulse" cx="350" cy="160" r="40" fill="url(#grad)"/>
-                <!-- Ҳарфҳо -->
-                <path class="letter-b" d="M150 250Q100 300 150 380L190 360Q160 310 190 260Z" fill="url(#grad)"/>
-                <path class="letter-s" d="M240 260Q330 240 360 300Q390 360 300 380Q230 395 250 340Q265 305 320 300Q350 295 330 270Q305 240 240 260Z" fill="url(#grad)"/>
-            </svg>
-        </div>
-
         <div class="content">
-            <h2 class="welcome-title" id="welcomeTitle"></h2>
-            <p class="welcome-text" id="welcomeText"></p>
-
-            <div class="auth-toggle">
-                <div class="auth-btn register" onclick="setActiveTab('register')" id="registerBtn"></div>
-                <div class="auth-btn login" onclick="setActiveTab('login')" id="loginBtn"></div>
-            </div>
-
-            <div class="input-group">
-                <label class="phone-label" id="phoneLabel"></label>
-                <div class="phone-input-container">
-                    <span class="country-code">+992</span>
-                    <input type="tel" class="phone-input" id="phone" placeholder="12 345 67" maxlength="12">
-                </div>
-                <div class="example" id="exampleText"></div>
-            </div>
-
-            <div class="error-message" id="error"></div>
-
-            <div class="terms" id="termsBlock">
-                <input type="checkbox" id="agree">
-                <label for="agree" id="termsLabel"></label>
-            </div>
-
-            <button class="next-btn" id="nextBtn" disabled></button>
-
-            <div class="login-link" id="toggleLink">
-                <span id="linkText"></span> <a href="#" id="linkAction"></a>
+            <h1 class="welcome-title" id="welcomeTitle">Ба Bozorcha хуш омадед!</h1>
+            <p class="welcome-text" id="welcomeText">Барои оғози фурӯш ё харид, лутфан сабти ном кунед ё ба ҳисобатон дохил шавед</p>
+            
+            <div class="auth-buttons">
+                <button class="auth-btn register" onclick="window.location.href='step2.html'">Сабти ном</button>
+                <button class="auth-btn login" onclick="window.location.href='login.html'">Дохилшавӣ</button>
             </div>
         </div>
 
-        <div class="footer" id="footer"></div>
+        <div class="footer" id="footer">© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.</div>
     </div>
 
     <script>
-        // ---------- ТАРҶУМАҲО ----------
         const translations = {
             tg: {
                 welcomeTitle: 'Ба Bozorcha хуш омадед!',
                 welcomeText: 'Барои оғози фурӯш ё харид, лутфан сабти ном кунед ё ба ҳисобатон дохил шавед',
                 registerBtn: 'Сабти ном',
                 loginBtn: 'Дохилшавӣ',
-                phoneLabel: 'Рақами телефон',
-                example: 'Намуна: 901 23 45 67',
-                terms: 'Ман қоидаҳои истифодабариро қабул мекунам',
-                nextRegister: 'Сабти ном',
-                nextLogin: 'Дохилшавӣ',
-                linkPrefix: 'Аллакай ҳисоб доред?',
-                linkLogin: 'Дохил шавед',
-                linkRegister: 'Сабти ном кунед',
-                footer: '© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.',
-                errorDigits: 'Рақам бояд 9 рақам бошад',
-                errorExists: 'Ин рақам аллакай сабт шудааст',
-                errorNotExists: 'Ин рақам ёфт нашуд'
+                footer: '© 2026 Bozorcha. Ҳама ҳуқуқ маҳфуз аст.'
             },
             ru: {
                 welcomeTitle: 'Добро пожаловать в Bozorcha!',
                 welcomeText: 'Чтобы начать продавать или покупать, зарегистрируйтесь или войдите в аккаунт',
                 registerBtn: 'Регистрация',
                 loginBtn: 'Вход',
-                phoneLabel: 'Номер телефона',
-                example: 'Пример: 901 23 45 67',
-                terms: 'Я принимаю правила использования',
-                nextRegister: 'Зарегистрироваться',
-                nextLogin: 'Войти',
-                linkPrefix: 'Уже есть аккаунт?',
-                linkLogin: 'Войдите',
-                linkRegister: 'Зарегистрируйтесь',
-                footer: '© 2026 Bozorcha. Все права защищены.',
-                errorDigits: 'Номер должен содержать 9 цифр',
-                errorExists: 'Этот номер уже зарегистрирован',
-                errorNotExists: 'Номер не найден'
+                footer: '© 2026 Bozorcha. Все права защищены.'
             },
             en: {
                 welcomeTitle: 'Welcome to Bozorcha!',
                 welcomeText: 'To start selling or buying, please register or log in',
                 registerBtn: 'Register',
                 loginBtn: 'Login',
-                phoneLabel: 'Phone number',
-                example: 'Example: 901 23 45 67',
-                terms: 'I accept the terms of use',
-                nextRegister: 'Register',
-                nextLogin: 'Login',
-                linkPrefix: 'Already have an account?',
-                linkLogin: 'Log in',
-                linkRegister: 'Register',
-                footer: '© 2026 Bozorcha. All rights reserved.',
-                errorDigits: 'Number must be 9 digits',
-                errorExists: 'This number is already registered',
-                errorNotExists: 'Number not found'
+                footer: '© 2026 Bozorcha. All rights reserved.'
             }
         };
 
-        // ---------- SUPABASE ----------
-        const supabaseClient = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-        );
-
-        // ---------- ТАҒЙИРЁБАНДАҲО ----------
         let currentLang = localStorage.getItem('bozorcha_lang') || 'tg';
         let currentTheme = localStorage.getItem('bozorcha_theme') || 'light';
-        let activeTab = 'register'; // 'register' ё 'login'
 
-        // Танзими ибтидоӣ
         document.body.setAttribute('data-theme', currentTheme);
-        updateThemeIcon();
         applyLanguage(currentLang);
-        setActiveTab(activeTab);
+        updateThemeIcon();
 
-        // ---------- ЭЛЕМЕНТҲО ----------
         const themeBtn = document.getElementById('themeBtn');
         const themeIcon = document.getElementById('themeIcon');
         const langBtn = document.getElementById('langBtn');
         const langMenu = document.getElementById('langMenu');
         const langOptions = document.querySelectorAll('.lang-option');
-        const phoneInput = document.getElementById('phone');
-        const agreeCheck = document.getElementById('agree');
-        const nextBtn = document.getElementById('nextBtn');
-        const errorDiv = document.getElementById('error');
-        const termsBlock = document.getElementById('termsBlock');
-        const registerBtn = document.getElementById('registerBtn');
-        const loginBtn = document.getElementById('loginBtn');
-        const toggleLink = document.getElementById('linkAction');
-        const linkText = document.getElementById('linkText');
 
-        // ---------- ЗАБОН ----------
+        themeBtn.addEventListener('click', () => {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('bozorcha_theme', currentTheme);
+            updateThemeIcon();
+        });
+
+        function updateThemeIcon() {
+            themeIcon.className = currentTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
         langBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             langMenu.classList.toggle('show');
@@ -615,165 +313,10 @@
             const t = translations[lang];
             document.getElementById('welcomeTitle').innerText = t.welcomeTitle;
             document.getElementById('welcomeText').innerText = t.welcomeText;
-            registerBtn.innerText = t.registerBtn;
-            loginBtn.innerText = t.loginBtn;
-            document.getElementById('phoneLabel').innerText = t.phoneLabel;
-            document.getElementById('exampleText').innerText = t.example;
-            document.getElementById('termsLabel').innerHTML = `Ман <a href="#">${lang === 'tg' ? 'қоидаҳои истифодабариро' : lang === 'ru' ? 'правила использования' : 'terms of use'}</a> қабул мекунам`;
+            document.querySelector('.auth-btn.register').innerText = t.registerBtn;
+            document.querySelector('.auth-btn.login').innerText = t.loginBtn;
             document.getElementById('footer').innerText = t.footer;
-            updateToggleLink();
-            updateNextBtnText();
         }
-
-        function updateToggleLink() {
-            const t = translations[currentLang];
-            if (activeTab === 'register') {
-                linkText.innerText = t.linkPrefix;
-                toggleLink.innerText = t.linkLogin;
-            } else {
-                linkText.innerText = t.linkPrefix;
-                toggleLink.innerText = t.linkRegister;
-            }
-        }
-
-        function updateNextBtnText() {
-            const t = translations[currentLang];
-            nextBtn.innerText = activeTab === 'register' ? t.nextRegister : t.nextLogin;
-        }
-
-        // ---------- ТЕМА ----------
-        themeBtn.addEventListener('click', () => {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', currentTheme);
-            localStorage.setItem('bozorcha_theme', currentTheme);
-            updateThemeIcon();
-        });
-
-        function updateThemeIcon() {
-            if (currentTheme === 'light') {
-                themeIcon.className = 'fas fa-moon theme-icon';
-            } else {
-                themeIcon.className = 'fas fa-sun theme-icon';
-            }
-            themeIcon.classList.add('rotate');
-            setTimeout(() => themeIcon.classList.remove('rotate'), 500);
-        }
-
-        // ---------- ТАБ (САБТИ НОМ / ДОХИЛШАВӢ) ----------
-        function setActiveTab(tab) {
-            activeTab = tab;
-            if (tab === 'register') {
-                registerBtn.classList.add('register');
-                loginBtn.classList.remove('register');
-                loginBtn.classList.add('login');
-                termsBlock.style.display = 'flex';
-            } else {
-                loginBtn.classList.add('register');
-                registerBtn.classList.remove('register');
-                registerBtn.classList.add('login');
-                termsBlock.style.display = 'none';
-            }
-            updateToggleLink();
-            updateNextBtnText();
-            checkForm();
-        }
-        window.setActiveTab = setActiveTab;
-
-        toggleLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            setActiveTab(activeTab === 'register' ? 'login' : 'register');
-        });
-
-        // ---------- САНҶИШИ РАҚАМ ----------
-        function validatePhone(phone) {
-            const digits = phone.replace(/\D/g, '');
-            return digits.length === 9;
-        }
-
-        function checkForm() {
-            const phone = phoneInput.value;
-            const isValid = validatePhone(phone);
-            const isAgreed = activeTab === 'login' ? true : agreeCheck.checked;
-
-            if (isValid && isAgreed) {
-                nextBtn.disabled = false;
-                nextBtn.classList.add('active');
-                errorDiv.classList.remove('show');
-            } else {
-                nextBtn.disabled = true;
-                nextBtn.classList.remove('active');
-                if (!isValid && phone.length > 0) {
-                    errorDiv.innerText = translations[currentLang].errorDigits;
-                    errorDiv.classList.add('show');
-                } else {
-                    errorDiv.classList.remove('show');
-                }
-            }
-        }
-
-        phoneInput.addEventListener('input', (e) => {
-            let digits = e.target.value.replace(/\D/g, '');
-            if (digits.length > 9) digits = digits.slice(0, 9);
-            let formatted = '';
-            for (let i = 0; i < digits.length; i++) {
-                if (i === 3 || i === 6) formatted += ' ';
-                formatted += digits[i];
-            }
-            phoneInput.value = formatted;
-            checkForm();
-        });
-
-        agreeCheck.addEventListener('change', checkForm);
-
-        // ---------- ТУГМАИ ДАВОМ ----------
-        nextBtn.addEventListener('click', async () => {
-            const digits = phoneInput.value.replace(/\D/g, '');
-            if (!validatePhone(digits)) {
-                errorDiv.innerText = translations[currentLang].errorDigits;
-                errorDiv.classList.add('show');
-                return;
-            }
-
-            const fullPhone = '+992' + digits;
-            const t = translations[currentLang];
-
-            try {
-                if (activeTab === 'register') {
-                    const { data: existing } = await supabaseClient
-                        .from('users')
-                        .select('phone')
-                        .eq('phone', fullPhone);
-
-                    if (existing && existing.length > 0) {
-                        errorDiv.innerText = t.errorExists;
-                        errorDiv.classList.add('show');
-                        return;
-                    }
-
-                    localStorage.setItem('bozorcha_phone', fullPhone);
-                    localStorage.setItem('bozorcha_lang', currentLang);
-                    localStorage.setItem('bozorcha_theme', currentTheme);
-                    window.location.href = 'step2.html';
-                } else {
-                    const { data: user } = await supabaseClient
-                        .from('users')
-                        .select('*')
-                        .eq('phone', fullPhone);
-
-                    if (!user || user.length === 0) {
-                        errorDiv.innerText = t.errorNotExists;
-                        errorDiv.classList.add('show');
-                        return;
-                    }
-
-                    localStorage.setItem('bozorcha_user', JSON.stringify(user[0]));
-                    window.location.href = 'dashboard.html';
-                }
-            } catch (err) {
-                errorDiv.innerText = 'Supabase error: ' + err.message;
-                errorDiv.classList.add('show');
-            }
-        });
     </script>
 </body>
 </html>
