@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bozorcha Seller - Core Initialization</title>
+    <title>Bozorcha Seller - Final Core</title>
     <style>
         :root {
             --bg: #FFFFFF;
             --surface: #F8F9FA;
             --text-primary: #1A1C1E;
             --text-secondary: #6C757D;
-            --accent: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
+            --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
             --border: #EEEEEE;
-            --shadow: 0 20px 40px rgba(0,0,0,0.06);
+            --shadow: 0 15px 35px rgba(0,0,0,0.05);
         }
 
         [data-theme="dark"] {
@@ -21,145 +21,157 @@
             --text-primary: #F8F9FA;
             --text-secondary: #ADB5BD;
             --border: #2C2E33;
-            --shadow: 0 20px 40px rgba(0,0,0,0.3);
+            --shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
 
         body {
-            background-color: var(--bg); color: var(--text-primary);
+            background-color: var(--bg);
+            color: var(--text-primary);
             display: flex; justify-content: center; align-items: center;
-            height: 100vh; overflow: hidden; transition: background 0.5s ease, color 0.5s ease;
+            height: 100vh; overflow: hidden;
         }
 
+        /* --- SPLASH SCREEN --- */
         #splash {
-            position: fixed; inset: 0; background: #FFFFFF;
+            position: fixed; inset: 0;
+            background: #FFFFFF;
             z-index: 1000; display: flex; justify-content: center; align-items: center;
             transition: opacity 0.8s ease;
         }
 
-        .logo-container { width: 180px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); }
-        
-        .awning-physics {
-            transform-origin: 225px 50px;
-            animation: realWind 3s ease-in-out infinite;
+        .splash-svg { width: 140px; }
+
+        .path-draw {
+            fill: none; stroke: #FF9F43; stroke-width: 1.5;
+            stroke-dasharray: 800; stroke-dashoffset: 800;
+            animation: draw 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        @keyframes realWind {
-            0%, 100% { transform: rotate(0deg) skewX(0deg); }
-            30% { transform: rotate(5deg) skewX(2deg); }
-            70% { transform: rotate(-4deg) skewX(-1deg); }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+
+        /* --- LOGO ANIMATION (WIND EFFECT) --- */
+        .awning-part {
+            transform-origin: top center;
+            animation: windSwing 3s ease-in-out infinite;
         }
 
+        @keyframes windSwing {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(3deg) skewX(2deg); }
+        }
+
+        .fill-animate { opacity: 0; animation: fadeIn 0.8s ease forwards 2s; }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* --- MAIN UI --- */
         #app {
-            width: 100%; max-width: 420px; padding: 20px;
-            opacity: 0; transform: translateY(30px);
-            transition: all 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+            width: 100%; max-width: 400px; padding: 20px;
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+
         #app.visible { opacity: 1; transform: translateY(0); }
 
         .card {
-            background: var(--surface); border-radius: 42px; padding: 40px 30px;
-            box-shadow: var(--shadow); border: 1px solid var(--border);
-            text-align: center; transition: background 0.5s ease, border 0.5s ease;
+            background: var(--surface);
+            border-radius: 35px; padding: 45px 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
         }
 
-        .header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .mini-logo { width: 45px; height: auto; }
-
-        .welcome-text h1 { font-size: 30px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.5px; }
-        .welcome-text p { color: var(--text-secondary); font-size: 15px; margin-bottom: 35px; line-height: 1.6; }
-
-        .btn-group { display: flex; flex-direction: column; gap: 15px; }
-        .btn {
-            width: 100%; padding: 20px; border-radius: 20px;
-            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
-            transition: all 0.3s ease;
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 50px;
         }
-        .btn-primary { background: var(--accent); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
-        .btn-secondary { background: transparent; border: 2px solid var(--border); color: var(--text-primary); transition: border 0.5s ease, color 0.5s ease;}
-        .btn:active { transform: scale(0.96); opacity: 0.9; }
+
+        .logo-group { display: flex; align-items: center; gap: 12px; }
 
         .controls { display: flex; gap: 10px; }
+
         .icon-btn {
-            width: 48px; height: 48px; border-radius: 15px;
+            width: 48px; height: 48px; border-radius: 16px;
             background: var(--bg); border: 1px solid var(--border);
             cursor: pointer; display: flex; justify-content: center; align-items: center;
-            font-size: 20px; position: relative; transition: background 0.5s ease, border 0.5s ease;
+            font-size: 20px; position: relative; overflow: hidden;
         }
 
+        /* DROPDOWN */
         .dropdown { position: relative; }
         .dropdown-menu {
             position: absolute; top: 55px; right: 0;
             background: var(--surface); border: 1px solid var(--border);
             border-radius: 18px; box-shadow: var(--shadow);
-            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 140px;
+            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 120px;
         }
         .dropdown-menu.show { display: flex; }
         .dropdown-item {
             padding: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px;
-            font-weight: 600; font-size: 14px; transition: background 0.3s ease;
+            font-weight: 600; font-size: 14px;
         }
-        .dropdown-item:hover { background: var(--accent); color: white; }
+        .dropdown-item:hover { background: var(--accent-gradient); color: white; }
 
+        /* THEME ICON ANIMATION */
         .theme-icon-box { position: relative; width: 22px; height: 22px; }
         .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
         [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
         [data-theme="light"] .moon { transform: translateY(30px); opacity: 0; }
         [data-theme="dark"] .sun { transform: translateY(-30px); opacity: 0; }
         [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
+
+        .welcome-title { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
+        .welcome-sub { color: var(--text-secondary); font-size: 16px; margin-bottom: 40px; }
+
+        .btn {
+            width: 100%; padding: 20px; border-radius: 20px;
+            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
+            margin-bottom: 15px; transition: transform 0.2s;
+        }
+        .btn-reg { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
+        .btn-login { background: transparent; border: 2px solid var(--border); color: var(--text-primary); }
+        .btn:active { transform: scale(0.96); }
+
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 13px; }
     </style>
 </head>
 <body data-theme="light">
 
-    <svg style="width:0;height:0;position:absolute;">
-        <defs>
-            <linearGradient id="g1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fbd19d"/><stop offset="100%" stop-color="#f3b469"/></linearGradient>
-            <linearGradient id="g2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#f18b37"/><stop offset="100%" stop-color="#e87328"/></linearGradient>
-            <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f9b85c"/><stop offset="100%" stop-color="#eb7b30"/></linearGradient>
-        </defs>
-    </svg>
-
     <div id="splash">
-        <div class="logo-container">
-            <svg viewBox="0 0 450 550">
-                <g class="awning-physics">
-                    <path d="M60,140 Q60,30 225,30 T390,140 L390,145 L60,145 Z" fill="url(#g1)"/>
-                    <path d="M60,145 L390,145 L390,200 C390,260 300,260 300,200 C300,260 210,260 210,200 C210,260 120,260 120,200 L60,200 Z" fill="url(#g2)"/>
-                </g>
-                <g>
-                    <path d="M85,275 C110,290 145,340 145,430 C145,510 115,550 85,580 L85,275 Z" fill="url(#g3)"/>
-                    <path d="M225,320 L285,320 L285,440 C340,440 395,390 410,265 C450,350 420,550 250,550 C150,550 160,510 225,320 Z" fill="url(#g3)"/>
-                </g>
-            </svg>
-        </div>
+        <svg class="splash-svg" viewBox="0 0 200 200">
+            <path class="path-draw" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z"/>
+            <g class="fill-animate">
+                <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
+                <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+            </g>
+        </svg>
     </div>
 
     <div id="app">
         <div class="card">
-            <header class="header-box">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="mini-logo">
-                        <svg viewBox="0 0 450 550">
-                            <g class="awning-physics">
-                                <path d="M60,140 Q60,30 225,30 T390,140 L390,145 L60,145 Z" fill="url(#g1)"/>
-                                <path d="M60,145 L390,145 L390,200 C390,260 300,260 300,200 C300,260 210,260 210,200 C210,260 120,260 120,200 L60,200 Z" fill="url(#g2)"/>
-                            </g>
-                            <g>
-                                <path d="M85,275 C110,290 145,340 145,430 C145,510 115,550 85,580 L85,275 Z" fill="url(#g3)"/>
-                                <path d="M225,320 L285,320 L285,440 C340,440 395,390 410,265 C450,350 420,550 250,550 C150,550 160,510 225,320 Z" fill="url(#g3)"/>
-                            </g>
-                        </svg>
-                    </div>
-                    <span style="font-weight: 900; font-size: 24px; color: #e87328; letter-spacing: -0.5px;">Bozorcha</span>
+            <header>
+                <div class="logo-group">
+                    <svg width="45" height="45" viewBox="0 0 200 200">
+                        <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
+                        <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                        <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+                    </svg>
+                    <span style="font-weight: 900; font-size: 22px; letter-spacing: -0.5px;">Bozorcha</span>
                 </div>
                 <div class="controls">
                     <div class="dropdown">
                         <button class="icon-btn" id="langBtn"><span id="activeFlag">🇹🇯</span></button>
                         <div class="dropdown-menu" id="langMenu">
-                            <div class="dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
-                            <div class="dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
-                            <div class="dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
+                            <div class="dropdown-item" onclick="setLang('tj')"><span>🇹🇯</span> Тоҷикӣ</div>
+                            <div class="dropdown-item" onclick="setLang('ru')"><span>🇷🇺</span> Русский</div>
+                            <div class="dropdown-item" onclick="setLang('en')"><span>🇬🇧</span> English</div>
                         </div>
                     </div>
                     <button class="icon-btn" id="themeBtn">
@@ -171,19 +183,13 @@
                 </div>
             </header>
 
-            <div class="welcome-text">
-                <h1 id="t-title">Хуш омадед!</h1>
-                <p id="t-sub">Барои оғоз ворид шавед ё сабти ном кунед.</p>
-            </div>
+            <h1 class="welcome-title" id="t-title">Хуш омадед!</h1>
+            <p class="welcome-sub" id="t-sub">Барои оғоз ворид шавед ё сабти ном кунед.</p>
 
-            <div class="btn-group">
-                <button class="btn btn-primary" id="t-reg">Сабти ном</button>
-                <button class="btn btn-secondary" id="t-login">Дохилшавӣ</button>
-            </div>
+            <button class="btn btn-reg" id="t-reg">Сабти ном</button>
+            <button class="btn btn-login" id="t-login">Дохилшавӣ</button>
 
-            <footer id="t-foot" style="margin-top: 40px; font-size: 13px; color: var(--text-secondary);">
-                © 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.
-            </footer>
+            <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
         </div>
     </div>
 
@@ -201,7 +207,7 @@
                     document.getElementById('splash').style.display = 'none';
                     document.getElementById('app').classList.add('visible');
                 }, 800);
-            }, 2500);
+            }, 3200);
         };
 
         document.getElementById('themeBtn').onclick = () => {
@@ -229,4 +235,3 @@
     </script>
 </body>
 </html>
-
