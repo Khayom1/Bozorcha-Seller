@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Рақами телефон - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg: #FFFFFF;
@@ -32,7 +33,6 @@
             min-height: 100vh; padding: 20px;
         }
 
-        /* --- LOGO ANIMATION (WIND EFFECT) --- */
         .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
         @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
 
@@ -60,7 +60,6 @@
             font-size: 18px; position: relative; overflow: hidden;
         }
 
-        /* THEME ICON ANIMATION */
         .theme-icon-box { position: relative; width: 20px; height: 20px; }
         .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
         [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
@@ -134,7 +133,7 @@
         </header>
 
         <h1 class="title" id="t-title">Рақами телефон</h1>
-        <p class="subtitle" id="t-sub">Рақами телефонихудро ворид кунед</p>
+        <p class="subtitle" id="t-sub">Рақами телефони худро ворид кунед</p>
 
         <div class="phone-input">
             <span class="country-code">+992</span>
@@ -147,16 +146,20 @@
     </div>
 
     <script>
+        // Танзимоти Supabase
+        const SUPABASE_URL = 'https://seagtiaujnnhayitgsdd.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         const i18n = {
-            tj: { flag: "🇹🇯", title: "Рақами телефон", sub: "Ба ин рақам рамзи тасдиқ фиристода мешавад", btn: "Давом", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", err: "Рақам нодуруст аст" },
-            ru: { flag: "🇷🇺", title: "Номер телефона", sub: "На этот номер будет отправлен код подтверждения", btn: "Далее", foot: "© 2026 Bozorcha. Все права защищены.", err: "Неверный номер" },
-            en: { flag: "🇬🇧", title: "Phone Number", sub: "A verification code will be sent to this number", btn: "Continue", foot: "© 2026 Bozorcha. All rights reserved.", err: "Invalid number" }
+            tj: { flag: "🇹🇯", title: "Рақами телефон", sub: "Ба ин рақам рамзи тасдиқ фиристода мешавад", btn: "Давом", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", err: "Рақам нодуруст аст", loading: "Дар ҳоли фиристодан..." },
+            ru: { flag: "🇷🇺", title: "Номер телефона", sub: "На этот номер будет отправлен код подтверждения", btn: "Далее", foot: "© 2026 Bozorcha. Все права защищены.", err: "Неверный номер", loading: "Отправка..." },
+            en: { flag: "🇬🇧", title: "Phone Number", sub: "A verification code will be sent to this number", btn: "Continue", foot: "© 2026 Bozorcha. All rights reserved.", err: "Invalid number", loading: "Sending..." }
         };
 
         const phoneInput = document.getElementById('phone');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Initialization from LocalStorage
         window.onload = () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             const savedLang = localStorage.getItem('lang') || 'tj';
@@ -164,14 +167,12 @@
             setLang(savedLang);
         };
 
-        // Theme Toggle
         document.getElementById('themeBtn').onclick = () => {
             const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
         };
 
-        // Language Logic
         document.getElementById('langBtn').onclick = (e) => { e.stopPropagation(); document.getElementById('langMenu').classList.toggle('show'); };
         window.onclick = () => document.getElementById('langMenu').classList.remove('show');
 
@@ -186,7 +187,6 @@
             localStorage.setItem('lang', lang);
         }
 
-        // Phone Validation
         phoneInput.addEventListener('input', (e) => {
             let digits = e.target.value.replace(/\D/g, '');
             if (digits.length > 9) digits = digits.slice(0, 9);
@@ -201,10 +201,36 @@
             document.getElementById('error').classList.toggle('show', digits.length > 0 && !isValid);
         });
 
-        submitBtn.onclick = () => {
-            if (!submitBtn.classList.contains('disabled')) {
-                localStorage.setItem('userPhone', '+992' + phoneInput.value.replace(/\D/g, ''));
-                window.location.href = 'verify.html';
+        // Фармон барои фиристодани OTP ба Supabase
+        submitBtn.onclick = async () => {
+            if (submitBtn.classList.contains('disabled')) return;
+
+            const lang = localStorage.getItem('lang') || 'tj';
+            const originalText = i18n[lang].btn;
+            const fullPhone = '+992' + phoneInput.value.replace(/\D/g, '');
+
+            // Омодасозии интерфейс барои фиристодан
+            submitBtn.innerText = i18n[lang].loading;
+            submitBtn.classList.add('disabled');
+
+            try {
+                // Иҷрои дархост ба Supabase
+                const { error } = await _supabase.auth.signInWithOtp({
+                    phone: fullPhone,
+                });
+
+                if (error) {
+                    alert("Хатогӣ: " + error.message);
+                    submitBtn.innerText = originalText;
+                    submitBtn.classList.remove('disabled');
+                } else {
+                    localStorage.setItem('userPhone', fullPhone);
+                    window.location.href = 'step3.html';
+                }
+            } catch (err) {
+                alert("Хатои шабака: " + err.message);
+                submitBtn.innerText = originalText;
+                submitBtn.classList.remove('disabled');
             }
         };
     </script>
