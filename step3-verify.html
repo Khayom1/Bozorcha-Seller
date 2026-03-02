@@ -272,7 +272,21 @@
                 verifyBtn.innerText = i18n[lang].btn;
                 verifyBtn.classList.remove('disabled');
             } else {
-                window.location.href = 'profile-form.html';
+                try {
+                    // Гирифтани ID-и корбар
+                    const { data: { user }, error: userError } = await _supabase.auth.getUser();
+                    
+                    if (userError) {
+                        alert("Хатогӣ дар гирифтани маълумоти корбар: " + userError.message);
+                        window.location.href = 'profile-form.html';
+                    } else {
+                        localStorage.setItem('userId', user.id);
+                        window.location.href = 'profile-form.html';
+                    }
+                } catch (err) {
+                    console.error("Error getting user:", err);
+                    window.location.href = 'profile-form.html';
+                }
             }
         };
 
