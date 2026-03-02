@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Паёмҳо - Bozorcha</title>
+    <title>Чат - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -45,233 +46,17 @@
             background: var(--bg);
             color: var(--text);
             transition: background 0.3s, color 0.3s;
-            padding: 0;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Header */
-        .page-header {
+        .chat-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 16px;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .page-title {
-            font-size: 24px;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .header-actions {
-            display: flex;
             gap: 16px;
-        }
-
-        .header-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text);
-        }
-
-        .header-btn:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-            transform: scale(1.05);
-        }
-
-        /* Search Bar */
-        .search-container {
             padding: 12px 16px;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .search-box {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .search-box i {
-            color: var(--text-light);
-            font-size: 16px;
-        }
-
-        .search-box input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            color: var(--text);
-            font-size: 15px;
-            outline: none;
-        }
-
-        .search-box input::placeholder {
-            color: var(--text-muted);
-        }
-
-        /* Chat List */
-        .chat-list {
-            flex: 1;
-            padding: 8px 0;
-        }
-
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .chat-item:hover {
-            background: var(--accent-light);
-        }
-
-        .chat-item.active {
-            background: var(--accent-light);
-            border-left: 4px solid var(--accent);
-        }
-
-        .chat-avatar {
-            position: relative;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .chat-avatar img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .online-indicator {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--success);
-            border: 2px solid var(--bg-card);
-        }
-
-        .chat-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .chat-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 4px;
-        }
-
-        .chat-name {
-            font-weight: 600;
-            font-size: 16px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .chat-time {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .chat-last {
-            font-size: 13px;
-            color: var(--text-light);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-
-        .chat-badge {
-            min-width: 20px;
-            height: 20px;
-            border-radius: 10px;
-            background: var(--accent);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 0 6px;
-        }
-
-        .chat-status {
-            font-size: 11px;
-            color: var(--success);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* Chat Detail Modal */
-        .chat-detail-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-card);
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-        }
-
-        .chat-detail-modal.open {
-            display: flex;
-        }
-
-        .chat-detail-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
             background: var(--bg-card);
             border-bottom: 1px solid var(--border);
         }
@@ -280,13 +65,12 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: var(--bg);
-            border: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            color: var(--text);
         }
 
         .back-btn:hover {
@@ -294,7 +78,7 @@
             color: var(--accent);
         }
 
-        .detail-avatar {
+        .user-avatar {
             width: 48px;
             height: 48px;
             border-radius: 50%;
@@ -303,20 +87,20 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 18px;
+            font-size: 20px;
         }
 
-        .detail-info {
+        .user-info {
             flex: 1;
         }
 
-        .detail-name {
+        .user-name {
             font-weight: 600;
             font-size: 18px;
             margin-bottom: 4px;
         }
 
-        .detail-status {
+        .user-status {
             font-size: 12px;
             color: var(--success);
             display: flex;
@@ -324,30 +108,44 @@
             gap: 4px;
         }
 
-        .detail-actions {
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin: 12px 16px;
             display: flex;
-            gap: 8px;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
         }
 
-        .detail-action {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--bg);
-            border: 1px solid var(--border);
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background: var(--accent-light);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .detail-action:hover {
-            background: var(--accent-light);
             color: var(--accent);
+            font-size: 24px;
         }
 
-        /* Messages Container */
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
         .messages-container {
             flex: 1;
             overflow-y: auto;
@@ -356,13 +154,6 @@
             flex-direction: column;
             gap: 12px;
             background: var(--bg);
-        }
-
-        .message-date {
-            text-align: center;
-            font-size: 11px;
-            color: var(--text-muted);
-            margin: 10px 0;
         }
 
         .message {
@@ -412,10 +203,6 @@
             color: var(--text-muted);
         }
 
-        .message-status {
-            font-size: 10px;
-        }
-
         .message-image {
             max-width: 200px;
             border-radius: 12px;
@@ -423,8 +210,22 @@
             cursor: pointer;
         }
 
-        /* Message Input */
-        .message-input-container {
+        .message-audio {
+            width: 250px;
+            margin-bottom: 8px;
+        }
+
+        .message-file {
+            background: var(--bg);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .input-container {
             padding: 16px;
             background: var(--bg-card);
             border-top: 1px solid var(--border);
@@ -486,415 +287,289 @@
             box-shadow: 0 4px 12px rgba(255,152,0,0.4);
         }
 
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
+        .hidden {
+            display: none;
         }
 
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .empty-state p {
-            font-size: 14px;
-        }
-
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .chat-last {
-                max-width: 150px;
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="page-header">
-        <div class="page-title">
-            <i class="fas fa-comment"></i>
-            Паёмҳо
+    <div class="chat-header">
+        <div class="back-btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
         </div>
-        <div class="header-actions">
-            <div class="header-btn" onclick="openSettings()">
-                <i class="fas fa-sliders-h"></i>
-            </div>
-            <div class="header-btn" onclick="openNewChat()">
-                <i class="fas fa-pen"></i>
-            </div>
+        <div class="user-avatar" id="avatar">...</div>
+        <div class="user-info">
+            <div class="user-name" id="userName"></div>
+            <div class="user-status" id="userStatus"><i class="fas fa-circle"></i> Online</div>
         </div>
     </div>
 
-    <!-- Search -->
-    <div class="search-container">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Ҷустуҷӯи паёмҳо..." id="searchInput">
+    <div id="productCard" class="product-card hidden" onclick="viewProduct()">
+        <div class="product-image" id="productImage"><i class="fas fa-box"></i></div>
+        <div class="product-info">
+            <div class="product-name" id="productName"></div>
+            <div class="product-price" id="productPrice"></div>
         </div>
     </div>
 
-    <!-- Chat List -->
-    <div class="chat-list" id="chatList">
-        <!-- Чат 1 -->
-        <div class="chat-item" onclick="openChat('Азиза Раҳимова', 'online')">
-            <div class="chat-avatar">
-                <i class="fas fa-user"></i>
-                <span class="online-indicator"></span>
-            </div>
-            <div class="chat-info">
-                <div class="chat-row">
-                    <span class="chat-name">Азиза Раҳимова</span>
-                    <span class="chat-time">12:30</span>
-                </div>
-                <div class="chat-row">
-                    <span class="chat-last">Ассалому алейкум, ин маҳсулот...</span>
-                    <span class="chat-badge">2</span>
-                </div>
-                <div class="chat-status">
-                    <i class="fas fa-circle"></i> Online
-                </div>
-            </div>
-        </div>
+    <div class="messages-container" id="messages"></div>
 
-        <!-- Чат 2 -->
-        <div class="chat-item" onclick="openChat('Фирӯз Каримов', 'offline')">
-            <div class="chat-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="chat-info">
-                <div class="chat-row">
-                    <span class="chat-name">Фирӯз Каримов</span>
-                    <span class="chat-time">10:15</span>
-                </div>
-                <div class="chat-row">
-                    <span class="chat-last">Нархашро кам мекунед?</span>
-                </div>
-                <div class="chat-status" style="color: var(--text-muted);">
-                    <i class="fas fa-circle"></i> 2 соат пеш
-                </div>
-            </div>
+    <div class="input-container">
+        <div class="attach-btn" onclick="showAttachMenu()">
+            <i class="fas fa-paperclip"></i>
         </div>
-
-        <!-- Чат 3 -->
-        <div class="chat-item" onclick="openChat('Мадина Солеҳова', 'offline')">
-            <div class="chat-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="chat-info">
-                <div class="chat-row">
-                    <span class="chat-name">Мадина Солеҳова</span>
-                    <span class="chat-time">Кеча</span>
-                </div>
-                <div class="chat-row">
-                    <span class="chat-last">Ташаккур, фармоиш гирифтам</span>
-                </div>
-                <div class="chat-status" style="color: var(--text-muted);">
-                    <i class="fas fa-circle"></i> 1 рӯз пеш
-                </div>
-            </div>
-        </div>
-
-        <!-- Чат 4 -->
-        <div class="chat-item" onclick="openChat('Раҳим Қурбонов', 'online')">
-            <div class="chat-avatar">
-                <i class="fas fa-user"></i>
-                <span class="online-indicator"></span>
-            </div>
-            <div class="chat-info">
-                <div class="chat-row">
-                    <span class="chat-name">Раҳим Қурбонов</span>
-                    <span class="chat-time">09:45</span>
-                </div>
-                <div class="chat-row">
-                    <span class="chat-last">Андозаи M ҳаст?</span>
-                    <span class="chat-badge">1</span>
-                </div>
-                <div class="chat-status">
-                    <i class="fas fa-circle"></i> Online
-                </div>
-            </div>
-        </div>
-
-        <!-- Чат 5 -->
-        <div class="chat-item" onclick="openChat('Нигора Аҳмадова', 'offline')">
-            <div class="chat-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="chat-info">
-                <div class="chat-row">
-                    <span class="chat-name">Нигора Аҳмадова</span>
-                    <span class="chat-time">Кеча</span>
-                </div>
-                <div class="chat-row">
-                    <span class="chat-last">Ранги сафед ҳаст?</span>
-                </div>
-                <div class="chat-status" style="color: var(--text-muted);">
-                    <i class="fas fa-circle"></i> 1 рӯз пеш
-                </div>
-            </div>
-        </div>
-
-        <!-- Чат 6 -->
-        <div class="chat-item" onclick="openChat('Баҳром Саидов', 'online')">
-            <div class="chat-avatar">
-                <i class="fas fa-user"></i>
-                <span class="online-indicator"></span>
-            </div>
-            <div class="chat-info">
-                <div class="chat-row">
-                    <span class="chat-name">Баҳром Саидов</span>
-                    <span class="chat-time">08:20</span>
-                </div>
-                <div class="chat-row">
-                    <span class="chat-last">Фармоиш омода аст?</span>
-                </div>
-                <div class="chat-status">
-                    <i class="fas fa-circle"></i> Online
-                </div>
-            </div>
+        <input type="text" class="message-input" id="messageInput" placeholder="Нависед..." onkeypress="checkEnter(event)">
+        <div class="send-btn" onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i>
         </div>
     </div>
 
-    <!-- Chat Detail Modal -->
-    <div class="chat-detail-modal" id="chatDetailModal">
-        <div class="chat-detail-header">
-            <div class="back-btn" onclick="closeChat()">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <div class="detail-avatar" id="chatAvatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="detail-info">
-                <div class="detail-name" id="chatName">Азиза Раҳимова</div>
-                <div class="detail-status" id="chatStatus">
-                    <i class="fas fa-circle"></i> Online
-                </div>
-            </div>
-            <div class="detail-actions">
-                <div class="detail-action" onclick="videoCall()">
-                    <i class="fas fa-video"></i>
-                </div>
-                <div class="detail-action" onclick="audioCall()">
-                    <i class="fas fa-phone"></i>
-                </div>
-                <div class="detail-action" onclick="chatSettings()">
-                    <i class="fas fa-ellipsis-v"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="messages-container" id="messagesContainer">
-            <div class="message-date">Имрӯз</div>
-            
-            <div class="message received">
-                <div class="message-content">
-                    Ассалому алейкум! Чанд сол аст ин маҳсулотро истифода мебаред?
-                </div>
-                <div class="message-time">
-                    12:30
-                </div>
-            </div>
-
-            <div class="message sent">
-                <div class="message-content">
-                    Салом! Ин маҳсулотро моҳу 2 сол истифода мекунем. Сифаташ хеле хуб аст.
-                </div>
-                <div class="message-time">
-                    12:32
-                    <span class="message-status"><i class="fas fa-check-double"></i></span>
-                </div>
-            </div>
-
-            <div class="message received">
-                <div class="message-content">
-                    Нархашро кам мекунед?
-                </div>
-                <div class="message-time">
-                    12:33
-                </div>
-            </div>
-
-            <div class="message sent">
-                <div class="message-content">
-                    Ҳоло 10% тахфиф аст. 135 с мешавад.
-                </div>
-                <div class="message-time">
-                    12:34
-                    <span class="message-status"><i class="fas fa-check-double"></i></span>
-                </div>
-            </div>
-
-            <div class="message received">
-                <div class="message-content">
-                    Ман як дона мегирам. Фармоиш чӣ тавр супорам?
-                </div>
-                <div class="message-time">
-                    12:35
-                </div>
-            </div>
-
-            <div class="message sent">
-                <div class="message-content">
-                    Суроғаи худро нависед, пас аз 2 соат мерасонем.
-                </div>
-                <div class="message-time">
-                    12:36
-                    <span class="message-status"><i class="fas fa-check-double"></i></span>
-                </div>
-            </div>
-
-            <div class="message received">
-                <div class="message-content">
-                    Душанбе, кӯчаи Айнӣ 45, хонаи 12
-                </div>
-                <div class="message-time">
-                    12:37
-                </div>
-            </div>
-
-            <div class="message sent">
-                <div class="message-content">
-                    Ташаккур! Фармоиш қабул шуд. Суроғаи шумо ба курьер фиристода шуд.
-                </div>
-                <div class="message-time">
-                    12:38
-                    <span class="message-status"><i class="fas fa-check-double"></i></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="message-input-container">
-            <div class="attach-btn" onclick="attachFile()">
-                <i class="fas fa-paperclip"></i>
-            </div>
-            <input type="text" class="message-input" placeholder="Нависед..." id="messageInput">
-            <div class="send-btn" onclick="sendMessage()">
-                <i class="fas fa-paper-plane"></i>
-            </div>
-        </div>
-    </div>
+    <input type="file" id="fileInput" style="display: none;" onchange="uploadFile()" accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt">
 
     <script>
-        let currentChat = null;
+        const _supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
 
-        // Гирфтани паём барои ивази тема
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatId = urlParams.get('chat');
+        const productId = urlParams.get('product');
+
+        let currentUserId = localStorage.getItem('userId');
+        let otherUserId = null;
+        let messages = [];
+        let chatData = null;
+        let productData = null;
+
         window.addEventListener('message', function(event) {
             if (event.data.type === 'theme') {
                 document.body.setAttribute('data-theme', event.data.theme);
             }
         });
 
-        // Кушодани чат
-        function openChat(name, status) {
-            document.getElementById('chatName').innerText = name;
-            const statusEl = document.getElementById('chatStatus');
-            if (status === 'online') {
-                statusEl.innerHTML = '<i class="fas fa-circle"></i> Online';
-                statusEl.style.color = 'var(--success)';
-            } else {
-                statusEl.innerHTML = '<i class="fas fa-circle"></i> Офлайн';
-                statusEl.style.color = 'var(--text-muted)';
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!currentUserId) {
+                window.location.href = 'index.html';
+                return;
             }
-            document.getElementById('chatDetailModal').classList.add('open');
-            currentChat = name;
+            await loadChat();
+            await loadMessages();
+            setupRealtime();
+            scrollToBottom();
+        });
+
+        async function loadChat() {
+            // Маълумоти чат
+            const { data: chat } = await _supabase
+                .from('chats')
+                .select('*')
+                .eq('id', chatId)
+                .single();
+            
+            chatData = chat;
+
+            // Гирифтани иштирокчии дигар
+            const { data: other } = await _supabase
+                .from('chat_participants')
+                .select('user_id')
+                .eq('chat_id', chatId)
+                .neq('user_id', currentUserId)
+                .single();
+
+            otherUserId = other.user_id;
+
+            // Маълумоти корбари дигар
+            const { data: user } = await _supabase
+                .from('user')
+                .select('full_name, shop_name')
+                .eq('id', otherUserId)
+                .single();
+
+            const name = user.full_name || user.shop_name || 'Корбар';
+            document.getElementById('userName').innerText = name;
+            document.getElementById('avatar').innerText = name.charAt(0);
+
+            // Агар productId дар URL бошад
+            if (productId) {
+                const { data: product } = await _supabase
+                    .from('products')
+                    .select('*')
+                    .eq('id', productId)
+                    .single();
+                
+                if (product) {
+                    productData = product;
+                    document.getElementById('productName').innerText = product.name;
+                    document.getElementById('productPrice').innerText = product.price + ' с';
+                    document.getElementById('productCard').classList.remove('hidden');
+                }
+            }
         }
 
-        // Пӯшидани чат
-        function closeChat() {
-            document.getElementById('chatDetailModal').classList.remove('open');
+        async function loadMessages() {
+            const { data } = await _supabase
+                .from('messages')
+                .select('*')
+                .eq('chat_id', chatId)
+                .order('created_at', { ascending: true });
+
+            messages = data || [];
+            displayMessages();
         }
 
-        // Фиристодани паём
+        function displayMessages() {
+            const container = document.getElementById('messages');
+            let html = '';
+            let lastDate = '';
+
+            messages.forEach(msg => {
+                const date = new Date(msg.created_at).toLocaleDateString();
+                if (date !== lastDate) {
+                    html += `<div style="text-align:center; font-size:11px; color:var(--text-muted); margin:10px 0;">${date}</div>`;
+                    lastDate = date;
+                }
+
+                const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const isMine = msg.user_id === currentUserId;
+
+                let contentHtml = '';
+                if (msg.file_url) {
+                    if (msg.file_type === 'image') {
+                        contentHtml = `<img src="${msg.file_url}" class="message-image" onclick="window.open('${msg.file_url}')">`;
+                    } else if (msg.file_type === 'audio') {
+                        contentHtml = `<audio controls class="message-audio"><source src="${msg.file_url}"></audio>`;
+                    } else {
+                        contentHtml = `<div class="message-file"><i class="fas fa-file"></i> <a href="${msg.file_url}" target="_blank">Файл</a></div>`;
+                    }
+                }
+                if (msg.content) {
+                    contentHtml += `<div class="message-content">${msg.content}</div>`;
+                }
+
+                html += `
+                    <div class="message ${isMine ? 'sent' : 'received'}">
+                        ${contentHtml}
+                        <div class="message-time">
+                            ${time}
+                            <span class="message-status">${isMine ? '<i class="fas fa-check"></i>' : ''}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            scrollToBottom();
+        }
+
+        function setupRealtime() {
+            _supabase
+                .channel(`chat:${chatId}`)
+                .on('postgres_changes', { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'messages',
+                    filter: `chat_id=eq.${chatId}`
+                }, payload => {
+                    messages.push(payload.new);
+                    displayMessages();
+                })
+                .subscribe();
+        }
+
         function sendMessage() {
             const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            if (message === '') return;
+            const text = input.value.trim();
+            if (!text) return;
 
-            const messages = document.getElementById('messagesContainer');
-            const now = new Date();
-            const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message sent';
-            messageDiv.innerHTML = `
-                <div class="message-content">${message}</div>
-                <div class="message-time">
-                    ${time}
-                    <span class="message-status"><i class="fas fa-check"></i></span>
-                </div>
-            `;
-            messages.appendChild(messageDiv);
+            sendToSupabase({ content: text });
             input.value = '';
-            messages.scrollTop = messages.scrollHeight;
         }
 
-        // Фиристодани паём бо Enter
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        async function sendToSupabase(messageData) {
+            const { error } = await _supabase
+                .from('messages')
+                .insert([{
+                    chat_id: chatId,
+                    user_id: currentUserId,
+                    content: messageData.content || null,
+                    file_url: messageData.file_url || null,
+                    file_type: messageData.file_type || null
+                }]);
+
+            if (error) {
+                alert('Хатогӣ: ' + error.message);
+            } else {
+                // Навсозии last_message дар chats
+                await _supabase
+                    .from('chats')
+                    .update({
+                        last_message: messageData.content || 'Файл',
+                        last_message_time: new Date()
+                    })
+                    .eq('id', chatId);
+            }
+        }
+
+        function checkEnter(e) {
             if (e.key === 'Enter') {
                 sendMessage();
             }
-        });
+        }
 
-        // Ҷустуҷӯи паёмҳо
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const chatItems = document.querySelectorAll('.chat-item');
-            
-            chatItems.forEach(item => {
-                const name = item.querySelector('.chat-name').innerText.toLowerCase();
-                const lastMsg = item.querySelector('.chat-last').innerText.toLowerCase();
-                
-                if (name.includes(searchTerm) || lastMsg.includes(searchTerm)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
+        function showAttachMenu() {
+            document.getElementById('fileInput').click();
+        }
+
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const fileType = file.type.split('/')[0];
+            const fileName = `${Date.now()}_${file.name}`;
+            const filePath = `chat/${chatId}/${fileName}`;
+
+            const { error } = await _supabase.storage
+                .from('chat-files')
+                .upload(filePath, file);
+
+            if (error) {
+                alert('Хатогӣ дар боркунии файл: ' + error.message);
+                return;
+            }
+
+            const { data: { publicUrl } } = _supabase.storage
+                .from('chat-files')
+                .getPublicUrl(filePath);
+
+            sendToSupabase({
+                file_url: publicUrl,
+                file_type: fileType
             });
-        });
 
-        // Функсияҳо барои тугмаҳо
-        function openSettings() {
-            window.parent.postMessage({ type: 'openSettings' }, '*');
+            fileInput.value = '';
         }
 
-        function openNewChat() {
-            alert('Чати нав дар ҳоли сохтан');
+        function goBack() {
+            window.location.href = 'chat.html';
         }
 
-        function videoCall() {
-            alert('Занги видеоӣ дар ҳоли сохтан');
+        function viewProduct() {
+            if (productData) {
+                window.location.href = `product.html?id=${productData.id}`;
+            }
         }
 
-        function audioCall() {
-            alert('Занги овозӣ дар ҳоли сохтан');
-        }
-
-        function chatSettings() {
-            alert('Танзимоти чат дар ҳоли сохтан');
-        }
-
-        function attachFile() {
-            alert('Фиристодани файл дар ҳоли сохтан');
+        function scrollToBottom() {
+            setTimeout(() => {
+                const container = document.getElementById('messages');
+                container.scrollTop = container.scrollHeight;
+            }, 100);
         }
     </script>
 </body>
