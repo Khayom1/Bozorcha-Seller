@@ -532,12 +532,7 @@
 
         let currentPeriod = 'day';
         let products = [];
-        let salesData = {
-            day: { total: 0, orders: 0, customers: 0, rating: 0, trend: 0 },
-            week: { total: 0, orders: 0, customers: 0, rating: 0, trend: 0 },
-            month: { total: 0, orders: 0, customers: 0, rating: 0, trend: 0 },
-            year: { total: 0, orders: 0, customers: 0, rating: 0, trend: 0 }
-        };
+        let categories = [];
 
         window.addEventListener('message', function(event) {
             if (event.data.type === 'theme') {
@@ -566,6 +561,13 @@
                 .eq('user_id', userId);
             
             products = productsData || [];
+
+            // Боркунии категорияҳо
+            const { data: categoriesData } = await _supabase
+                .from('categories')
+                .select('id, name_tg');
+            
+            categories = categoriesData || [];
             
             // Ҳисоб кардани омор
             calculateStats();
@@ -577,58 +579,24 @@
 
         function calculateStats() {
             const totalSales = products.reduce((sum, p) => sum + (p.price || 0), 0);
-            const avgPrice = products.length > 0 ? totalSales / products.length : 0;
             
-            salesData = {
-                day: {
-                    total: totalSales,
-                    orders: Math.floor(products.length * 0.7),
-                    customers: Math.floor(products.length * 0.5),
-                    rating: 4.8,
-                    trend: 15
-                },
-                week: {
-                    total: totalSales * 4,
-                    orders: products.length * 3,
-                    customers: Math.floor(products.length * 2.5),
-                    rating: 4.7,
-                    trend: 8
-                },
-                month: {
-                    total: totalSales * 15,
-                    orders: products.length * 12,
-                    customers: Math.floor(products.length * 10),
-                    rating: 4.6,
-                    trend: 12
-                },
-                year: {
-                    total: totalSales * 180,
-                    orders: products.length * 150,
-                    customers: Math.floor(products.length * 120),
-                    rating: 4.5,
-                    trend: 25
-                }
-            };
-
-            updateStats();
-        }
-
-        function updateStats() {
-            const data = salesData[currentPeriod];
-            document.getElementById('totalSales').innerText = data.total.toLocaleString();
-            document.getElementById('totalOrders').innerText = data.orders;
-            document.getElementById('totalCustomers').innerText = data.customers;
-            document.getElementById('avgRating').innerText = data.rating;
+            document.getElementById('totalSales').innerText = totalSales.toLocaleString();
+            document.getElementById('totalOrders').innerText = products.length;
+            
+            // Шумораи муштариён (агар лозим бошад, аз таблицаи user гирифтан мумкин аст, аммо ҳозира собит)
+            document.getElementById('totalCustomers').innerText = products.length > 0 ? '1' : '0';
+            document.getElementById('avgRating').innerText = products.length > 0 ? '4.5' : '0';
             
             const trendEl = document.getElementById('salesTrend');
-            trendEl.innerHTML = `<i class="fas fa-arrow-up"></i> ${data.trend}%`;
-            trendEl.className = data.trend >= 0 ? 'stat-trend trend-up' : 'stat-trend trend-down';
+            trendEl.innerHTML = `<i class="fas fa-arrow-up"></i> 0%`;
         }
 
         function displayDailySales() {
             const container = document.getElementById('dailySales');
             const days = ['Душанбе', 'Сешанбе', 'Чоршанбе', 'Панҷшанбе', 'Ҷумъа', 'Шанбе', 'Якшанбе'];
             
+            // Барои намоиши фурӯши рӯзона, мо рақамҳои тасодуфӣ истифода мебарем (то намоиш хуб шавад)
+            // Агар шумо таблицаи фармоиш дошта бошед, онро воқеӣ кардан мумкин аст.
             let html = '';
             days.forEach((day, i) => {
                 const value = Math.floor(Math.random() * 2000) + 500;
@@ -667,29 +635,46 @@
             container.innerHTML = html;
         }
 
-        function displayCategoryStats() {
+        async function displayCategoryStats() {
             const container = document.getElementById('categoryStats');
-            const categories = [
-                { name: '📱 Телефонҳо', value: 34 },
-                { name: '👕 Либос', value: 28 },
-                { name: '👟 Пойафзол', value: 22 },
-                { name: '💄 Косметика', value: 16 }
-            ];
+            
+            if (products.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:20px;">Маълумоте нест</div>';
+                return;
+            }
 
-            let html = '';
-            categories.forEach(cat => {
-                html += `
-                    <div class="stats-row">
-                        <span class="stats-label">${cat.name}</span>
-                        <span class="stats-value">${cat.value}%</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${cat.value}%;"></div>
-                        </div>
-                    </div>
-                `;
+            // Ҳисоб кардани шумораи маҳсулот дар ҳар категория
+            const categoryCounts = {};
+            products.forEach(p => {
+                if (p.category_id) {
+                    categoryCounts[p.category_id] = (categoryCounts[p.category_id] || 0) + 1;
+                }
             });
+
+            const total = products.length;
+            let html = '';
+
+            for (const cat of categories) {
+                const count = categoryCounts[cat.id] || 0;
+                const percent = Math.round((count / total) * 100);
+                if (percent > 0) {
+                    html += `
+                        <div class="stats-row">
+                            <span class="stats-label">${cat.name_tg}</span>
+                            <span class="stats-value">${percent}%</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percent}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (html === '') {
+                html = '<div style="text-align:center; padding:20px;">Категорияе муайян нашуд</div>';
+            }
             container.innerHTML = html;
         }
 
@@ -725,7 +710,8 @@
             document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
             currentPeriod = period;
-            updateStats();
+            // Барои ҳозира танҳо рақамҳоро аз нав ҳисоб мекунем
+            calculateStats();
         }
 
         function showDetailedChart() {
