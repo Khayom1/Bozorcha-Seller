@@ -6,6 +6,7 @@
     <title>Рақами телефон - Bozorcha</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
+        /* Стилҳо (ҳамин тавр мемонанд) */
         :root {
             --bg: #FFFFFF;
             --surface: #F8F9FA;
@@ -33,7 +34,6 @@
             min-height: 100vh; padding: 20px;
         }
 
-        /* --- LOGO ANIMATION (WIND EFFECT) --- */
         .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
         @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
 
@@ -61,7 +61,6 @@
             font-size: 18px; position: relative; overflow: hidden;
         }
 
-        /* THEME ICON ANIMATION */
         .theme-icon-box { position: relative; width: 20px; height: 20px; }
         .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
         [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
@@ -148,11 +147,11 @@
     </div>
 
     <script>
-        // Танзимоти Supabase
+        // Танзимоти Supabase (танҳо бо _supabase)
         const _supabase = supabase.createClient(
-  'https://seagtlaujnnhoyitgsdd.supabase.co',
-  'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-);
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
 
         const i18n = {
             tj: { flag: "🇹🇯", title: "Рақами телефон", sub: "Ба ин рақам рамзи тасдиқ фиристода мешавад", btn: "Давом", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", err: "Рақам нодуруст аст", loading: "Дар ҳоли фиристодан..." },
@@ -163,7 +162,6 @@
         const phoneInput = document.getElementById('phone');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Оғоз ва хондани забону темаи қаблӣ
         window.onload = () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             const savedLang = localStorage.getItem('lang') || 'tj';
@@ -171,14 +169,12 @@
             setLang(savedLang);
         };
 
-        // Тема
         document.getElementById('themeBtn').onclick = () => {
             const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
         };
 
-        // Забон
         document.getElementById('langBtn').onclick = (e) => { e.stopPropagation(); document.getElementById('langMenu').classList.toggle('show'); };
         window.onclick = () => document.getElementById('langMenu').classList.remove('show');
 
@@ -193,7 +189,6 @@
             localStorage.setItem('lang', lang);
         }
 
-        // Формат ва тафтиши рақам
         phoneInput.addEventListener('input', (e) => {
             let digits = e.target.value.replace(/\D/g, '');
             if (digits.length > 9) digits = digits.slice(0, 9);
@@ -208,59 +203,39 @@
             document.getElementById('error').classList.toggle('show', digits.length > 0 && !isValid);
         });
 
-        // Фиристодани OTP
+        // Фиристодани маълумот ба Supabase (ба ҷои signInWithOtp)
         submitBtn.onclick = async () => {
             if (submitBtn.classList.contains('disabled')) return;
 
             const lang = localStorage.getItem('lang') || 'tj';
-            const fullPhone = '+992' + phoneInput.value.replace(/\D/g, '');
+            const digits = phoneInput.value.replace(/\D/g, '');
+            const fullPhone = '+992' + digits;
 
             submitBtn.innerText = i18n[lang].loading;
             submitBtn.classList.add('disabled');
 
             try {
-                const { error } = await _supabase.auth.signInWithOtp({ phone: fullPhone });
+                // Ба ҷои Auth, мустақиман ба таблицаи users ворид мекунем
+                const { data, error } = await _supabase
+                    .from('users')
+                    .insert([{ phone: fullPhone }]);
+
                 if (error) {
+                    console.error(error);
                     alert("Хатогӣ: " + error.message);
                     submitBtn.innerText = i18n[lang].btn;
                     submitBtn.classList.remove('disabled');
                 } else {
                     localStorage.setItem('userPhone', fullPhone);
-                    window.location.href = 'step4.html';
+                    window.location.href = 'step4.html'; // ба саҳифаи навбатӣ
                 }
             } catch (err) {
-                alert("Хатои шабака");
+                console.error(err);
+                alert("Хатои шабака. Лутфан танзимоти CORS-ро дар Supabase санҷед (Site URL бояд ба домени шумо мувофиқ бошад).");
                 submitBtn.innerText = i18n[lang].btn;
                 submitBtn.classList.remove('disabled');
             }
         };
-    </script>
-    <script>
-    // Санҷиши оддӣ
-    console.log('Supabase URL:', 'https://seagtlaujnnhoyitgsdd.supabase.co');
-    console.log('Anon Key:', 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP');
-    
-    document.getElementById('submitBtn').addEventListener('click', async function(e) {
-        e.preventDefault();
-        alert('Тугма пахш шуд!');
-        
-        const phone = document.getElementById('phone').value.replace(/\s/g, '');
-        const fullPhone = '+992' + phone;
-        
-        try {
-            const { data, error } = await supabase
-                .from('users')
-                .insert([{ phone: fullPhone }]);
-                
-            if (error) {
-                alert('Хатогӣ: ' + error.message);
-            } else {
-                alert('Маълумот сабт шуд!');
-            }
-        } catch (err) {
-            alert('Хатогӣ: ' + err.message);
-        }
-    });
     </script>
 </body>
 </html>
