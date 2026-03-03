@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Профил - Bozorcha</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -50,6 +50,7 @@
             padding-bottom: 20px;
         }
 
+        /* Header */
         .page-header {
             display: flex;
             align-items: center;
@@ -95,6 +96,7 @@
             transform: scale(1.05);
         }
 
+        /* Profile Header */
         .profile-header {
             background: var(--gradient);
             padding: 40px 20px 30px;
@@ -107,215 +109,236 @@
 
         .profile-avatar {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: white;
-            margin: 0 auto 20px;
+            margin: 0 auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--accent);
-            font-size: 48px;
+            font-size: 40px;
             border: 4px solid rgba(255,255,255,0.3);
             box-shadow: var(--shadow-lg);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .profile-avatar:hover {
-            transform: scale(1.05);
-            border-color: white;
-        }
-
-        .edit-avatar {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--bg-card);
-            border: 2px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-md);
-        }
-
-        .edit-avatar:hover {
-            background: var(--accent);
-            color: white;
         }
 
         .profile-name {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             margin-bottom: 5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .profile-bio {
-            font-size: 16px;
-            opacity: 0.9;
-            max-width: 300px;
-            margin: 0 auto 15px;
-        }
-
-        .profile-location {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            font-size: 14px;
-            opacity: 0.8;
-            margin-bottom: 20px;
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            background: rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            max-width: 300px;
-            margin: 0 auto;
-        }
-
-        .profile-stat {
-            text-align: center;
-        }
-
-        .profile-stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            display: block;
-        }
-
-        .profile-stat-label {
+        .profile-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
             font-size: 12px;
-            opacity: 0.8;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            margin-bottom: 15px;
         }
 
-        .stats-grid {
+        .profile-status.verified { background: #10b981; color: white; }
+        .profile-status.pending { background: #f59e0b; color: white; }
+        .profile-status.unverified { background: #ef4444; color: white; }
+
+        /* Action Buttons */
+        .action-buttons {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
             padding: 20px 16px;
         }
 
-        .stat-card {
+        .action-btn {
             background: var(--bg-card);
-            border-radius: 16px;
-            padding: 12px 8px;
-            text-align: center;
             border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
 
-        .stat-card:hover {
+        .action-btn:hover {
             transform: translateY(-2px);
             border-color: var(--accent);
             box-shadow: var(--shadow-md);
         }
 
-        .stat-icon {
-            font-size: 20px;
+        .action-icon {
+            font-size: 24px;
             color: var(--accent);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            display: block;
+        .action-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
         }
 
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-light);
+        /* Shop Selector */
+        .shop-selector {
+            padding: 0 16px;
+            margin-bottom: 20px;
         }
 
-        .profile-menu {
+        .shop-selector-btn {
+            width: 100%;
             background: var(--bg-card);
-            border-radius: 24px;
-            margin: 0 16px 20px;
-            padding: 8px;
             border: 1px solid var(--border);
-        }
-
-        .menu-item {
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 16px;
-            border-radius: 16px;
+            justify-content: space-between;
             cursor: pointer;
             transition: all 0.3s ease;
-            border-bottom: 1px solid var(--border);
         }
 
-        .menu-item:last-child {
-            border-bottom: none;
+        .shop-selector-btn:hover {
+            border-color: var(--accent);
         }
 
-        .menu-item:hover {
-            background: var(--accent-light);
-            transform: translateX(4px);
+        .shop-selector-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .menu-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
+        .shop-selector-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             background: var(--accent-light);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--accent);
-            font-size: 22px;
-            transition: all 0.3s ease;
+            font-size: 20px;
         }
 
-        .menu-item:hover .menu-icon {
-            background: var(--accent);
-            color: white;
+        .shop-selector-info {
+            text-align: left;
         }
 
-        .menu-content {
-            flex: 1;
-        }
-
-        .menu-title {
+        .shop-selector-name {
             font-weight: 600;
-            font-size: 16px;
             margin-bottom: 4px;
         }
 
-        .menu-subtitle {
-            font-size: 13px;
+        .shop-selector-count {
+            font-size: 12px;
             color: var(--text-light);
         }
 
-        .menu-arrow {
+        .shop-selector-arrow {
             color: var(--text-light);
-            font-size: 14px;
+            transition: transform 0.3s;
         }
 
-        .info-card {
+        .shop-selector-arrow.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Shops List */
+        .shops-list {
             background: var(--bg-card);
-            border-radius: 20px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin: 10px 16px 20px;
+            padding: 8px;
+            display: none;
+        }
+
+        .shops-list.show {
+            display: block;
+        }
+
+        .shop-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 12px;
+        }
+
+        .shop-item:last-child {
+            border-bottom: none;
+        }
+
+        .shop-item:hover {
+            background: var(--accent-light);
+        }
+
+        .shop-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .shop-item-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        .shop-item-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .shop-item-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .shop-item-status.verified { background: var(--success); }
+        .shop-item-status.pending { background: var(--warning); }
+        .shop-item-status.unverified { background: var(--danger); }
+
+        .add-shop-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--bg);
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .add-shop-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Profile Info */
+        .info-section {
+            background: var(--bg-card);
+            border-radius: 24px;
             padding: 20px;
             margin: 0 16px 20px;
             border: 1px solid var(--border);
         }
 
-        .info-card-title {
+        .info-title {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 16px;
@@ -347,237 +370,47 @@
             font-weight: 500;
         }
 
-        .info-edit {
-            color: var(--accent);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-
-        .info-edit:hover {
-            background: var(--accent-light);
-        }
-
-        .payment-methods {
-            margin: 0 16px 20px;
-        }
-
-        .payment-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 10px;
+        .phone-item {
             display: flex;
             align-items: center;
-            gap: 16px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            padding: 8px 0;
         }
 
-        .payment-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        .payment-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: var(--accent-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 24px;
-        }
-
-        .payment-info {
+        .phone-number {
             flex: 1;
         }
 
-        .payment-name {
-            font-weight: 600;
-            margin-bottom: 4px;
+        .phone-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: var(--accent-light);
+            color: var(--accent);
+            margin-left: 8px;
         }
 
-        .payment-desc {
-            font-size: 12px;
+        .phone-extra-toggle {
             color: var(--text-light);
-        }
-
-        .payment-status {
-            color: var(--success);
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .delivery-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 0 16px 20px;
-        }
-
-        .delivery-item {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
             cursor: pointer;
+            transition: transform 0.3s;
+            margin-left: 8px;
         }
 
-        .delivery-item:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            background: var(--accent-light);
+        .phone-extra-toggle.rotated {
+            transform: rotate(180deg);
         }
 
-        .delivery-icon {
-            font-size: 28px;
-            color: var(--accent);
-            margin-bottom: 8px;
+        .extra-phones {
+            display: none;
+            padding-left: 20px;
+            margin-top: 5px;
         }
 
-        .delivery-name {
-            font-weight: 600;
-            margin-bottom: 4px;
+        .extra-phones.show {
+            display: block;
         }
 
-        .delivery-price {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        .delivery-badge {
-            display: inline-block;
-            margin-top: 6px;
-            padding: 4px 8px;
-            border-radius: 20px;
-            background: var(--success);
-            color: white;
-            font-size: 10px;
-            font-weight: 600;
-        }
-
-        .security-section {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 0 16px 20px;
-            border: 1px solid var(--border);
-        }
-
-        .security-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .security-item:last-child {
-            border-bottom: none;
-        }
-
-        .security-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .security-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--accent-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-        }
-
-        .security-text {
-            font-weight: 500;
-        }
-
-        .security-status {
-            color: var(--success);
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .security-status.warning {
-            color: var(--warning);
-        }
-
-        .security-action {
-            color: var(--accent);
-            cursor: pointer;
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-
-        .security-action:hover {
-            background: var(--accent-light);
-            border-color: var(--accent);
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--border);
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--accent);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
+        /* Logout Button */
         .logout-btn {
             display: flex;
             align-items: center;
@@ -600,304 +433,102 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(239,68,68,0.3);
         }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal.open {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: 30px;
-            padding: 25px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: scaleIn 0.3s ease;
-        }
-
-        @keyframes scaleIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .modal-header i {
-            cursor: pointer;
-            font-size: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: var(--text);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .form-input:focus {
-            border-color: var(--accent);
-            outline: none;
-            box-shadow: 0 0 0 3px var(--accent-light);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: var(--gradient);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255,152,0,0.4);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-
-        .btn-outline:hover {
-            background: var(--accent-light);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .delivery-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
-<body>
+<body data-theme="light">
+    <!-- Header -->
     <div class="page-header">
         <div class="page-title">Профил</div>
         <div class="header-actions">
-            <div class="header-btn" onclick="openSettings()">
-                <i class="fas fa-sliders-h"></i>
+            <div class="header-btn" onclick="window.parent.postMessage({ type: 'openSettings' }, '*')">
+                <i class="fas fa-cog"></i>
             </div>
         </div>
     </div>
 
-    <div id="profileData">
-        <div class="profile-header">
-            <div class="profile-avatar" onclick="changeAvatar()">
-                <i class="fas fa-store"></i>
-                <div class="edit-avatar">
-                    <i class="fas fa-camera"></i>
-                </div>
-            </div>
-            <div class="profile-name" id="profileName"></div>
-            <div class="profile-bio" id="profileBio"></div>
-            <div class="profile-location" id="profileLocation"></div>
-            <div class="profile-stats">
-                <div class="profile-stat">
-                    <span class="profile-stat-value" id="statProducts">0</span>
-                    <span class="profile-stat-label">Маҳсулот</span>
-                </div>
-                <div class="profile-stat">
-                    <span class="profile-stat-value" id="statCustomers">0</span>
-                    <span class="profile-stat-label">Муштарӣ</span>
-                </div>
-                <div class="profile-stat">
-                    <span class="profile-stat-value" id="statRating">0</span>
-                    <span class="profile-stat-label">Рейтинг</span>
-                </div>
-            </div>
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="fas fa-store"></i>
         </div>
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-status" id="profileStatus"></div>
+    </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
-                <span class="stat-value" id="totalSales">0</span>
-                <span class="stat-label">Фурӯш</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-                <span class="stat-value" id="totalOrders">0</span>
-                <span class="stat-label">Фармоиш</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-star"></i></div>
-                <span class="stat-value" id="avgRating">0</span>
-                <span class="stat-label">Рейтинг</span>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                <span class="stat-value" id="memberSince">0</span>
-                <span class="stat-label">Дар бозор</span>
-            </div>
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <div class="action-btn" id="editProfileBtn">
+            <div class="action-icon"><i class="fas fa-pen"></i></div>
+            <div class="action-label" id="editLabel">Таҳрири профил</div>
         </div>
-
-        <div class="profile-menu">
-            <div class="menu-item" onclick="openSection('personal')">
-                <div class="menu-icon"><i class="fas fa-user"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Маълумоти шахсӣ</div>
-                    <div class="menu-subtitle">Ном, суроға, телефон, почта</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </div>
-            <div class="menu-item" onclick="openSection('shop')">
-                <div class="menu-icon"><i class="fas fa-store-alt"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Маълумоти мағоза</div>
-                    <div class="menu-subtitle">Номи мағоза, категория, тавсиф</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </div>
-            <div class="menu-item" onclick="openSection('payment')">
-                <div class="menu-icon"><i class="fas fa-credit-card"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Пардохт ва ҳисоб</div>
-                    <div class="menu-subtitle">Корти бонкӣ, таърихи пардохт</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </div>
-            <div class="menu-item" onclick="openSection('delivery')">
-                <div class="menu-icon"><i class="fas fa-truck"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Усули интиқол</div>
-                    <div class="menu-subtitle">Почта, курьер, супоридани дастӣ</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </div>
-            <div class="menu-item" onclick="openSection('security')">
-                <div class="menu-icon"><i class="fas fa-lock"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Махфият ва амният</div>
-                    <div class="menu-subtitle">Рамз, тасдиқи дуқабата</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </div>
+        <div class="action-btn" id="otherShopsBtn">
+            <div class="action-icon"><i class="fas fa-store-alt"></i></div>
+            <div class="action-label" id="otherLabel">Дигар мағоза</div>
         </div>
-
-        <div class="info-card" id="shopInfo">
-            <div class="info-card-title">
-                <i class="fas fa-store"></i>
-                <span>Маълумоти мағоза</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Номи мағоза</span>
-                <span class="info-value" id="shopName"></span>
-                <span class="info-edit" onclick="editShopName()"><i class="fas fa-pen"></i> Тағйир</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Телефон</span>
-                <span class="info-value" id="shopPhone"></span>
-                <span class="info-edit" onclick="editPhone()"><i class="fas fa-pen"></i></span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Почта</span>
-                <span class="info-value" id="shopEmail"></span>
-                <span class="info-edit" onclick="editEmail()"><i class="fas fa-pen"></i></span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Суроға</span>
-                <span class="info-value" id="shopAddress"></span>
-                <span class="info-edit" onclick="editAddress()"><i class="fas fa-pen"></i></span>
-            </div>
-        </div>
-
-        <div class="payment-methods">
-            <div class="info-card-title" style="margin:0 16px 16px;">
-                <i class="fas fa-credit-card"></i>
-                <span>Усули пардохт</span>
-            </div>
-            <div class="payment-card">
-                <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
-                <div class="payment-info">
-                    <div class="payment-name">Корти банкӣ</div>
-                    <div class="payment-desc" id="cardInfo"></div>
-                </div>
-                <div class="payment-status" id="cardStatus"></div>
-            </div>
-        </div>
-
-        <div class="security-section">
-            <div class="security-item">
-                <div class="security-info">
-                    <div class="security-icon"><i class="fas fa-shield-alt"></i></div>
-                    <div class="security-text">Тасдиқи дуқабата</div>
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="twoFactor">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="security-item">
-                <div class="security-info">
-                    <div class="security-icon"><i class="fas fa-key"></i></div>
-                    <div class="security-text">Иваз кардани рамз</div>
-                </div>
-                <span class="security-action" onclick="changePassword()">Иваз</span>
-            </div>
-        </div>
-
-        <div class="logout-btn" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Баромадан аз ҳисоб</span>
+        <div class="action-btn" id="sendShopBtn">
+            <div class="action-icon"><i class="fas fa-share-alt"></i></div>
+            <div class="action-label" id="sendLabel">Фиристодан</div>
         </div>
     </div>
 
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span id="modalTitle">Тағйири маълумот</span>
-                <i class="fas fa-times" onclick="closeModal()"></i>
+    <!-- Shop Selector (for mobile) -->
+    <div class="shop-selector">
+        <div class="shop-selector-btn" id="shopSelectorBtn">
+            <div class="shop-selector-left">
+                <div class="shop-selector-icon"><i class="fas fa-store"></i></div>
+                <div class="shop-selector-info">
+                    <div class="shop-selector-name" id="currentShopName">Мағозаи ман</div>
+                    <div class="shop-selector-count" id="shopCount">0 мағоза</div>
+                </div>
             </div>
-            <form onsubmit="saveChanges(); return false;">
-                <div id="modalBody"></div>
-            </form>
+            <i class="fas fa-chevron-down shop-selector-arrow" id="shopSelectorArrow"></i>
         </div>
+    </div>
+
+    <!-- Shops List (hidden by default) -->
+    <div class="shops-list" id="shopsList"></div>
+
+    <!-- Profile Info -->
+    <div class="info-section">
+        <div class="info-title"><i class="fas fa-user"></i> Маълумоти шахсӣ</div>
+        <div class="info-row">
+            <span class="info-label">Ном</span>
+            <span class="info-value" id="displayName"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Рақам</span>
+            <span class="info-value" id="displayPhone"></span>
+        </div>
+        <div class="info-row" id="extraPhonesRow">
+            <span class="info-label">Рақамҳои иловагӣ</span>
+            <div class="info-value">
+                <div id="extraPhonesList"></div>
+                <i class="fas fa-chevron-down phone-extra-toggle" id="extraPhonesToggle"></i>
+            </div>
+        </div>
+        <div class="extra-phones" id="extraPhonesContainer"></div>
+        <div class="info-row">
+            <span class="info-label">Почта</span>
+            <span class="info-value" id="displayEmail"></span>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <div class="info-title"><i class="fas fa-store"></i> Маълумоти мағоза</div>
+        <div class="info-row">
+            <span class="info-label">Ном</span>
+            <span class="info-value" id="displayShopName"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Суроға</span>
+            <span class="info-value" id="displayAddress"></span>
+        </div>
+    </div>
+
+    <!-- Logout Button -->
+    <div class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Баромадан аз ҳисоб</span>
     </div>
 
     <script>
@@ -907,7 +538,72 @@
         );
 
         let currentUser = null;
-        let currentSection = null;
+        let currentShop = null;
+        let userShops = [];
+        let extraPhonesVisible = false;
+
+        let currentLang = localStorage.getItem('lang') || 'tj';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
+        document.body.setAttribute('data-theme', currentTheme);
+
+        const i18n = {
+            tj: {
+                edit: "Таҳрири профил",
+                other: "Дигар мағоза",
+                send: "Фиристодан",
+                logout: "Баромадан аз ҳисоб",
+                confirmLogout: "Оё шумо боварӣ доред, ки мехоҳед бароед?",
+                shops: "мағоза",
+                noShops: "мағоз нест",
+                verified: "Тасдиқшуда",
+                pending: "Дар ҳоли тасдиқ",
+                unverified: "Тасдиқнашуда",
+                extraPhones: "Рақамҳои иловагӣ",
+                main: "Асосӣ",
+                extra: "Иловагӣ"
+            },
+            ru: {
+                edit: "Редактировать профиль",
+                other: "Другие магазины",
+                send: "Поделиться",
+                logout: "Выйти",
+                confirmLogout: "Вы уверены, что хотите выйти?",
+                shops: "магазинов",
+                noShops: "нет магазинов",
+                verified: "Подтвержден",
+                pending: "На проверке",
+                unverified: "Не подтвержден",
+                extraPhones: "Доп. номера",
+                main: "Основной",
+                extra: "Доп."
+            },
+            en: {
+                edit: "Edit profile",
+                other: "Other shops",
+                send: "Share",
+                logout: "Logout",
+                confirmLogout: "Are you sure you want to logout?",
+                shops: "shops",
+                noShops: "no shops",
+                verified: "Verified",
+                pending: "Pending",
+                unverified: "Unverified",
+                extraPhones: "Extra phones",
+                main: "Main",
+                extra: "Extra"
+            }
+        };
+
+        applyLang(currentLang);
+
+        function applyLang(lang) {
+            const d = i18n[lang];
+            document.getElementById('editLabel').innerText = d.edit;
+            document.getElementById('otherLabel').innerText = d.other;
+            document.getElementById('sendLabel').innerText = d.send;
+            document.querySelector('.logout-btn span').innerText = d.logout;
+        }
 
         window.addEventListener('message', function(event) {
             if (event.data.type === 'theme') {
@@ -916,17 +612,18 @@
         });
 
         document.addEventListener('DOMContentLoaded', async () => {
-            await loadProfile();
-            await loadStats();
-        });
-
-        async function loadProfile() {
             const userId = localStorage.getItem('userId');
             if (!userId) {
                 window.location.href = 'index.html';
                 return;
             }
+            await loadUserData();
+            await loadUserShops();
+        });
 
+        async function loadUserData() {
+            const userId = localStorage.getItem('userId');
+            
             const { data, error } = await _supabase
                 .from('user')
                 .select('*')
@@ -934,157 +631,181 @@
                 .single();
 
             if (error) {
-                console.error('Error loading profile:', error);
+                console.error('Error loading user:', error);
                 return;
             }
 
             currentUser = data;
 
             // Маълумоти асосӣ
-            const fullName = data.full_name || 'Мағозаи ман';
-            document.getElementById('profileName').innerText = fullName;
-            document.getElementById('profileBio').innerText = 'Либос, телефон, пойафзол';
-            document.getElementById('profileLocation').innerHTML = '<i class="fas fa-map-marker-alt"></i> ' + (data.shop_address || 'Душанбе, Тоҷикистон');
-            
-            document.getElementById('shopName').innerText = data.shop_name || 'Мағозаи ман';
-            document.getElementById('shopPhone').innerText = data.phone || '+992 000 000 000';
-            document.getElementById('shopEmail').innerText = data.email || 'info@magozai.tj';
-            document.getElementById('shopAddress').innerText = data.shop_address || 'Душанбе, к. Айнӣ 45';
+            document.getElementById('profileName').innerText = data.full_name || 'Корбар';
+            document.getElementById('displayName').innerText = data.full_name || '-';
+            document.getElementById('displayPhone').innerText = data.phone || '-';
+            document.getElementById('displayEmail').innerText = data.email || '-';
+            document.getElementById('displayShopName').innerText = data.shop_name || '-';
+
+            // Суроға
+            if (data.shop_address) {
+                try {
+                    const address = JSON.parse(data.shop_address);
+                    document.getElementById('displayAddress').innerText = address.full_address || '-';
+                } catch {
+                    document.getElementById('displayAddress').innerText = data.shop_address || '-';
+                }
+            } else {
+                document.getElementById('displayAddress').innerText = '-';
+            }
+
+            // Статус
+            const statusEl = document.getElementById('profileStatus');
+            if (data.moderation_status === 'approved') {
+                statusEl.innerText = i18n[currentLang].verified;
+                statusEl.className = 'profile-status verified';
+            } else if (data.moderation_status === 'pending') {
+                statusEl.innerText = i18n[currentLang].pending;
+                statusEl.className = 'profile-status pending';
+            } else {
+                statusEl.innerText = i18n[currentLang].unverified;
+                statusEl.className = 'profile-status unverified';
+            }
+
+            // Рақамҳои иловагӣ
+            if (data.extra_phones && data.extra_phones.length > 0) {
+                displayExtraPhones(data.extra_phones);
+            } else {
+                document.getElementById('extraPhonesRow').style.display = 'none';
+            }
         }
 
-        async function loadStats() {
+        async function loadUserShops() {
             const userId = localStorage.getItem('userId');
             
-            // Шумораи маҳсулот
-            const { count: productsCount } = await _supabase
-                .from('products')
-                .select('*', { count: 'exact', head: true })
+            const { data, error } = await _supabase
+                .from('shops')
+                .select('*')
                 .eq('user_id', userId);
 
-            document.getElementById('statProducts').innerText = productsCount || 0;
-            document.getElementById('totalSales').innerText = '0'; // Барои ҳозир
-
-            // Баъдтар метавонед омори воқеиро илова кунед
-            document.getElementById('statCustomers').innerText = '0';
-            document.getElementById('statRating').innerText = '0';
-            document.getElementById('totalOrders').innerText = '0';
-            document.getElementById('avgRating').innerText = '0';
-            document.getElementById('memberSince').innerText = '2 сол';
-        }
-
-        function openSettings() {
-            window.parent.postMessage({ type: 'openSettings' }, '*');
-        }
-
-        function openSection(section) {
-            currentSection = section;
-            const modal = document.getElementById('editModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalBody = document.getElementById('modalBody');
-            
-            let fields = [];
-            if (section === 'personal') {
-                modalTitle.innerText = 'Маълумоти шахсӣ';
-                fields = [
-                    { label: 'Ном', type: 'text', name: 'name', value: currentUser?.full_name?.split(' ')[0] || '' },
-                    { label: 'Насаб', type: 'text', name: 'surname', value: currentUser?.full_name?.split(' ')[1] || '' },
-                    { label: 'Телефон', type: 'tel', name: 'phone', value: currentUser?.phone || '' },
-                    { label: 'Почта', type: 'email', name: 'email', value: currentUser?.email || '' }
-                ];
-            } else if (section === 'shop') {
-                modalTitle.innerText = 'Маълумоти мағоза';
-                fields = [
-                    { label: 'Номи мағоза', type: 'text', name: 'shopName', value: currentUser?.shop_name || '' },
-                    { label: 'Суроға', type: 'text', name: 'shopAddress', value: currentUser?.shop_address || '' }
-                ];
-            }
-
-            let html = '';
-            fields.forEach(field => {
-                html += `
-                    <div class="form-group">
-                        <label class="form-label">${field.label}</label>
-                        <input type="${field.type}" class="form-input" name="${field.name}" value="${field.value}">
-                    </div>
-                `;
-            });
-            html += `<button type="submit" class="btn">Сабт кардан</button>`;
-            modalBody.innerHTML = html;
-            modal.classList.add('open');
-        }
-
-        function closeModal() {
-            document.getElementById('editModal').classList.remove('open');
-        }
-
-        async function saveChanges() {
-            const form = document.querySelector('#modalBody');
-            const inputs = form.querySelectorAll('input');
-            const updates = {};
-
-            inputs.forEach(input => {
-                updates[input.name] = input.value;
-            });
-
-            if (currentSection === 'personal') {
-                updates.full_name = `${updates.name || ''} ${updates.surname || ''}`.trim();
-                delete updates.name;
-                delete updates.surname;
-            } else if (currentSection === 'shop') {
-                updates.shop_name = updates.shopName;
-                updates.shop_address = updates.shopAddress;
-                delete updates.shopName;
-                delete updates.shopAddress;
-            }
-
-            const userId = localStorage.getItem('userId');
-            const { error } = await _supabase
-                .from('user')
-                .update(updates)
-                .eq('id', userId);
-
             if (error) {
-                alert('Хатогӣ: ' + error.message);
-            } else {
-                closeModal();
-                await loadProfile();
+                console.error('Error loading shops:', error);
+                return;
             }
+
+            userShops = data || [];
+            
+            // Агар мағозаи ҷорӣ дар localStorage нигоҳ дошта нашуда бошад, аввалинро гиред
+            let currentShopId = localStorage.getItem('currentShopId');
+            if (!currentShopId && userShops.length > 0) {
+                currentShopId = userShops[0].id;
+                localStorage.setItem('currentShopId', currentShopId);
+            }
+
+            if (currentShopId) {
+                currentShop = userShops.find(s => s.id === currentShopId) || userShops[0];
+            }
+
+            updateShopSelector();
         }
 
-        function changeAvatar() {
-            alert('Иваз кардани акс дар ҳоли сохтан');
+        function updateShopSelector() {
+            const count = userShops.length;
+            const shopCountEl = document.getElementById('shopCount');
+            shopCountEl.innerText = count === 0 ? i18n[currentLang].noShops : `${count} ${i18n[currentLang].shops}`;
+
+            if (currentShop) {
+                document.getElementById('currentShopName').innerText = currentShop.shop_name || 'Мағозаи ман';
+            }
+
+            // Сохтани рӯйхати мағозаҳо
+            const listEl = document.getElementById('shopsList');
+            listEl.innerHTML = '';
+
+            userShops.forEach(shop => {
+                const statusClass = shop.moderation_status === 'approved' ? 'verified' : 
+                                   shop.moderation_status === 'pending' ? 'pending' : 'unverified';
+                
+                const div = document.createElement('div');
+                div.className = `shop-item ${shop.id === currentShop?.id ? 'active' : ''}`;
+                div.onclick = () => switchShop(shop.id);
+                div.innerHTML = `
+                    <div class="shop-item-avatar"><i class="fas fa-store"></i></div>
+                    <div class="shop-item-name">${shop.shop_name || 'Мағозаи ман'}</div>
+                    <span class="shop-item-status ${statusClass}"></span>
+                `;
+                listEl.appendChild(div);
+            });
+
+            // Тугмаи иловаи мағоза
+            const addBtn = document.createElement('div');
+            addBtn.className = 'add-shop-btn';
+            addBtn.onclick = addNewShop;
+            addBtn.innerHTML = '<i class="fas fa-plus"></i> Иловаи мағозаи нав';
+            listEl.appendChild(addBtn);
         }
 
-        function editShopName() {
-            openSection('shop');
+        function displayExtraPhones(phones) {
+            const container = document.getElementById('extraPhonesContainer');
+            container.innerHTML = '';
+            
+            phones.forEach((phone, index) => {
+                const div = document.createElement('div');
+                div.className = 'phone-item';
+                div.innerHTML = `
+                    <span class="phone-number">${phone}</span>
+                    <span class="phone-badge">${i18n[currentLang].extra}</span>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('extraPhonesList').innerHTML = 
+                `<span>${phones.length} ${i18n[currentLang].extraPhones}</span>`;
         }
 
-        function editPhone() {
-            openSection('personal');
+        // Toggle extra phones
+        document.getElementById('extraPhonesToggle').onclick = () => {
+            extraPhonesVisible = !extraPhonesVisible;
+            document.getElementById('extraPhonesContainer').classList.toggle('show', extraPhonesVisible);
+            document.getElementById('extraPhonesToggle').classList.toggle('rotated', extraPhonesVisible);
+        };
+
+        // Toggle shops list
+        document.getElementById('shopSelectorBtn').onclick = () => {
+            const list = document.getElementById('shopsList');
+            const arrow = document.getElementById('shopSelectorArrow');
+            list.classList.toggle('show');
+            arrow.classList.toggle('rotated');
+        };
+
+        function switchShop(shopId) {
+            localStorage.setItem('currentShopId', shopId);
+            window.location.reload();
         }
 
-        function editEmail() {
-            openSection('personal');
+        function addNewShop() {
+            window.location.href = 'choose-method.html?mode=newshop';
         }
 
-        function editAddress() {
-            openSection('shop');
-        }
+        // Action buttons
+        document.getElementById('editProfileBtn').onclick = () => {
+            window.location.href = 'profile-edit.html';
+        };
 
-        function changePassword() {
-            alert('Иваз кардани рамз дар ҳоли сохтан');
-        }
+        document.getElementById('otherShopsBtn').onclick = () => {
+            document.getElementById('shopSelectorBtn').click();
+        };
 
-        function logout() {
-            if (confirm('Шумо боварӣ доред, ки мехоҳед бароед?')) {
+        document.getElementById('sendShopBtn').onclick = () => {
+            if (currentShop) {
+                window.location.href = `send-shope.html?id=${currentShop.id}`;
+            } else {
+                alert('Ягон мағоза интихоб нашудааст');
+            }
+        };
+
+        // Logout
+        document.getElementById('logoutBtn').onclick = () => {
+            if (confirm(i18n[currentLang].confirmLogout)) {
                 localStorage.clear();
                 window.location.href = 'index.html';
-            }
-        }
-
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                closeModal();
             }
         };
     </script>
