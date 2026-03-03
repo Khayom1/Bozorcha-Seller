@@ -108,7 +108,6 @@
         }
 
         .profile-avatar {
-            position: relative;
             width: 100px;
             height: 100px;
             border-radius: 50%;
@@ -121,6 +120,12 @@
             font-size: 40px;
             border: 4px solid rgba(255,255,255,0.3);
             box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .profile-name {
@@ -129,210 +134,78 @@
             margin-bottom: 5px;
         }
 
+        .profile-username {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        .profile-username i {
+            font-size: 14px;
+            margin-right: 4px;
+        }
+
         .profile-status {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 30px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(5px);
-            margin-bottom: 15px;
         }
-
-        .profile-status.verified { background: #10b981; color: white; }
-        .profile-status.pending { background: #f59e0b; color: white; }
-        .profile-status.unverified { background: #ef4444; color: white; }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 20px 16px;
+        .profile-status.pending {
+            background: var(--warning);
+            color: white;
         }
-
-        .action-btn {
+        .profile-status.verified {
+            background: var(--success);
+            color: white;
+        }
+        .profile-status.waiting {
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent);
-            box-shadow: var(--shadow-md);
-        }
-
-        .action-icon {
-            font-size: 24px;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .action-label {
-            font-size: 13px;
-            font-weight: 600;
             color: var(--text);
         }
 
-        /* Shop Selector */
-        .shop-selector {
-            padding: 0 16px;
-            margin-bottom: 20px;
-        }
-
-        .shop-selector-btn {
-            width: 100%;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+        /* Warning Card */
+        .warning-card {
+            background: #fff3e0;
+            border: 1px solid var(--warning);
             border-radius: 16px;
-            padding: 16px;
+            padding: 20px;
+            margin: 20px 16px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            gap: 15px;
         }
-
-        .shop-selector-btn:hover {
-            border-color: var(--accent);
-        }
-
-        .shop-selector-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .shop-selector-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--accent-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 20px;
-        }
-
-        .shop-selector-info {
-            text-align: left;
-        }
-
-        .shop-selector-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .shop-selector-count {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        .shop-selector-arrow {
-            color: var(--text-light);
-            transition: transform 0.3s;
-        }
-
-        .shop-selector-arrow.rotated {
-            transform: rotate(180deg);
-        }
-
-        /* Shops List */
-        .shops-list {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            margin: 10px 16px 20px;
-            padding: 8px;
-            display: none;
-        }
-
-        .shops-list.show {
-            display: block;
-        }
-
-        .shop-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 12px;
-        }
-
-        .shop-item:last-child {
-            border-bottom: none;
-        }
-
-        .shop-item:hover {
-            background: var(--accent-light);
-        }
-
-        .shop-item.active {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        .shop-item-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--accent-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 20px;
-        }
-
-        .shop-item-name {
-            flex: 1;
-            font-weight: 500;
-        }
-
-        .shop-item-status {
-            width: 10px;
-            height: 10px;
+        .warning-icon {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            margin-right: 8px;
+            background: var(--warning);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
         }
-        .shop-item-status.verified { background: var(--success); }
-        .shop-item-status.pending { background: var(--warning); }
-        .shop-item-status.unverified { background: var(--danger); }
-
-        .add-shop-btn {
-            width: 100%;
-            padding: 16px;
-            background: var(--bg);
-            border: 2px dashed var(--border);
-            border-radius: 16px;
+        .warning-text {
+            flex: 1;
+        }
+        .warning-text h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--warning);
+        }
+        .warning-text p {
             font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 8px;
+            color: var(--text);
         }
 
-        .add-shop-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* Profile Info */
-        .info-section {
+        /* Info Card */
+        .info-card {
             background: var(--bg-card);
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 20px;
             margin: 0 16px 20px;
             border: 1px solid var(--border);
@@ -354,7 +227,6 @@
             padding: 12px 0;
             border-bottom: 1px solid var(--border);
         }
-
         .info-row:last-child {
             border-bottom: none;
         }
@@ -370,24 +242,16 @@
             font-weight: 500;
         }
 
-        .phone-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 0;
-        }
-
-        .phone-number {
-            flex: 1;
-        }
-
-        .phone-badge {
-            font-size: 11px;
-            padding: 2px 8px;
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
             border-radius: 20px;
-            background: var(--accent-light);
-            color: var(--accent);
+            font-size: 11px;
+            font-weight: 600;
             margin-left: 8px;
         }
+        .badge.main { background: var(--accent-light); color: var(--accent); }
+        .badge.extra { background: var(--bg); color: var(--text-light); border: 1px solid var(--border); }
 
         .phone-extra-toggle {
             color: var(--text-light);
@@ -395,7 +259,6 @@
             transition: transform 0.3s;
             margin-left: 8px;
         }
-
         .phone-extra-toggle.rotated {
             transform: rotate(180deg);
         }
@@ -403,14 +266,64 @@
         .extra-phones {
             display: none;
             padding-left: 20px;
-            margin-top: 5px;
+            margin-top: 10px;
         }
-
         .extra-phones.show {
             display: block;
         }
+        .extra-phone-item {
+            padding: 8px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        /* Logout Button */
+        .address-link {
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .address-link:hover {
+            text-decoration: underline;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 20px 16px;
+        }
+
+        .action-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .action-btn .icon {
+            font-size: 24px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .action-btn .label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
         .logout-btn {
             display: flex;
             align-items: center;
@@ -426,17 +339,13 @@
             justify-content: center;
             font-weight: 600;
         }
-
         .logout-btn:hover {
             background: var(--danger);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239,68,68,0.3);
         }
     </style>
 </head>
 <body data-theme="light">
-    <!-- Header -->
     <div class="page-header">
         <div class="page-title">Профил</div>
         <div class="header-actions">
@@ -446,89 +355,95 @@
         </div>
     </div>
 
-    <!-- Profile Header -->
-    <div class="profile-header">
-        <div class="profile-avatar">
-            <i class="fas fa-store"></i>
+    <div id="profileContent">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="profile-name" id="profileName">Мағозаи ман</div>
+            <div class="profile-username" id="profileUsername"><i class="fas fa-at"></i> username</div>
+            <div class="profile-status" id="profileStatus">Дар ҳоли интизор</div>
         </div>
-        <div class="profile-name" id="profileName"></div>
-        <div class="profile-status" id="profileStatus"></div>
-    </div>
 
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-        <div class="action-btn" id="editProfileBtn">
-            <div class="action-icon"><i class="fas fa-pen"></i></div>
-            <div class="action-label" id="editLabel">Таҳрири профил</div>
+        <!-- Warning Card (барои корбарони тасдиқнашуда) -->
+        <div class="warning-card" id="warningCard" style="display: none;">
+            <div class="warning-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="warning-text">
+                <h3>Маълумот дар ҳоли санҷиш</h3>
+                <p>Маълумоти шумо барои санҷиш фиристода шуд. Пас аз тасдиқ, шумо метавонед маҳсулот илова кунед.</p>
+            </div>
         </div>
-        <div class="action-btn" id="otherShopsBtn">
-            <div class="action-icon"><i class="fas fa-store-alt"></i></div>
-            <div class="action-label" id="otherLabel">Дигар мағоза</div>
-        </div>
-        <div class="action-btn" id="sendShopBtn">
-            <div class="action-icon"><i class="fas fa-share-alt"></i></div>
-            <div class="action-label" id="sendLabel">Фиристодан</div>
-        </div>
-    </div>
 
-    <!-- Shop Selector (for mobile) -->
-    <div class="shop-selector">
-        <div class="shop-selector-btn" id="shopSelectorBtn">
-            <div class="shop-selector-left">
-                <div class="shop-selector-icon"><i class="fas fa-store"></i></div>
-                <div class="shop-selector-info">
-                    <div class="shop-selector-name" id="currentShopName">Мағозаи ман</div>
-                    <div class="shop-selector-count" id="shopCount">0 мағоза</div>
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <div class="action-btn" id="verifyBtn">
+                <div class="icon"><i class="fas fa-check-circle"></i></div>
+                <div class="label" id="verifyLabel">Тасдиқи ҳисоб</div>
+            </div>
+            <div class="action-btn" id="editBtn" style="display: none;">
+                <div class="icon"><i class="fas fa-pen"></i></div>
+                <div class="label">Таҳрири профил</div>
+            </div>
+            <div class="action-btn" id="otherShopsBtn">
+                <div class="icon"><i class="fas fa-store-alt"></i></div>
+                <div class="label">Дигар мағозаҳо</div>
+            </div>
+            <div class="action-btn" id="sendShopBtn">
+                <div class="icon"><i class="fas fa-share-alt"></i></div>
+                <div class="label">Фиристодан</div>
+            </div>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="info-card">
+            <div class="info-title"><i class="fas fa-user"></i> Маълумоти шахсӣ</div>
+            <div class="info-row">
+                <span class="info-label">Ном</span>
+                <span class="info-value" id="displayName">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Рақам</span>
+                <span class="info-value" id="displayPhone">—</span>
+            </div>
+            <div class="info-row" id="extraPhonesRow">
+                <span class="info-label">Рақамҳои иловагӣ</span>
+                <div class="info-value">
+                    <span id="extraPhonesCount">0</span>
+                    <i class="fas fa-chevron-down phone-extra-toggle" id="extraPhonesToggle"></i>
                 </div>
             </div>
-            <i class="fas fa-chevron-down shop-selector-arrow" id="shopSelectorArrow"></i>
-        </div>
-    </div>
-
-    <!-- Shops List (hidden by default) -->
-    <div class="shops-list" id="shopsList"></div>
-
-    <!-- Profile Info -->
-    <div class="info-section">
-        <div class="info-title"><i class="fas fa-user"></i> Маълумоти шахсӣ</div>
-        <div class="info-row">
-            <span class="info-label">Ном</span>
-            <span class="info-value" id="displayName"></span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Рақам</span>
-            <span class="info-value" id="displayPhone"></span>
-        </div>
-        <div class="info-row" id="extraPhonesRow">
-            <span class="info-label">Рақамҳои иловагӣ</span>
-            <div class="info-value">
-                <div id="extraPhonesList"></div>
-                <i class="fas fa-chevron-down phone-extra-toggle" id="extraPhonesToggle"></i>
+            <div class="extra-phones" id="extraPhonesList"></div>
+            <div class="info-row">
+                <span class="info-label">Почта</span>
+                <span class="info-value" id="displayEmail">—</span>
             </div>
         </div>
-        <div class="extra-phones" id="extraPhonesContainer"></div>
-        <div class="info-row">
-            <span class="info-label">Почта</span>
-            <span class="info-value" id="displayEmail"></span>
-        </div>
-    </div>
 
-    <div class="info-section">
-        <div class="info-title"><i class="fas fa-store"></i> Маълумоти мағоза</div>
-        <div class="info-row">
-            <span class="info-label">Ном</span>
-            <span class="info-value" id="displayShopName"></span>
+        <!-- Shop Info -->
+        <div class="info-card">
+            <div class="info-title"><i class="fas fa-store"></i> Маълумоти мағоза</div>
+            <div class="info-row">
+                <span class="info-label">Ном</span>
+                <span class="info-value" id="displayShopName">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Тавсиф</span>
+                <span class="info-value" id="displayBio">—</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Суроға</span>
+                <span class="info-value" id="displayAddress">—</span>
+            </div>
         </div>
-        <div class="info-row">
-            <span class="info-label">Суроға</span>
-            <span class="info-value" id="displayAddress"></span>
-        </div>
-    </div>
 
-    <!-- Logout Button -->
-    <div class="logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Баромадан аз ҳисоб</span>
+        <!-- Logout Button -->
+        <div class="logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Баромадан аз ҳисоб</span>
+        </div>
     </div>
 
     <script>
@@ -539,9 +454,7 @@
 
         let currentUser = null;
         let currentShop = null;
-        let userShops = [];
         let extraPhonesVisible = false;
-
         let currentLang = localStorage.getItem('lang') || 'tj';
         let currentTheme = localStorage.getItem('theme') || 'light';
 
@@ -549,61 +462,48 @@
 
         const i18n = {
             tj: {
+                pending: "Дар ҳоли интизор",
+                verified: "Тасдиқшуда",
+                waiting: "Интизори тасдиқ",
+                verify: "Тасдиқи ҳисоб",
                 edit: "Таҳрири профил",
-                other: "Дигар мағоза",
+                other: "Дигар мағозаҳо",
                 send: "Фиристодан",
                 logout: "Баромадан аз ҳисоб",
                 confirmLogout: "Оё шумо боварӣ доред, ки мехоҳед бароед?",
-                shops: "мағоза",
-                noShops: "мағоз нест",
-                verified: "Тасдиқшуда",
-                pending: "Дар ҳоли тасдиқ",
-                unverified: "Тасдиқнашуда",
-                extraPhones: "Рақамҳои иловагӣ",
+                extraPhones: "рақами иловагӣ",
                 main: "Асосӣ",
                 extra: "Иловагӣ"
             },
             ru: {
-                edit: "Редактировать профиль",
+                pending: "На проверке",
+                verified: "Подтвержден",
+                waiting: "Ожидание",
+                verify: "Подтвердить аккаунт",
+                edit: "Редактировать",
                 other: "Другие магазины",
                 send: "Поделиться",
                 logout: "Выйти",
                 confirmLogout: "Вы уверены, что хотите выйти?",
-                shops: "магазинов",
-                noShops: "нет магазинов",
-                verified: "Подтвержден",
-                pending: "На проверке",
-                unverified: "Не подтвержден",
-                extraPhones: "Доп. номера",
+                extraPhones: "доп. номера",
                 main: "Основной",
                 extra: "Доп."
             },
             en: {
+                pending: "Pending",
+                verified: "Verified",
+                waiting: "Waiting",
+                verify: "Verify account",
                 edit: "Edit profile",
                 other: "Other shops",
                 send: "Share",
                 logout: "Logout",
                 confirmLogout: "Are you sure you want to logout?",
-                shops: "shops",
-                noShops: "no shops",
-                verified: "Verified",
-                pending: "Pending",
-                unverified: "Unverified",
-                extraPhones: "Extra phones",
+                extraPhones: "extra phones",
                 main: "Main",
                 extra: "Extra"
             }
         };
-
-        applyLang(currentLang);
-
-        function applyLang(lang) {
-            const d = i18n[lang];
-            document.getElementById('editLabel').innerText = d.edit;
-            document.getElementById('otherLabel').innerText = d.other;
-            document.getElementById('sendLabel').innerText = d.send;
-            document.querySelector('.logout-btn span').innerText = d.logout;
-        }
 
         window.addEventListener('message', function(event) {
             if (event.data.type === 'theme') {
@@ -617,180 +517,149 @@
                 window.location.href = 'index.html';
                 return;
             }
-            await loadUserData();
-            await loadUserShops();
+            await loadData();
         });
 
-        async function loadUserData() {
+        async function loadData() {
             const userId = localStorage.getItem('userId');
             
-            const { data, error } = await _supabase
+            // Load user data
+            const { data: user, error: userError } = await _supabase
                 .from('user')
                 .select('*')
                 .eq('id', userId)
                 .single();
 
-            if (error) {
-                console.error('Error loading user:', error);
+            if (userError) {
+                console.error('Error loading user:', userError);
                 return;
             }
 
-            currentUser = data;
+            currentUser = user;
 
-            // Маълумоти асосӣ
-            document.getElementById('profileName').innerText = data.full_name || 'Корбар';
-            document.getElementById('displayName').innerText = data.full_name || '-';
-            document.getElementById('displayPhone').innerText = data.phone || '-';
-            document.getElementById('displayEmail').innerText = data.email || '-';
-            document.getElementById('displayShopName').innerText = data.shop_name || '-';
-
-            // Суроға
-            if (data.shop_address) {
-                try {
-                    const address = JSON.parse(data.shop_address);
-                    document.getElementById('displayAddress').innerText = address.full_address || '-';
-                } catch {
-                    document.getElementById('displayAddress').innerText = data.shop_address || '-';
-                }
-            } else {
-                document.getElementById('displayAddress').innerText = '-';
-            }
-
-            // Статус
-            const statusEl = document.getElementById('profileStatus');
-            if (data.moderation_status === 'approved') {
-                statusEl.innerText = i18n[currentLang].verified;
-                statusEl.className = 'profile-status verified';
-            } else if (data.moderation_status === 'pending') {
-                statusEl.innerText = i18n[currentLang].pending;
-                statusEl.className = 'profile-status pending';
-            } else {
-                statusEl.innerText = i18n[currentLang].unverified;
-                statusEl.className = 'profile-status unverified';
-            }
-
-            // Рақамҳои иловагӣ
-            if (data.extra_phones && data.extra_phones.length > 0) {
-                displayExtraPhones(data.extra_phones);
-            } else {
-                document.getElementById('extraPhonesRow').style.display = 'none';
-            }
-        }
-
-        async function loadUserShops() {
-            const userId = localStorage.getItem('userId');
-            
-            const { data, error } = await _supabase
+            // Load shop data
+            const { data: shops, error: shopsError } = await _supabase
                 .from('shops')
                 .select('*')
                 .eq('user_id', userId);
 
-            if (error) {
-                console.error('Error loading shops:', error);
+            if (shopsError) {
+                console.error('Error loading shops:', shopsError);
                 return;
             }
 
-            userShops = data || [];
-            
-            // Агар мағозаи ҷорӣ дар localStorage нигоҳ дошта нашуда бошад, аввалинро гиред
-            let currentShopId = localStorage.getItem('currentShopId');
-            if (!currentShopId && userShops.length > 0) {
-                currentShopId = userShops[0].id;
-                localStorage.setItem('currentShopId', currentShopId);
+            if (shops && shops.length > 0) {
+                currentShop = shops[0];
             }
 
-            if (currentShopId) {
-                currentShop = userShops.find(s => s.id === currentShopId) || userShops[0];
-            }
-
-            updateShopSelector();
+            updateUI();
         }
 
-        function updateShopSelector() {
-            const count = userShops.length;
-            const shopCountEl = document.getElementById('shopCount');
-            shopCountEl.innerText = count === 0 ? i18n[currentLang].noShops : `${count} ${i18n[currentLang].shops}`;
-
+        function updateUI() {
+            // Profile header
             if (currentShop) {
-                document.getElementById('currentShopName').innerText = currentShop.shop_name || 'Мағозаи ман';
+                document.getElementById('profileName').innerText = currentShop.shop_name || 'Мағозаи ман';
+                document.getElementById('profileUsername').innerHTML = `<i class="fas fa-at"></i> ${currentShop.username || 'username'}`;
             }
 
-            // Сохтани рӯйхати мағозаҳо
-            const listEl = document.getElementById('shopsList');
-            listEl.innerHTML = '';
+            // Profile photo
+            if (currentUser?.profile_photo) {
+                document.getElementById('profileAvatar').innerHTML = 
+                    `<img src="${currentUser.profile_photo}" alt="avatar">`;
+            }
 
-            userShops.forEach(shop => {
-                const statusClass = shop.moderation_status === 'approved' ? 'verified' : 
-                                   shop.moderation_status === 'pending' ? 'pending' : 'unverified';
-                
-                const div = document.createElement('div');
-                div.className = `shop-item ${shop.id === currentShop?.id ? 'active' : ''}`;
-                div.onclick = () => switchShop(shop.id);
-                div.innerHTML = `
-                    <div class="shop-item-avatar"><i class="fas fa-store"></i></div>
-                    <div class="shop-item-name">${shop.shop_name || 'Мағозаи ман'}</div>
-                    <span class="shop-item-status ${statusClass}"></span>
-                `;
-                listEl.appendChild(div);
-            });
+            // Status
+            const statusEl = document.getElementById('profileStatus');
+            const warningCard = document.getElementById('warningCard');
+            const verifyBtn = document.getElementById('verifyBtn');
+            const editBtn = document.getElementById('editBtn');
 
-            // Тугмаи иловаи мағоза
-            const addBtn = document.createElement('div');
-            addBtn.className = 'add-shop-btn';
-            addBtn.onclick = addNewShop;
-            addBtn.innerHTML = '<i class="fas fa-plus"></i> Иловаи мағозаи нав';
-            listEl.appendChild(addBtn);
-        }
+            if (currentUser?.moderation_status === 'approved') {
+                statusEl.innerText = i18n[currentLang].verified;
+                statusEl.className = 'profile-status verified';
+                warningCard.style.display = 'none';
+                verifyBtn.style.display = 'none';
+                editBtn.style.display = 'block';
+            } else if (currentUser?.moderation_status === 'pending') {
+                statusEl.innerText = i18n[currentLang].pending;
+                statusEl.className = 'profile-status pending';
+                warningCard.style.display = 'flex';
+                verifyBtn.style.display = 'none';
+                editBtn.style.display = 'none';
+            } else {
+                statusEl.innerText = i18n[currentLang].waiting;
+                statusEl.className = 'profile-status waiting';
+                warningCard.style.display = 'none';
+                verifyBtn.style.display = 'block';
+                editBtn.style.display = 'none';
+            }
 
-        function displayExtraPhones(phones) {
-            const container = document.getElementById('extraPhonesContainer');
-            container.innerHTML = '';
+            // Personal info
+            document.getElementById('displayName').innerText = currentUser?.full_name || '—';
+            document.getElementById('displayPhone').innerText = currentUser?.phone || '—';
+            document.getElementById('displayEmail').innerText = currentUser?.email || '—';
+
+            // Extra phones
+            const extraPhones = currentUser?.extra_phones || [];
+            const extraPhonesCount = document.getElementById('extraPhonesCount');
+            const extraPhonesList = document.getElementById('extraPhonesList');
             
-            phones.forEach((phone, index) => {
-                const div = document.createElement('div');
-                div.className = 'phone-item';
-                div.innerHTML = `
-                    <span class="phone-number">${phone}</span>
-                    <span class="phone-badge">${i18n[currentLang].extra}</span>
-                `;
-                container.appendChild(div);
-            });
+            if (extraPhones.length > 0) {
+                extraPhonesCount.innerText = `${extraPhones.length} ${i18n[currentLang].extraPhones}`;
+                extraPhonesList.innerHTML = extraPhones.map(phone => 
+                    `<div class="extra-phone-item"><i class="fas fa-phone"></i> ${phone}</div>`
+                ).join('');
+            } else {
+                document.getElementById('extraPhonesRow').style.display = 'none';
+            }
 
-            document.getElementById('extraPhonesList').innerHTML = 
-                `<span>${phones.length} ${i18n[currentLang].extraPhones}</span>`;
+            // Shop info
+            if (currentShop) {
+                document.getElementById('displayShopName').innerText = currentShop.shop_name || '—';
+                document.getElementById('displayBio').innerText = currentShop.bio || '—';
+                
+                // Address
+                if (currentShop.shop_address) {
+                    try {
+                        const addr = JSON.parse(currentShop.shop_address);
+                        const addressText = addr.full_address || addr.google_address || '—';
+                        const coords = addr.coordinates;
+                        
+                        if (coords) {
+                            document.getElementById('displayAddress').innerHTML = 
+                                `<a href="https://maps.google.com/?q=${coords.lat},${coords.lng}" target="_blank" class="address-link">
+                                    <i class="fas fa-map-marker-alt"></i> ${addressText}
+                                </a>`;
+                        } else {
+                            document.getElementById('displayAddress').innerHTML = addressText;
+                        }
+                    } catch {
+                        document.getElementById('displayAddress').innerHTML = currentShop.shop_address;
+                    }
+                } else {
+                    document.getElementById('displayAddress').innerHTML = '—';
+                }
+            }
         }
 
         // Toggle extra phones
         document.getElementById('extraPhonesToggle').onclick = () => {
             extraPhonesVisible = !extraPhonesVisible;
-            document.getElementById('extraPhonesContainer').classList.toggle('show', extraPhonesVisible);
+            document.getElementById('extraPhonesList').classList.toggle('show', extraPhonesVisible);
             document.getElementById('extraPhonesToggle').classList.toggle('rotated', extraPhonesVisible);
         };
 
-        // Toggle shops list
-        document.getElementById('shopSelectorBtn').onclick = () => {
-            const list = document.getElementById('shopsList');
-            const arrow = document.getElementById('shopSelectorArrow');
-            list.classList.toggle('show');
-            arrow.classList.toggle('rotated');
+        // Action buttons
+        document.getElementById('verifyBtn').onclick = () => {
+            window.location.href = 'verify-profile.html';
         };
 
-        function switchShop(shopId) {
-            localStorage.setItem('currentShopId', shopId);
-            window.location.reload();
-        }
-
-        function addNewShop() {
-            window.location.href = 'choose-method.html?mode=newshop';
-        }
-
-        // Action buttons
-        document.getElementById('editProfileBtn').onclick = () => {
-            window.location.href = 'verify-profile.html;
+        document.getElementById('editBtn').onclick = () => {
+            window.location.href = 'profile-edit.html';
         };
 
         document.getElementById('otherShopsBtn').onclick = () => {
-            document.getElementById('shopSelectorBtn').click();
+            window.location.href = 'shops-list.html';
         };
 
         document.getElementById('sendShopBtn').onclick = () => {
