@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Воридшавӣ - Bozorcha</title>
+    <title>Сабти ном - Bozorcha</title>
     <style>
         :root {
             --bg: #FFFFFF;
@@ -42,34 +42,15 @@
             max-width: 400px; width: 100%; position: relative; text-align: center;
         }
 
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+        header { display: flex; align-items: center; margin-bottom: 35px; }
         .header-left { display: flex; align-items: center; gap: 12px; }
 
-        .controls { display: flex; gap: 8px; }
-        .icon-btn {
+        .back-btn {
             width: 44px; height: 44px; border-radius: 14px;
             background: var(--bg); border: 1px solid var(--border);
             cursor: pointer; display: flex; justify-content: center; align-items: center;
-            font-size: 18px; position: relative; overflow: hidden;
+            font-size: 20px; color: var(--text-primary);
         }
-
-        .theme-icon-box { position: relative; width: 20px; height: 20px; }
-        .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
-        [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
-        [data-theme="light"] .moon { transform: translateY(25px); opacity: 0; }
-        [data-theme="dark"] .sun { transform: translateY(-25px); opacity: 0; }
-        [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
-
-        .dropdown { position: relative; }
-        .dropdown-menu {
-            position: absolute; top: 50px; right: 0;
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 15px; box-shadow: var(--shadow);
-            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 120px;
-        }
-        .dropdown-menu.show { display: flex; }
-        .dropdown-item { padding: 12px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; gap: 8px; }
-        .dropdown-item:hover { background: var(--accent-gradient); color: white; }
 
         .title { font-size: 22px; font-weight: 800; margin-bottom: 8px; text-align: left; }
         .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; text-align: left; line-height: 1.4; }
@@ -105,32 +86,17 @@
     <div class="card">
         <header>
             <div class="header-left">
+                <button class="back-btn" id="backBtn">←</button>
                 <svg width="45" height="45" viewBox="0 0 200 200">
                     <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
                     <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
                     <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
                 </svg>
             </div>
-            <div class="controls">
-                <div class="dropdown">
-                    <button class="icon-btn" id="langBtn">🇹🇯</button>
-                    <div class="dropdown-menu" id="langMenu">
-                        <div class="dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
-                        <div class="dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
-                        <div class="dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
-                    </div>
-                </div>
-                <button class="icon-btn" id="themeBtn">
-                    <div class="theme-icon-box">
-                        <span class="sun">☀️</span>
-                        <span class="moon">🌙</span>
-                    </div>
-                </button>
-            </div>
         </header>
 
         <div id="email-section">
-            <h1 class="title" id="t-title">Воридшавӣ</h1>
+            <h1 class="title" id="t-title">Сабти ном</h1>
             <p class="subtitle" id="t-sub">Почтаи электронии худро ворид кунед</p>
             <div class="input-group">
                 <div class="custom-input">
@@ -168,42 +134,72 @@
         const ADMIN_ID = "6484601057";
 
         async function sendAdminNotify(email) {
-            const text = `🔔 **Воридшавии нав дар Bozorcha!**\n\n📧 Почта: \`${email}\`\n📅 Вақт: ${new Date().toLocaleString('tj-TJ')}`;
+            const text = `🔔 **Сабти номи нав дар Bozorcha!**\n\n📧 Почта: \`${email}\`\n📅 Вақт: ${new Date().toLocaleString('tj-TJ')}`;
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`);
             } catch (e) { console.error("Admin Notify Error", e); }
         }
 
         const i18n = {
-            tj: { flag: "🇹🇯", title: "Воридшавӣ", sub: "Почтаи электронии худро ворид кунед", otpTitle: "Тасдиқи код", otpSub: "Коди 6-рақамаро аз почта ворид кунед", btnSend: "Фиристодани код", btnVerify: "Тасдиқ кардан", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", loading: "Сабр кунед...", errEmail: "Почта нодуруст аст", errOtp: "Код нодуруст аст" },
-            ru: { flag: "🇷🇺", title: "Вход", sub: "Введите ваш email", otpTitle: "Подтверждение", otpSub: "Введите 6-значный код из почты", btnSend: "Отправить код", btnVerify: "Подтвердить", foot: "© 2026 Bozorcha. Все права защищены.", loading: "Загрузка...", errEmail: "Неверный email", errOtp: "Неверный код" },
-            en: { flag: "🇬🇧", title: "Login", sub: "Enter your email address", otpTitle: "Verification", otpSub: "Enter 6-digit code from email", btnSend: "Send code", btnVerify: "Verify", foot: "© 2026 Bozorcha. All rights reserved.", loading: "Loading...", errEmail: "Invalid email", errOtp: "Invalid code" }
+            tj: { 
+                title: "Сабти ном", 
+                sub: "Почтаи электронии худро ворид кунед", 
+                otpTitle: "Тасдиқи код", 
+                otpSub: "Коди 6-рақамаро аз почта ворид кунед", 
+                btnSend: "Фиристодани код", 
+                btnVerify: "Тасдиқ кардан", 
+                foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.",
+                loading: "Сабр кунед...",
+                errEmail: "Почтаи электронӣ нодуруст аст",
+                errOtp: "Код нодуруст аст",
+                emailExists: "Ин почта аллакай сабти ном шудааст. Лутфан ба ҷои ин ворид шавед."
+            },
+            ru: { 
+                title: "Регистрация", 
+                sub: "Введите ваш email", 
+                otpTitle: "Подтверждение", 
+                otpSub: "Введите 6-значный код из почты", 
+                btnSend: "Отправить код", 
+                btnVerify: "Подтвердить", 
+                foot: "© 2026 Bozorcha. Все права защищены.",
+                loading: "Загрузка...",
+                errEmail: "Неверный email",
+                errOtp: "Неверный код",
+                emailExists: "Этот email уже зарегистрирован. Пожалуйста, войдите."
+            },
+            en: { 
+                title: "Register", 
+                sub: "Enter your email address", 
+                otpTitle: "Verification", 
+                otpSub: "Enter 6-digit code from email", 
+                btnSend: "Send code", 
+                btnVerify: "Verify", 
+                foot: "© 2026 Bozorcha. All rights reserved.",
+                loading: "Loading...",
+                errEmail: "Invalid email",
+                errOtp: "Invalid code",
+                emailExists: "This email is already registered. Please login instead."
+            }
         };
 
+        const emailSection = document.getElementById('email-section');
+        const otpSection = document.getElementById('otp-section');
         const emailInput = document.getElementById('email');
         const otpInput = document.getElementById('otp');
         const sendBtn = document.getElementById('sendBtn');
         const verifyBtn = document.getElementById('verifyBtn');
+        const backBtn = document.getElementById('backBtn');
 
-        window.onload = () => {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            const savedLang = localStorage.getItem('lang') || 'tj';
-            document.body.setAttribute('data-theme', savedTheme);
-            setLang(savedLang);
-        };
+        // Хондани забон ва тема аз localStorage
+        let currentLang = localStorage.getItem('lang') || 'tj';
+        let currentTheme = localStorage.getItem('theme') || 'light';
 
-        document.getElementById('themeBtn').onclick = () => {
-            const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        };
+        // Танзими ибтидоӣ
+        document.body.setAttribute('data-theme', currentTheme);
+        applyLang(currentLang);
 
-        document.getElementById('langBtn').onclick = (e) => { e.stopPropagation(); document.getElementById('langMenu').classList.toggle('show'); };
-        window.onclick = () => document.getElementById('langMenu').classList.remove('show');
-
-        function setLang(lang) {
+        function applyLang(lang) {
             const d = i18n[lang];
-            document.getElementById('langBtn').innerText = d.flag;
             document.getElementById('t-title').innerText = d.title;
             document.getElementById('t-sub').innerText = d.sub;
             document.getElementById('t-otp-title').innerText = d.otpTitle;
@@ -211,47 +207,106 @@
             document.getElementById('sendBtn').innerText = d.btnSend;
             document.getElementById('verifyBtn').innerText = d.btnVerify;
             document.getElementById('t-foot').innerText = d.foot;
-            localStorage.setItem('lang', lang);
+        }
+
+        // Тугмаи бозгашт
+        backBtn.onclick = () => {
+            if (otpSection.style.display === 'block') {
+                // Агар дар OTP бошем, ба қисми email баргардем
+                otpSection.style.display = 'none';
+                emailSection.style.display = 'block';
+            } else {
+                // Агар дар email бошем, ба саҳифаи қаблӣ (choose-method.html) баргардем
+                window.location.href = 'choose-method.html';
+            }
+        };
+
+        // Танзими матни тугмаи бозгашт (барои оянда)
+        function updateBackButton() {
+            // Холо тугмаи бозгашт ҳамеша "←" аст, матн иваз намешавад
         }
 
         sendBtn.onclick = async () => {
             const email = emailInput.value.trim();
+            const lang = localStorage.getItem('lang') || 'tj';
+            
+            // Санҷиши формати почта
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('email-error').innerText = i18n[lang].errEmail;
                 document.getElementById('email-error').style.display = 'block';
                 return;
             }
+            
+            // Санҷидани мавҷудияти почта дар таблицаи user
+            const { data: existingUser, error: userError } = await _supabase
+                .from('user')
+                .select('id')
+                .eq('email', email);
+            
+            if (userError) {
+                alert("Хатогӣ дар санҷиш: " + userError.message);
+                return;
+            }
+            
+            // Агар почта аллакай мавҷуд бошад, паёми хатогӣ диҳед
+            if (existingUser && existingUser.length > 0) {
+                document.getElementById('email-error').innerText = i18n[lang].emailExists;
+                document.getElementById('email-error').style.display = 'block';
+                return;
+            }
+            
             sendBtn.disabled = true;
-            sendBtn.innerText = i18n[localStorage.getItem('lang') || 'tj'].loading;
-            const { error } = await _supabase.auth.signInWithOtp({ email });
+            sendBtn.innerText = i18n[lang].loading;
+            
+            const { error } = await _supabase.auth.signInWithOtp({ 
+                email: email,
+                options: {
+                    shouldCreateUser: true
+                }
+            });
+            
             if (error) {
                 alert("Хатогӣ: " + error.message);
                 sendBtn.disabled = false;
-                sendBtn.innerText = i18n[localStorage.getItem('lang') || 'tj'].btnSend;
+                sendBtn.innerText = i18n[lang].btnSend;
             } else {
                 localStorage.setItem('temp_email', email);
-                document.getElementById('email-section').style.display = 'none';
-                document.getElementById('otp-section').style.display = 'block';
+                emailSection.style.display = 'none';
+                otpSection.style.display = 'block';
+                document.getElementById('email-error').style.display = 'none';
             }
         };
 
         verifyBtn.onclick = async () => {
             const token = otpInput.value.trim();
             const email = localStorage.getItem('temp_email');
-            if (token.length !== 6) return;
+            const lang = localStorage.getItem('lang') || 'tj';
+            
+            if (token.length !== 6) {
+                document.getElementById('otp-error').innerText = i18n[lang].errOtp;
+                document.getElementById('otp-error').style.display = 'block';
+                return;
+            }
+            
             verifyBtn.disabled = true;
-            verifyBtn.innerText = i18n[localStorage.getItem('lang') || 'tj'].loading;
+            verifyBtn.innerText = i18n[lang].loading;
 
-            let res = await _supabase.auth.verifyOtp({ email, token, type: 'magiclink' });
-            if (res.error) res = await _supabase.auth.verifyOtp({ email, token, type: 'signup' });
+            const { data, error } = await _supabase.auth.verifyOtp({ 
+                email, 
+                token, 
+                type: 'email' 
+            });
 
-            if (res.error) {
-                alert(i18n[localStorage.getItem('lang') || 'tj'].errOtp);
+            if (error) {
+                document.getElementById('otp-error').innerText = i18n[lang].errOtp;
+                document.getElementById('otp-error').style.display = 'block';
                 verifyBtn.disabled = false;
-                verifyBtn.innerText = i18n[localStorage.getItem('lang') || 'tj'].btnVerify;
+                verifyBtn.innerText = i18n[lang].btnVerify;
             } else {
-                // ФИРИСТОДАНИ ПАЁМ БА АДМИН (ШУМО)
+                // Фиристодани паём ба админ
                 await sendAdminNotify(email);
-                localStorage.setItem('userId', res.data.user.id);
+                localStorage.setItem('userId', data.user.id);
+                localStorage.removeItem('temp_email');
                 window.location.href = 'profile-form.html';
             }
         };
