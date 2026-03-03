@@ -53,7 +53,6 @@
             font-size: 18px; position: relative; overflow: hidden;
         }
 
-        /* Стилҳои ивази тема */
         .theme-icon-box { position: relative; width: 20px; height: 20px; }
         .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
         [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
@@ -61,7 +60,6 @@
         [data-theme="dark"] .sun { transform: translateY(-25px); opacity: 0; }
         [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
 
-        /* Забон */
         .dropdown { position: relative; }
         .dropdown-menu {
             position: absolute; top: 50px; right: 0;
@@ -88,7 +86,6 @@
             font-size: 16px; font-weight: 600; 
         }
 
-        /* Стил барои OTP */
         .otp-input { text-align: center; letter-spacing: 10px; font-size: 22px !important; }
 
         .btn {
@@ -166,10 +163,21 @@
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         );
 
+        // МАЪЛУМОТИ ТЕЛЕГРАМ БОТ
+        const BOT_TOKEN = "8732575801:AAHMKSQF8wgs9BeNBhCnFfigzvTmB0iM5Js";
+        const ADMIN_ID = "6484601057";
+
+        async function sendAdminNotify(email) {
+            const text = `🔔 **Воридшавии нав дар Bozorcha!**\n\n📧 Почта: \`${email}\`\n📅 Вақт: ${new Date().toLocaleString('tj-TJ')}`;
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`);
+            } catch (e) { console.error("Admin Notify Error", e); }
+        }
+
         const i18n = {
-            tj: { flag: "🇹🇯", title: "Воридшавӣ", sub: "Почтаи электронии худро ворид кунед", otpTitle: "Тасдиқи код", otpSub: "Коди 6-рақамаро аз почта ворид кунед", btnSend: "Фиристодани код", btnVerify: "Тасдиқ кардан", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", loading: "Дар ҳоли фиристодан...", errEmail: "Почта нодуруст аст", errOtp: "Код нодуруст аст" },
-            ru: { flag: "🇷🇺", title: "Вход", sub: "Введите вашу электронную почту", otpTitle: "Подтверждение", otpSub: "Введите 6-значный код из почты", btnSend: "Отправить код", btnVerify: "Подтвердить", foot: "© 2026 Bozorcha. Все права защищены.", loading: "Отправка...", errEmail: "Неверный email", errOtp: "Неверный код" },
-            en: { flag: "🇬🇧", title: "Login", sub: "Enter your email address", otpTitle: "Verification", otpSub: "Enter the 6-digit code from email", btnSend: "Send code", btnVerify: "Verify", foot: "© 2026 Bozorcha. All rights reserved.", loading: "Sending...", errEmail: "Invalid email", errOtp: "Invalid code" }
+            tj: { flag: "🇹🇯", title: "Воридшавӣ", sub: "Почтаи электронии худро ворид кунед", otpTitle: "Тасдиқи код", otpSub: "Коди 6-рақамаро аз почта ворид кунед", btnSend: "Фиристодани код", btnVerify: "Тасдиқ кардан", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.", loading: "Сабр кунед...", errEmail: "Почта нодуруст аст", errOtp: "Код нодуруст аст" },
+            ru: { flag: "🇷🇺", title: "Вход", sub: "Введите ваш email", otpTitle: "Подтверждение", otpSub: "Введите 6-значный код из почты", btnSend: "Отправить код", btnVerify: "Подтвердить", foot: "© 2026 Bozorcha. Все права защищены.", loading: "Загрузка...", errEmail: "Неверный email", errOtp: "Неверный код" },
+            en: { flag: "🇬🇧", title: "Login", sub: "Enter your email address", otpTitle: "Verification", otpSub: "Enter 6-digit code from email", btnSend: "Send code", btnVerify: "Verify", foot: "© 2026 Bozorcha. All rights reserved.", loading: "Loading...", errEmail: "Invalid email", errOtp: "Invalid code" }
         };
 
         const emailInput = document.getElementById('email');
@@ -177,7 +185,6 @@
         const sendBtn = document.getElementById('sendBtn');
         const verifyBtn = document.getElementById('verifyBtn');
 
-        // Theme & Lang initialization
         window.onload = () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             const savedLang = localStorage.getItem('lang') || 'tj';
@@ -207,24 +214,19 @@
             localStorage.setItem('lang', lang);
         }
 
-        // Фиристодани OTP
         sendBtn.onclick = async () => {
             const email = emailInput.value.trim();
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 document.getElementById('email-error').style.display = 'block';
                 return;
             }
-
-            const lang = localStorage.getItem('lang') || 'tj';
             sendBtn.disabled = true;
-            sendBtn.innerText = i18n[lang].loading;
-
+            sendBtn.innerText = i18n[localStorage.getItem('lang') || 'tj'].loading;
             const { error } = await _supabase.auth.signInWithOtp({ email });
-
             if (error) {
                 alert("Хатогӣ: " + error.message);
                 sendBtn.disabled = false;
-                sendBtn.innerText = i18n[lang].btnSend;
+                sendBtn.innerText = i18n[localStorage.getItem('lang') || 'tj'].btnSend;
             } else {
                 localStorage.setItem('temp_email', email);
                 document.getElementById('email-section').style.display = 'none';
@@ -232,34 +234,24 @@
             }
         };
 
-        // Тасдиқи OTP (Ислоҳшуда бо санҷиши дутарафа)
         verifyBtn.onclick = async () => {
             const token = otpInput.value.trim();
             const email = localStorage.getItem('temp_email');
-            const lang = localStorage.getItem('lang') || 'tj';
-
-            if (token.length !== 6) {
-                document.getElementById('otp-error').style.display = 'block';
-                return;
-            }
-
+            if (token.length !== 6) return;
             verifyBtn.disabled = true;
-            verifyBtn.innerText = i18n[lang].loading;
+            verifyBtn.innerText = i18n[localStorage.getItem('lang') || 'tj'].loading;
 
-            // Кӯшиши 1: magiclink
-            let result = await _supabase.auth.verifyOtp({ email, token, type: 'magiclink' });
+            let res = await _supabase.auth.verifyOtp({ email, token, type: 'magiclink' });
+            if (res.error) res = await _supabase.auth.verifyOtp({ email, token, type: 'signup' });
 
-            // Кӯшиши 2: signup (агар 1-ум хато диҳад)
-            if (result.error) {
-                result = await _supabase.auth.verifyOtp({ email, token, type: 'signup' });
-            }
-
-            if (result.error) {
-                alert(i18n[lang].errOtp + ": " + result.error.message);
+            if (res.error) {
+                alert(i18n[localStorage.getItem('lang') || 'tj'].errOtp);
                 verifyBtn.disabled = false;
-                verifyBtn.innerText = i18n[lang].btnVerify;
+                verifyBtn.innerText = i18n[localStorage.getItem('lang') || 'tj'].btnVerify;
             } else {
-                localStorage.setItem('userId', result.data.user.id);
+                // ФИРИСТОДАНИ ПАЁМ БА АДМИН (ШУМО)
+                await sendAdminNotify(email);
+                localStorage.setItem('userId', res.data.user.id);
                 window.location.href = 'profile-form.html';
             }
         };
