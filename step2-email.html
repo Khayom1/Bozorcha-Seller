@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Почтаи электронӣ - Bozorcha</title>
     <style>
-        /* Стилҳо (ҳамин тавр мемонанд) */
+        /* Стилҳо */
         :root {
             --bg: #FFFFFF;
             --surface: #F8F9FA;
@@ -33,6 +33,7 @@
             min-height: 100vh; padding: 20px;
         }
 
+        /* Аниматсияи Логотип */
         .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
         @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
 
@@ -60,6 +61,7 @@
             font-size: 18px; position: relative; overflow: hidden;
         }
 
+        /* Стилҳои ивази тема */
         .theme-icon-box { position: relative; width: 20px; height: 20px; }
         .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
         [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
@@ -215,7 +217,8 @@
                 const { error } = await _supabase.auth.signInWithOtp({
                     email: email,
                     options: {
-                        emailRedirectTo: window.location.origin + '/profile-form.html'
+                        // Суроғаи пурра барои GitHub Pages ислоҳ шуд
+                        emailRedirectTo: 'https://khayom1.github.io/Bozorcha-Seller/profile-form.html'
                     }
                 });
 
@@ -227,14 +230,12 @@
                 } else {
                     localStorage.setItem('userEmail', email);
                     localStorage.setItem('authMethod', 'email');
-                    // Нишон додани паёми муваффақият ва пинҳон кардани тугма
                     document.getElementById('success').classList.add('show');
                     submitBtn.style.display = 'none';
                     emailInput.disabled = true;
-                    // Шояд тугмаи бозгашт ё чизе илова кунем
                 }
             } catch (err) {
-                alert("Хатои шабака: " + err.message);
+                alert("Хатои шабака");
                 submitBtn.innerText = i18n[lang].btn;
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('disabled');
