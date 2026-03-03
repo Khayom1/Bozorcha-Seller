@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Дохилшавӣ - Bozorcha</title>
+    <style>
+        :root {
+            --bg: #FFFFFF;
+            --surface: #F8F9FA;
+            --text-primary: #1A1C1E;
+            --text-secondary: #6C757D;
+            --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
+            --border: #EEEEEE;
+            --shadow: 0 15px 35px rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --surface: #161618;
+            --text-primary: #F8F9FA;
+            --text-secondary: #ADB5BD;
+            --border: #2C2E33;
+            --shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
+
+        body {
+            background-color: var(--bg); color: var(--text-primary);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
+
+        /* Аниматсияи Логотип */
+        .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
+        @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
+
+        .card {
+            background: var(--surface); border-radius: 35px; padding: 40px 30px;
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            max-width: 400px; width: 100%; position: relative; text-align: center;
+        }
+
+        header { display: flex; align-items: center; margin-bottom: 35px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+
+        .back-btn {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: var(--bg); border: 1px solid var(--border);
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-size: 20px; color: var(--text-primary);
+        }
+
+        .title { font-size: 22px; font-weight: 800; margin-bottom: 8px; text-align: left; }
+        .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; text-align: left; line-height: 1.4; }
+
+        .input-group { margin-bottom: 10px; text-align: left; }
+        .custom-input {
+            display: flex; align-items: center; background: var(--bg);
+            border: 2px solid var(--border); border-radius: 20px; padding: 5px;
+        }
+        .custom-input:focus-within { border-color: #FF9F43; }
+        .custom-input input { 
+            flex: 1; padding: 15px; border: none; outline: none; 
+            background: transparent; color: var(--text-primary); 
+            font-size: 16px; font-weight: 600; 
+        }
+        .country-code {
+            padding: 15px 10px 15px 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-right: 2px solid var(--border);
+        }
+
+        .otp-input { text-align: center; letter-spacing: 10px; font-size: 22px !important; }
+
+        .btn {
+            width: 100%; padding: 20px; border-radius: 20px;
+            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
+            margin-top: 20px; transition: transform 0.2s, opacity 0.3s;
+        }
+        .btn-primary { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
+        .btn-primary:disabled { opacity: 0.5; pointer-events: none; }
+
+        #otp-section { display: none; }
+        .error-message { color: #ff4444; font-size: 13px; margin-top: 5px; display: none; }
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="card">
+        <header>
+            <div class="header-left">
+                <button class="back-btn" id="backBtn">←</button>
+                <svg width="45" height="45" viewBox="0 0 200 200">
+                    <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
+                    <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                    <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+                </svg>
+            </div>
+        </header>
+
+        <div id="phone-section">
+            <h1 class="title" id="t-title">Дохилшавӣ</h1>
+            <p class="subtitle" id="t-sub">Рақами телефони худро ворид кунед</p>
+            <div class="input-group">
+                <div class="custom-input">
+                    <span class="country-code">+992</span>
+                    <input type="tel" id="phone" placeholder="00 000 00 00" maxlength="12">
+                </div>
+                <div id="phone-error" class="error-message">Рақам бояд 9 рақам бошад</div>
+            </div>
+            <button class="btn btn-primary" id="sendBtn">Фиристодани код</button>
+        </div>
+
+        <div id="otp-section">
+            <h1 class="title" id="t-otp-title">Тасдиқи код</h1>
+            <p class="subtitle" id="t-otp-sub">Коди 6-рақамаро ворид кунед</p>
+            <div class="input-group">
+                <div class="custom-input">
+                    <input type="text" id="otp" class="otp-input" placeholder="000000" maxlength="6">
+                </div>
+                <div id="otp-error" class="error-message">Код нодуруст аст</div>
+            </div>
+            <button class="btn btn-primary" id="verifyBtn">Тасдиқ кардан</button>
+        </div>
+
+        <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        const _supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        const i18n = {
+            tj: { 
+                title: "Дохилшавӣ", 
+                sub: "Рақами телефони худро ворид кунед", 
+                otpTitle: "Тасдиқи код", 
+                otpSub: "Коди 6-рақамаро ворид кунед", 
+                btnSend: "Фиристодани код", 
+                btnVerify: "Тасдиқ кардан", 
+                foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.",
+                loading: "Сабр кунед...",
+                errPhone: "Рақам бояд 9 рақам бошад",
+                errOtp: "Код нодуруст аст",
+                userNotFound: "Чунин корбар ёфт нашуд. Лутфан аввал сабти ном кунед."
+            },
+            ru: { 
+                title: "Вход", 
+                sub: "Введите номер телефона", 
+                otpTitle: "Подтверждение", 
+                otpSub: "Введите 6-значный код", 
+                btnSend: "Отправить код", 
+                btnVerify: "Подтвердить", 
+                foot: "© 2026 Bozorcha. Все права защищены.",
+                loading: "Загрузка...",
+                errPhone: "Номер должен содержать 9 цифр",
+                errOtp: "Неверный код",
+                userNotFound: "Пользователь не найден. Пожалуйста, зарегистрируйтесь."
+            },
+            en: { 
+                title: "Login", 
+                sub: "Enter your phone number", 
+                otpTitle: "Verification", 
+                otpSub: "Enter 6-digit code", 
+                btnSend: "Send code", 
+                btnVerify: "Verify", 
+                foot: "© 2026 Bozorcha. All rights reserved.",
+                loading: "Loading...",
+                errPhone: "Number must be 9 digits",
+                errOtp: "Invalid code",
+                userNotFound: "User not found. Please register first."
+            }
+        };
+
+        const phoneSection = document.getElementById('phone-section');
+        const otpSection = document.getElementById('otp-section');
+        const phoneInput = document.getElementById('phone');
+        const otpInput = document.getElementById('otp');
+        const sendBtn = document.getElementById('sendBtn');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const backBtn = document.getElementById('backBtn');
+
+        let currentLang = localStorage.getItem('lang') || 'tj';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
+        document.body.setAttribute('data-theme', currentTheme);
+        applyLang(currentLang);
+
+        function applyLang(lang) {
+            const d = i18n[lang];
+            document.getElementById('t-title').innerText = d.title;
+            document.getElementById('t-sub').innerText = d.sub;
+            document.getElementById('t-otp-title').innerText = d.otpTitle;
+            document.getElementById('t-otp-sub').innerText = d.otpSub;
+            document.getElementById('sendBtn').innerText = d.btnSend;
+            document.getElementById('verifyBtn').innerText = d.btnVerify;
+            document.getElementById('t-foot').innerText = d.foot;
+        }
+
+        backBtn.onclick = () => {
+            if (otpSection.style.display === 'block') {
+                otpSection.style.display = 'none';
+                phoneSection.style.display = 'block';
+            } else {
+                window.location.href = 'choose-method.html';
+            }
+        };
+
+        phoneInput.addEventListener('input', (e) => {
+            let digits = e.target.value.replace(/\D/g, '');
+            if (digits.length > 9) digits = digits.slice(0, 9);
+            let formatted = '';
+            for (let i = 0; i < digits.length; i++) {
+                if (i === 3 || i === 6) formatted += ' ';
+                formatted += digits[i];
+            }
+            phoneInput.value = formatted;
+        });
+
+        sendBtn.onclick = async () => {
+            const digits = phoneInput.value.replace(/\D/g, '');
+            const lang = localStorage.getItem('lang') || 'tj';
+            
+            if (digits.length !== 9) {
+                document.getElementById('phone-error').innerText = i18n[lang].errPhone;
+                document.getElementById('phone-error').style.display = 'block';
+                return;
+            }
+            
+            const fullPhone = '+992' + digits;
+            
+            const { data: existingUser, error: userError } = await _supabase
+                .from('user')
+                .select('id, full_name, shop_name')
+                .eq('phone', fullPhone);
+            
+            if (userError) {
+                alert("Хатогӣ дар санҷиш: " + userError.message);
+                return;
+            }
+            
+            if (!existingUser || existingUser.length === 0) {
+                document.getElementById('phone-error').innerText = i18n[lang].userNotFound;
+                document.getElementById('phone-error').style.display = 'block';
+                return;
+            }
+            
+            localStorage.setItem('temp_phone', fullPhone);
+            localStorage.setItem('temp_user', JSON.stringify(existingUser[0]));
+            
+            sendBtn.disabled = true;
+            sendBtn.innerText = i18n[lang].loading;
+            
+            const { error } = await _supabase.auth.signInWithOtp({ 
+                phone: fullPhone,
+                options: { shouldCreateUser: false }
+            });
+            
+            if (error) {
+                alert("Хатогӣ: " + error.message);
+                sendBtn.disabled = false;
+                sendBtn.innerText = i18n[lang].btnSend;
+            } else {
+                phoneSection.style.display = 'none';
+                otpSection.style.display = 'block';
+                document.getElementById('phone-error').style.display = 'none';
+            }
+        };
+
+        verifyBtn.onclick = async () => {
+            const token = otpInput.value.trim();
+            const phone = localStorage.getItem('temp_phone');
+            const lang = localStorage.getItem('lang') || 'tj';
+            
+            if (token.length !== 6) {
+                document.getElementById('otp-error').innerText = i18n[lang].errOtp;
+                document.getElementById('otp-error').style.display = 'block';
+                return;
+            }
+            
+            verifyBtn.disabled = true;
+            verifyBtn.innerText = i18n[lang].loading;
+
+            const { data, error } = await _supabase.auth.verifyOtp({ 
+                phone, 
+                token, 
+                type: 'sms' 
+            });
+
+            if (error) {
+                document.getElementById('otp-error').innerText = i18n[lang].errOtp;
+                document.getElementById('otp-error').style.display = 'block';
+                verifyBtn.disabled = false;
+                verifyBtn.innerText = i18n[lang].btnVerify;
+            } else {
+                localStorage.setItem('userId', data.user.id);
+                
+                const userData = JSON.parse(localStorage.getItem('temp_user') || '{}');
+                if (userData.full_name && userData.shop_name) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert("Лутфан аввал профили худро пур кунед");
+                    window.location.href = 'profile-form.html';
+                }
+                
+                localStorage.removeItem('temp_phone');
+                localStorage.removeItem('temp_user');
+            }
+        };
+    </script>
+</body>
+</html>
