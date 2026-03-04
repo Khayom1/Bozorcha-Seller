@@ -1,57 +1,98 @@
 <!DOCTYPE html>
 <html lang="tg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Санҷиши Edge Function</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: 0 auto; line-height: 1.6; }
-        button { padding: 12px 24px; background: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
-        button:hover { background: #e68a00; }
-        #result { margin-top: 20px; padding: 15px; border: 1px solid #ccc; min-height: 50px; border-radius: 5px; word-wrap: break-word; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Санҷиши Edge Function</title>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  padding:20px;
+  max-width:500px;
+  margin:auto;
+  line-height:1.6;
+}
+
+button{
+  padding:12px 24px;
+  background:#ff9800;
+  color:white;
+  border:none;
+  border-radius:5px;
+  font-weight:bold;
+  width:100%;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#e68900;
+}
+
+#result{
+  margin-top:20px;
+  padding:15px;
+  border:1px solid #ccc;
+  border-radius:5px;
+  min-height:40px;
+}
+</style>
 </head>
+
 <body>
-    <h1>Санҷиши Edge Function</h1>
-    <p>Ин функсия ба Telegram паём мефиристад.</p>
-    
-    <button onclick="sendTest()">Фиристодани паёми санҷишӣ</button>
-    
-    <div id="result">Натиҷа дар ин ҷо намоиш дода мешавад...</div>
 
-    <script>
-        async function sendTest() {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = 'Фиристода истодааст...';
-            resultDiv.style.color = 'blue';
-            
-            try {
-                const functionUrl = 'https://seagtlajnnhoitytsgd.supabase.co/functions/v1/telegram-notify';
-                const message = '🔔 **Санҷиш**\n\nИн паём аз Edge Function фиристода шуд!';
-                
-                const response = await fetch(functionUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // Агар функсияи шумо калидро талаб кунад, дар ин ҷо илова кунед:
-                        // 'Authorization': 'Bearer ВАЙ_КАЛИДИ_ШУМО'
-                    },
-                    body: JSON.stringify({ text: message })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`Хатогии сервер: ${response.status}`);
-                }
+<h1>Санҷиши Edge Function</h1>
+<p>Ин функсия ба Telegram паём мефиристад.</p>
 
-                const data = await response.json();
-                resultDiv.innerHTML = '✅ Муваффақият!';
-                resultDiv.style.color = 'green';
-                
-            } catch (error) {
-                resultDiv.innerHTML = '❌ Хатогӣ: ' + error.message + '<br><small>Эзоҳ: Боварӣ ҳосил кунед, ки дар Edge Function танзимоти CORS иҷозат дода шудааст.</small>';
-                resultDiv.style.color = 'red';
-            }
-        }
-    </script>
+<button onclick="sendTest()">Фиристодани паёми санҷишӣ</button>
+
+<div id="result">Натиҷа дар ин ҷо нишон дода мешавад...</div>
+
+<script>
+
+const FUNCTION_URL =
+"https://seagtlajnnhoitytsgd.supabase.co/functions/v1/test-function-html";
+
+async function sendTest(){
+
+  const result = document.getElementById("result");
+  result.innerHTML = "Фиристода истодааст...";
+  result.style.color = "blue";
+
+  try{
+
+    const response = await fetch(FUNCTION_URL,{
+      method:"POST",
+      mode:"cors",
+      headers:{
+        "Content-Type":"application/json",
+        "Accept":"application/json"
+      },
+      body:JSON.stringify({
+        text:"🔔 Санҷиш\n\nИн паём аз сайт фиристода шуд."
+      })
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(data.error || "Server error");
+    }
+
+    result.innerHTML="✅ Паём ба Telegram фиристода шуд!";
+    result.style.color="green";
+
+  }
+  catch(error){
+
+    result.innerHTML="❌ Хатогӣ: " + error.message;
+    result.style.color="red";
+
+  }
+
+}
+
+</script>
+
 </body>
 </html>
