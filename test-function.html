@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Санҷиши Edge Function</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 500px; margin: 0 auto; }
+        button { padding: 10px 20px; background: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; min-height: 50px; }
+    </style>
+</head>
+<body>
+    <h1>Санҷиши Edge Function</h1>
+    <p>Ин функсия ба Telegram паём мефиристад</p>
+    
+    <button onclick="sendTest()">Фиристодани паёми санҷишӣ</button>
+    
+    <div id="result">Натиҷа дар ин ҷо намоиш дода мешавад...</div>
+
+    <script>
+        async function sendTest() {
+            const resultDiv = document.getElementById('result')
+            resultDiv.innerHTML = 'Фиристода истодааст...'
+            resultDiv.style.color = 'blue'
+            
+            try {
+                // URL-и функсияи шумо (аз расм гирифта шудааст)
+                const functionUrl = 'https://seagtlajnnhoitytsgd.supabase.co/functions/v1/telegram-notify'
+                
+                // Матни паём
+                const message = '🔔 **Санҷиш**\n\nИн паём аз Edge Function фиристода шуд!\n\nВақт: ' + new Date().toLocaleString('tg-TJ')
+                
+                // Фиристодани дархост
+                const response = await fetch(functionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                })
+                
+                const data = await response.json()
+                console.log('Ҷавоб:', data)
+                
+                if (response.ok && data.success) {
+                    resultDiv.innerHTML = '✅ Паём бомуваффақият фиристода шуд! Ба Telegram-и худ нигоҳ кунед.'
+                    resultDiv.style.color = 'green'
+                } else {
+                    resultDiv.innerHTML = '❌ Хатогӣ: ' + (data.error || 'Номаълум')
+                    resultDiv.style.color = 'red'
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '❌ Хатогӣ дар пайвастшавӣ: ' + error.message
+                resultDiv.style.color = 'red'
+                console.error(error)
+            }
+        }
+    </script>
+</body>
+</html>
