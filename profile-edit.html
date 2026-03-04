@@ -1,1 +1,1157 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Таҳрири профил - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4oapSS6yn1NqBS9eR9IOM8lhFPrB4ZY8&libraries=places"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #FFFFFF;
+            --surface: #F8F9FA;
+            --text-primary: #1A1C1E;
+            --text-secondary: #6C757D;
+            --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
+            --border: #EEEEEE;
+            --shadow: 0 15px 35px rgba(0,0,0,0.05);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
 
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --surface: #161618;
+            --text-primary: #F8F9FA;
+            --text-secondary: #ADB5BD;
+            --border: #2C2E33;
+            --shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
+
+        body {
+            background-color: var(--bg); color: var(--text-primary);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
+
+        .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
+        @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
+
+        .card {
+            background: var(--surface); border-radius: 35px; padding: 40px 30px;
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            max-width: 500px; width: 100%; position: relative; text-align: center;
+        }
+
+        header { display: flex; align-items: center; margin-bottom: 35px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+
+        .back-btn {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: var(--bg); border: 1px solid var(--border);
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-size: 20px; color: var(--text-primary);
+        }
+
+        .title { font-size: 24px; font-weight: 800; margin-bottom: 15px; text-align: left; }
+        .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 25px; text-align: left; }
+
+        .telegram-badge {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 8px 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .profile-photo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0 30px;
+            padding: 20px;
+            background: var(--surface);
+            border-radius: 20px;
+        }
+
+        .profile-photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 40px;
+            overflow: hidden;
+            border: 3px solid var(--border);
+        }
+        .profile-photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-photo-btn {
+            flex: 1;
+            text-align: left;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 25px 0 15px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block; font-weight: 600; margin-bottom: 8px;
+            color: var(--text-primary); font-size: 14px;
+        }
+        .form-group label .optional { color: var(--text-secondary); font-weight: 400; font-size: 12px; }
+        
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 15px;
+            background: var(--bg); border: 2px solid var(--border);
+            border-radius: 16px; font-size: 16px;
+            color: var(--text-primary); outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #FF9F43;
+        }
+
+        .username-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 0 15px;
+        }
+        .username-input span {
+            font-size: 18px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .username-input input {
+            flex: 1;
+            padding: 15px 0;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .phone-list {
+            margin-bottom: 15px;
+        }
+        .phone-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 12px;
+            background: var(--surface);
+            border-radius: 12px;
+        }
+        .phone-number {
+            flex: 1;
+            font-weight: 600;
+        }
+        .phone-badge {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .phone-badge.extra { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+        .phone-remove {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .add-phone-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--bg);
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        .add-phone-btn:hover {
+            border-color: #FF9F43;
+            color: #FF9F43;
+        }
+
+        .new-phone-container {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .new-phone-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .new-phone-input input {
+            flex: 1;
+            padding: 15px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-size: 16px;
+        }
+        .new-phone-input button {
+            padding: 15px 20px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .verification-section {
+            margin-top: 10px;
+            padding: 15px;
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .verification-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .verification-row input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        .btn-small {
+            padding: 12px 20px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        #map-container {
+            width: 100%;
+            height: 300px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .address-display {
+            background: var(--surface);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .reason-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .reason-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .reason-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .reason-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .reason-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .reason-option label {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .other-reason {
+            display: none;
+            margin-top: 15px;
+        }
+        .other-reason.show { display: block; }
+
+        .btn {
+            width: 100%; padding: 20px; border-radius: 20px;
+            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
+            margin: 10px 0; transition: all 0.3s;
+        }
+        .btn-primary { background: var(--accent-gradient); color: white; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
+        .error-message { color: var(--danger); font-size: 13px; margin-top: 5px; display: none; }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="card">
+        <header>
+            <div class="header-left">
+                <button class="back-btn" id="backBtn">←</button>
+                <svg width="45" height="45" viewBox="0 0 200 200">
+                    <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
+                    <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                    <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+                </svg>
+            </div>
+        </header>
+
+        <h1 class="title">Таҳрири профил</h1>
+        <p class="subtitle">Маълумоти худро таҳрир кунед</p>
+
+        <!-- Боти Telegram -->
+        <div class="telegram-badge">
+            <i class="fab fa-telegram"></i> Ҳамаи тағйирот ба администратор фиристода мешавад
+        </div>
+
+        <!-- Profile Photo -->
+        <div class="profile-photo-section">
+            <div class="profile-photo-preview" id="profilePhotoPreview">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-photo-btn">
+                <button class="btn-small" onclick="document.getElementById('profilePhoto').click()">
+                    <i class="fas fa-camera"></i> Акси профил
+                </button>
+                <input type="file" id="profilePhoto" accept="image/*" style="display: none;">
+            </div>
+        </div>
+
+        <!-- Username -->
+        <div class="form-group">
+            <label>Номи корбарӣ <span style="color:var(--text-secondary)">(@username)</span></label>
+            <div class="username-input">
+                <span>@</span>
+                <input type="text" id="username" placeholder="username" autocomplete="off">
+            </div>
+            <div id="username-format-error" class="error-message">
+                Номи корбарӣ метавонад танҳо ҳарфҳо, рақамҳо, нуқта ва (_) дошта бошад
+            </div>
+            <div id="username-exists-error" class="error-message">
+                Ин номи корбарӣ аллакай истифода шудааст
+            </div>
+        </div>
+
+        <!-- Name -->
+        <div class="form-group">
+            <label>Ном</label>
+            <input type="text" id="name" placeholder="Аҳмад Раҳимов">
+        </div>
+
+        <!-- Bio -->
+        <div class="form-group">
+            <label>Тавсиф <span class="optional">(ихтиёрӣ)</span></label>
+            <textarea id="bio" rows="3" placeholder="Дар бораи худ ва мағозаатон нависед..."></textarea>
+        </div>
+
+        <!-- Main Phone -->
+        <div class="form-group">
+            <label>Рақами асосӣ</label>
+            <input type="tel" id="mainPhone" placeholder="+992 901 234 567">
+            <div id="mainPhoneVerification" class="verification-section" style="display: none;">
+                <div class="verification-row">
+                    <input type="text" id="mainPhoneCode" placeholder="Коди SMS">
+                    <button class="btn-small" id="verifyMainPhoneBtn">Тасдиқ</button>
+                </div>
+            </div>
+            <button class="btn-small btn-outline" id="sendMainPhoneCodeBtn" style="margin-top: 10px;">
+                <i class="fas fa-paper-plane"></i> Фиристодани код
+            </button>
+        </div>
+
+        <!-- Extra Phones -->
+        <div class="phone-list" id="phoneList"></div>
+        <button class="add-phone-btn" id="addPhoneTrigger">
+            <i class="fas fa-plus"></i> Иловаи рақами нав
+        </button>
+
+        <div class="new-phone-container" id="newPhoneContainer" style="display: none;">
+            <div class="new-phone-input">
+                <input type="tel" id="newPhone" placeholder="+992 00 000 00 00">
+                <button id="addPhoneBtn">Илова</button>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label>Почта</label>
+            <input type="email" id="email" placeholder="example@mail.com">
+            <div id="emailVerification" class="verification-section" style="display: none;">
+                <div class="verification-row">
+                    <input type="text" id="emailCode" placeholder="Коди SMS">
+                    <button class="btn-small" id="verifyEmailBtn">Тасдиқ</button>
+                </div>
+            </div>
+            <button class="btn-small btn-outline" id="sendEmailCodeBtn" style="margin-top: 10px;">
+                <i class="fas fa-paper-plane"></i> Фиристодани код
+            </button>
+            <div id="email-exists-error" class="error-message">
+                Ин почта аллакай истифода шудааст
+            </div>
+        </div>
+
+        <!-- Shop Name -->
+        <div class="form-group">
+            <label>Номи мағоза</label>
+            <input type="text" id="shopName" placeholder="Мағозаи ман">
+        </div>
+
+        <!-- Address with Maps -->
+        <div class="form-group">
+            <label>Суроғаи мағоза</label>
+            <input type="text" id="addressSearch" class="search-box" placeholder="Ҷустуҷӯи суроға...">
+            <div id="map-container"></div>
+            <div id="selectedAddress" class="address-display"></div>
+        </div>
+
+        <!-- Reason for change -->
+        <div class="reason-section" id="reasonSection" style="display: none;">
+            <div class="reason-title">Сабаби тағйирот</div>
+            <div class="reason-options">
+                <div class="reason-option">
+                    <input type="radio" name="reason" value="typo" id="reasonTypo">
+                    <label for="reasonTypo">Хато пур кардани ном/адрес</label>
+                </div>
+                <div class="reason-option">
+                    <input type="radio" name="reason" value="changed" id="reasonChanged">
+                    <label for="reasonChanged">Маълумот иваз шудааст</label>
+                </div>
+                <div class="reason-option">
+                    <input type="radio" name="reason" value="other" id="reasonOther">
+                    <label for="reasonOther">Дигар сабаб</label>
+                </div>
+            </div>
+            <div class="other-reason" id="otherReason">
+                <textarea id="otherReasonText" class="search-box" rows="3" placeholder="Сабабро нависед..."></textarea>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button class="btn btn-primary" id="submitBtn">Сабт кардан</button>
+
+        <footer>© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
+    </div>
+
+    <script>
+        (function() {
+            // Боти Telegram
+            const BOT_TOKEN = "8732575801:AAHMKSQF8wgs9BeNBhCnFfigzvTmB0iM5Js";
+            const ADMIN_ID = "6484601057";
+
+            const _supabase = supabase.createClient(
+                'https://seagtlaujnnhoyitgsdd.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlYWd0bGF1am5uaG95aXRnc2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA4MjY4NTAsImV4cCI6MjA1NjQwMjg1MH0.TPmZpCwYlVh5mZLjArPqIEnUq-kEOOR6nWpOjvU3VaI'
+            );
+
+            let map, marker, autocomplete;
+            let currentUser = null;
+            let currentShop = null;
+            let mainPhone = '';
+            let extraPhones = [];
+            let originalMainPhone = '';
+            let originalEmail = '';
+            let originalUsername = '';
+            let originalShopName = '';
+            let originalAddress = '';
+            let selectedLocation = null;
+            let selectedAddressText = '';
+            let profilePhotoFile = null;
+            let authMethod = localStorage.getItem('authMethod') || 'phone';
+            
+            // Ҳолати SMS verification
+            let mainPhoneChanged = false;
+            let emailChanged = false;
+            let mainPhoneVerified = false;
+            let emailVerified = false;
+
+            // Забон ва мавзӯъ
+            let currentLang = localStorage.getItem('lang') || 'tj';
+            let currentTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', currentTheme);
+
+            // Бозгашт ба профил
+            document.getElementById('backBtn').onclick = () => window.location.href = 'profile.html';
+
+            // Боркунии маълумот
+            async function loadUserData() {
+                const userId = localStorage.getItem('userId');
+                const shopId = localStorage.getItem('currentShopId');
+                
+                if (!userId) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Маълумоти корбар
+                const { data: user, error: userError } = await _supabase
+                    .from('user')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+
+                if (userError) {
+                    console.error('Error loading user:', userError);
+                    alert('Хатогӣ ҳангоми боркунии маълумот');
+                    return;
+                }
+
+                currentUser = user;
+                mainPhone = user.phone || '';
+                originalMainPhone = user.phone || '';
+                extraPhones = user.extra_phones || [];
+                originalEmail = user.email || '';
+
+                // Маълумоти мағоза
+                if (shopId) {
+                    const { data: shop, error: shopError } = await _supabase
+                        .from('shops')
+                        .select('*')
+                        .eq('id', shopId)
+                        .single();
+
+                    if (!shopError && shop) {
+                        currentShop = shop;
+                        originalUsername = shop.username || '';
+                        originalShopName = shop.shop_name || '';
+                        originalAddress = typeof shop.shop_address === 'string' 
+                            ? shop.shop_address 
+                            : (shop.shop_address?.address || '');
+                        
+                        // Маълумоти асосӣ
+                        document.getElementById('username').value = shop.username || '';
+                        document.getElementById('name').value = shop.shop_name || '';
+                        document.getElementById('bio').value = shop.bio || '';
+                        document.getElementById('shopName').value = shop.shop_name || '';
+                        document.getElementById('email').value = shop.email || '';
+                        
+                        // Маълумоти телефон
+                        document.getElementById('mainPhone').value = shop.phone || '';
+                        
+                        // Рақамҳои иловагӣ
+                        if (shop.extra_phones) {
+                            if (Array.isArray(shop.extra_phones)) {
+                                extraPhones = shop.extra_phones;
+                            } else if (typeof shop.extra_phones === 'string') {
+                                try {
+                                    extraPhones = JSON.parse(shop.extra_phones);
+                                } catch (e) {
+                                    extraPhones = [];
+                                }
+                            } else if (typeof shop.extra_phones === 'object') {
+                                extraPhones = shop.extra_phones;
+                            }
+                        }
+                        displayPhones();
+                        
+                        // Суроға ва макон
+                        if (shop.location) {
+                            let locationData = shop.location;
+                            if (typeof locationData === 'string') {
+                                try {
+                                    locationData = JSON.parse(locationData);
+                                } catch (e) {}
+                            }
+                            selectedLocation = {
+                                lat: locationData.lat || 38.5736,
+                                lng: locationData.lng || 68.7864
+                            };
+                        }
+                        
+                        if (shop.shop_address) {
+                            let addressData = shop.shop_address;
+                            if (typeof addressData === 'string') {
+                                try {
+                                    addressData = JSON.parse(addressData);
+                                } catch (e) {}
+                            }
+                            selectedAddressText = addressData.formatted_address || addressData.address || addressData || '';
+                            document.getElementById('selectedAddress').innerHTML = 
+                                `<strong>Суроғаи интихобшуда:</strong> ${selectedAddressText}`;
+                        }
+                        
+                        // Акси профил
+                        if (shop.profile_image) {
+                            document.getElementById('profilePhotoPreview').innerHTML = 
+                                `<img src="${shop.profile_image}" style="width:100%;height:100%;object-fit:cover;">`;
+                        }
+                    }
+                }
+
+                document.getElementById('mainPhone').value = mainPhone;
+                document.getElementById('email').value = originalEmail;
+                
+                setupSMSRules();
+            }
+
+            function setupSMSRules() {
+                // Main phone
+                document.getElementById('mainPhone').addEventListener('input', function() {
+                    mainPhoneChanged = this.value !== originalMainPhone;
+                    if (mainPhoneChanged && authMethod === 'phone') {
+                        document.getElementById('mainPhoneVerification').style.display = 'block';
+                    } else {
+                        document.getElementById('mainPhoneVerification').style.display = 'none';
+                    }
+                });
+
+                // Email
+                document.getElementById('email').addEventListener('input', function() {
+                    emailChanged = this.value !== originalEmail;
+                    if (emailChanged) {
+                        document.getElementById('emailVerification').style.display = 'block';
+                    } else {
+                        document.getElementById('emailVerification').style.display = 'none';
+                    }
+                });
+
+                // Shop name & address
+                document.getElementById('shopName').addEventListener('input', function() {
+                    if (this.value !== originalShopName || selectedAddressText !== originalAddress) {
+                        document.getElementById('reasonSection').style.display = 'block';
+                    } else {
+                        document.getElementById('reasonSection').style.display = 'none';
+                    }
+                });
+            }
+
+            function displayPhones() {
+                const container = document.getElementById('phoneList');
+                container.innerHTML = '';
+
+                extraPhones.forEach((phone, index) => {
+                    if (phone) {
+                        container.innerHTML += `
+                            <div class="phone-item">
+                                <div class="phone-number">${phone}</div>
+                                <span class="phone-badge extra">Иловагӣ</span>
+                                <button class="phone-remove" onclick="removePhone(${index})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            window.removePhone = function(index) {
+                extraPhones.splice(index, 1);
+                displayPhones();
+            };
+
+            // Add phone
+            document.getElementById('addPhoneTrigger').onclick = () => {
+                document.getElementById('newPhoneContainer').style.display = 'block';
+            };
+
+            document.getElementById('addPhoneBtn').onclick = () => {
+                const newPhone = document.getElementById('newPhone').value.trim();
+                if (newPhone) {
+                    extraPhones.push(newPhone);
+                    displayPhones();
+                    document.getElementById('newPhone').value = '';
+                    document.getElementById('newPhoneContainer').style.display = 'none';
+                }
+            };
+
+            // SMS verification
+            document.getElementById('sendMainPhoneCodeBtn').onclick = async () => {
+                const phone = document.getElementById('mainPhone').value;
+                const { error } = await _supabase.auth.signInWithOtp({ phone });
+                if (!error) {
+                    alert('Код ба рақами шумо фиристода шуд');
+                } else {
+                    alert('Хатогӣ: ' + error.message);
+                }
+            };
+
+            document.getElementById('verifyMainPhoneBtn').onclick = async () => {
+                const code = document.getElementById('mainPhoneCode').value;
+                const phone = document.getElementById('mainPhone').value;
+                
+                const { error } = await _supabase.auth.verifyOtp({
+                    phone, token: code, type: 'sms'
+                });
+
+                if (!error) {
+                    mainPhoneVerified = true;
+                    document.getElementById('mainPhoneVerification').style.display = 'none';
+                    alert('Рақам тасдиқ шуд');
+                } else {
+                    alert('Код нодуруст аст');
+                }
+            };
+
+            document.getElementById('sendEmailCodeBtn').onclick = async () => {
+                const email = document.getElementById('email').value;
+                const { error } = await _supabase.auth.signInWithOtp({ 
+                    email, options: { shouldCreateUser: false }
+                });
+                if (!error) {
+                    alert('Код ба почтаи шумо фиристода шуд');
+                    document.getElementById('emailVerification').style.display = 'block';
+                } else {
+                    alert('Хатогӣ: ' + error.message);
+                }
+            };
+
+            document.getElementById('verifyEmailBtn').onclick = async () => {
+                const code = document.getElementById('emailCode').value;
+                const email = document.getElementById('email').value;
+                
+                const { error } = await _supabase.auth.verifyOtp({
+                    email, token: code, type: 'email'
+                });
+
+                if (!error) {
+                    emailVerified = true;
+                    document.getElementById('emailVerification').style.display = 'none';
+                    alert('Почта тасдиқ шуд');
+                } else {
+                    alert('Код нодуруст аст');
+                }
+            };
+
+            // Profile Photo
+            document.getElementById('profilePhoto').onchange = function(e) {
+                profilePhotoFile = e.target.files[0];
+                if (profilePhotoFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('profilePhotoPreview').innerHTML = 
+                            `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+                    };
+                    reader.readAsDataURL(profilePhotoFile);
+                }
+            };
+
+            // Username validation
+            function validateUsername(username) {
+                return /^[a-zA-Z0-9._]+$/.test(username);
+            }
+
+            async function checkUsernameExists(username) {
+                if (!currentShop) return false;
+                const { data } = await _supabase
+                    .from('shops')
+                    .select('id')
+                    .eq('username', username)
+                    .neq('id', currentShop.id);
+                return data && data.length > 0;
+            }
+
+            async function checkEmailExists(email) {
+                if (email === originalEmail) return false;
+                const { data } = await _supabase
+                    .from('user')
+                    .select('id')
+                    .eq('email', email);
+                return data && data.length > 0;
+            }
+
+            // Google Maps
+            function initMapWithLocation() {
+                const defaultLocation = selectedLocation || { lat: 38.5736, lng: 68.7864 };
+                
+                map = new google.maps.Map(document.getElementById('map-container'), {
+                    center: defaultLocation,
+                    zoom: 12,
+                    mapTypeControl: false,
+                    streetViewControl: false
+                });
+
+                marker = new google.maps.Marker({
+                    map: map,
+                    draggable: true,
+                    position: defaultLocation
+                });
+
+                autocomplete = new google.maps.places.Autocomplete(
+                    document.getElementById('addressSearch')
+                );
+                
+                autocomplete.bindTo('bounds', map);
+
+                autocomplete.addListener('place_changed', () => {
+                    const place = autocomplete.getPlace();
+                    if (!place.geometry) return;
+                    
+                    marker.setPosition(place.geometry.location);
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                    updateLocation(place.geometry.location, place.formatted_address);
+                    document.getElementById('reasonSection').style.display = 'block';
+                });
+
+                marker.addListener('dragend', () => {
+                    const geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ location: marker.getPosition() }, (results, status) => {
+                        if (status === 'OK' && results[0]) {
+                            updateLocation(marker.getPosition(), results[0].formatted_address);
+                            document.getElementById('reasonSection').style.display = 'block';
+                        }
+                    });
+                });
+
+                if (selectedAddressText) {
+                    document.getElementById('addressSearch').value = selectedAddressText;
+                }
+            }
+
+            function updateLocation(location, address) {
+                selectedLocation = { lat: location.lat(), lng: location.lng() };
+                selectedAddressText = address;
+                document.getElementById('selectedAddress').innerHTML = 
+                    `<strong>Суроғаи интихобшуда:</strong> ${address}`;
+            }
+
+            window.initMap = initMapWithLocation;
+
+            // Radio buttons
+            document.querySelectorAll('input[name="reason"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    document.getElementById('otherReason').classList.toggle('show', this.value === 'other');
+                });
+            });
+
+            // Submit - ТАНҲО ЯК МАРОТИБА
+            document.getElementById('submitBtn').onclick = async () => {
+                const username = document.getElementById('username').value.trim();
+                const name = document.getElementById('name').value.trim();
+                const bio = document.getElementById('bio').value.trim();
+                const shopName = document.getElementById('shopName').value.trim();
+                const mainPhoneValue = document.getElementById('mainPhone').value.trim();
+                const email = document.getElementById('email').value.trim();
+
+                // Validation
+                if (!username || !name || !shopName || !mainPhoneValue || !selectedAddressText) {
+                    alert('Лутфан ҳамаи майдонҳои ҳатмиро пур кунед');
+                    return;
+                }
+
+                if (!validateUsername(username)) {
+                    document.getElementById('username-format-error').style.display = 'block';
+                    return;
+                } else {
+                    document.getElementById('username-format-error').style.display = 'none';
+                }
+
+                if (await checkUsernameExists(username)) {
+                    document.getElementById('username-exists-error').style.display = 'block';
+                    return;
+                } else {
+                    document.getElementById('username-exists-error').style.display = 'none';
+                }
+
+                if (await checkEmailExists(email)) {
+                    document.getElementById('email-exists-error').style.display = 'block';
+                    return;
+                } else {
+                    document.getElementById('email-exists-error').style.display = 'none';
+                }
+
+                // SMS verification check
+                if (mainPhoneChanged && !mainPhoneVerified && authMethod === 'phone') {
+                    alert('Лутфан рақами асосиро тасдиқ кунед');
+                    return;
+                }
+                if (emailChanged && !emailVerified) {
+                    alert('Лутфан почтаро тасдиқ кунед');
+                    return;
+                }
+
+                document.getElementById('submitBtn').disabled = true;
+                document.getElementById('submitBtn').innerText = 'Сабр кунед...';
+
+                try {
+                    const userId = localStorage.getItem('userId');
+                    const shopId = localStorage.getItem('currentShopId');
+
+                    // Upload profile photo
+                    let profilePhotoUrl = null;
+                    if (profilePhotoFile) {
+                        const fileName = `${Date.now()}_profile_${profilePhotoFile.name}`;
+                        const { error: uploadError } = await _supabase.storage
+                            .from('profile-images')
+                            .upload(fileName, profilePhotoFile);
+                        
+                        if (uploadError) {
+                            console.error('Upload error:', uploadError);
+                            alert('Хатогӣ ҳангоми боркунии акс: ' + uploadError.message);
+                            document.getElementById('submitBtn').disabled = false;
+                            document.getElementById('submitBtn').innerText = 'Сабт кардан';
+                            return;
+                        }
+                        
+                        const { data: urlData } = _supabase.storage
+                            .from('profile-images')
+                            .getPublicUrl(fileName);
+                        profilePhotoUrl = urlData.publicUrl;
+                    }
+
+                    // Навсозии маълумоти корбар
+                    const userUpdates = {};
+                    if (mainPhoneChanged) userUpdates.phone = mainPhoneValue;
+                    if (emailChanged) userUpdates.email = email;
+                    userUpdates.extra_phones = extraPhones;
+
+                    if (Object.keys(userUpdates).length > 0) {
+                        const { error: userError } = await _supabase
+                            .from('user')
+                            .update(userUpdates)
+                            .eq('id', userId);
+                        
+                        if (userError) {
+                            console.error('User update error:', userError);
+                            alert('Хатогӣ ҳангоми навсозии корбар: ' + userError.message);
+                            document.getElementById('submitBtn').disabled = false;
+                            document.getElementById('submitBtn').innerText = 'Сабт кардан';
+                            return;
+                        }
+                    }
+
+                    // Навсозии маълумоти мағоза
+                    if (currentShop) {
+                        const shopUpdates = {
+                            username: username,
+                            shop_name: shopName,
+                            bio: bio,
+                            phone: mainPhoneValue,
+                            email: email,
+                            extra_phones: extraPhones,
+                            shop_address: {
+                                formatted_address: selectedAddressText,
+                                address: selectedAddressText
+                            },
+                            location: selectedLocation || { lat: 38.5736, lng: 68.7864 }
+                        };
+
+                        if (profilePhotoUrl) {
+                            shopUpdates.profile_image = profilePhotoUrl;
+                        }
+
+                        const { error: shopError } = await _supabase
+                            .from('shops')
+                            .update(shopUpdates)
+                            .eq('id', shopId);
+                        
+                        if (shopError) {
+                            console.error('Shop update error:', shopError);
+                            alert('Хатогӣ ҳангоми навсозии мағоза: ' + shopError.message);
+                            document.getElementById('submitBtn').disabled = false;
+                            document.getElementById('submitBtn').innerText = 'Сабт кардан';
+                            return;
+                        }
+                    }
+
+                    // ================================================
+                    // ФИРИСТОДАН БА TELEGRAM
+                    // ================================================
+                    try {
+                        // Ҷамъоварии тамоми маълумот
+                        const userPhone = document.getElementById('mainPhone').value.trim();
+                        const userEmail = document.getElementById('email').value.trim();
+                        const address = selectedAddressText || 'Интихоб нашудааст';
+                        
+                        // Рақамҳои иловагӣ
+                        const extraPhonesList = extraPhones.length > 0 
+                            ? extraPhones.map((p, i) => `   ${i+1}. ${p}`).join('\n')
+                            : '   Нест';
+                        
+                        // Маълумоти макон
+                        const location = selectedLocation 
+                            ? `${selectedLocation.lat}, ${selectedLocation.lng}`
+                            : 'Интихоб нашудааст';
+                        
+                        // Сабаби тағйирот
+                        const reasonElement = document.querySelector('input[name="reason"]:checked');
+                        let reasonText = 'Интихоб нашудааст';
+                        if (reasonElement) {
+                            if (reasonElement.value === 'other') {
+                                const otherReason = document.getElementById('otherReasonText').value.trim();
+                                reasonText = otherReason || 'Дигар (матн надорад)';
+                            } else if (reasonElement.value === 'typo') {
+                                reasonText = 'Хато пур кардани ном/адрес';
+                            } else if (reasonElement.value === 'changed') {
+                                reasonText = 'Маълумот иваз шудааст';
+                            }
+                        }
+                        
+                        // Маълумоти ивазшуда
+                        let changedFields = [];
+                        if (username !== originalUsername) changedFields.push('🔸 Номи корбарӣ');
+                        if (shopName !== originalShopName) changedFields.push('🔸 Номи мағоза');
+                        if (name !== currentShop?.shop_name) changedFields.push('🔸 Номи соҳиб');
+                        if (bio !== currentShop?.bio) changedFields.push('🔸 Тавсиф');
+                        if (mainPhoneValue !== originalMainPhone) changedFields.push('🔸 Рақами асосӣ');
+                        if (email !== originalEmail) changedFields.push('🔸 Почта');
+                        
+                        const currentExtraPhones = currentShop?.extra_phones || [];
+                        if (JSON.stringify(extraPhones) !== JSON.stringify(currentExtraPhones)) {
+                            changedFields.push('🔸 Рақамҳои иловагӣ');
+                        }
+                        
+                        if (selectedAddressText !== originalAddress) changedFields.push('🔸 Суроға');
+                        if (profilePhotoFile) changedFields.push('🔸 Акси профил');
+                        
+                        const changedFieldsText = changedFields.length > 0 
+                            ? changedFields.join('\n')
+                            : '🔸 Ҳеҷ тағйироте нест';
+                        
+                        // Сохтори паём
+                        const message = `
+📝 *ДАРХОСТИ ТАҒЙИРОТИ ПРОФИЛ*
+━━━━━━━━━━━━━━━━━━━━━
+
+👤 *МАЪЛУМОТИ КОРБАР*
+━━━━━━━━━━━━━━━━━
+🆔 ID корбар: \`${userId || 'Номаълум'}\`
+🏪 ID мағоза: \`${shopId || 'Номаълум'}\`
+📞 Рақами асосӣ: \`${userPhone}\`
+✉️ Почта: \`${userEmail || 'Нест'}\`
+
+🏬 *МАЪЛУМОТИ МАҒОЗА*
+━━━━━━━━━━━━━━━━━
+🔤 Номи корбарӣ: @${username}
+🏷 Номи мағоза: ${shopName}
+👤 Номи соҳиб: ${name}
+📝 Тавсиф: ${bio || 'Нест'}
+📍 Суроға: ${address}
+🌐 Макони дақиқ: \`${location}\`
+
+📞 *РАҚАМҲОИ ИЛОВАГӢ*
+━━━━━━━━━━━━━━━━━
+${extraPhonesList}
+
+🔄 *ТАҒЙИРОТҲОИ АНҶОМДОДА*
+━━━━━━━━━━━━━━━━━
+${changedFieldsText}
+
+❓ *САБАБИ ТАҒЙИРОТ*
+━━━━━━━━━━━━━━━━━
+${reasonText}
+
+⏰ *ВАҚТИ ФИРИСТОДАН*
+━━━━━━━━━━━━━━━━━
+${new Date().toLocaleString('tg-TJ', { timeZone: 'Asia/Dushanbe' })}
+
+━━━━━━━━━━━━━━━━━━━━━
+🔍 Лутфан, ин дархостро тафтиш кунед.
+                        `;
+                        
+                        // Фиристодан ба Telegram
+                        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                chat_id: ADMIN_ID,
+                                text: message,
+                                parse_mode: 'Markdown'
+                            })
+                        });
+                        
+                    } catch (e) {
+                        console.warn('Telegram send failed (non-critical):', e);
+                    }
+                    // ================================================
+
+                    alert('Маълумот бомуваффақият сабт шуд!');
+                    window.location.href = 'profile.html';
+                    
+                } catch (err) {
+                    console.error('Error:', err);
+                    alert('Хатогӣ: ' + err.message);
+                    document.getElementById('submitBtn').disabled = false;
+                    document.getElementById('submitBtn').innerText = 'Сабт кардан';
+                }
+            };
+
+            // Оғоз
+            loadUserData();
+        })();
+    </script>
+</body>
+</html>
