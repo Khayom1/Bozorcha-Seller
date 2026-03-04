@@ -1,96 +1,67 @@
 <!DOCTYPE html>
 <html lang="tg">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Санҷиши Edge Function</title>
-
-<style>
-body{
-font-family: Arial, sans-serif;
-padding:20px;
-max-width:500px;
-margin:auto;
-line-height:1.6;
-}
-
-button{
-padding:12px 24px;
-background:#ff9800;
-color:white;
-border:none;
-border-radius:5px;
-width:100%;
-font-weight:bold;
-cursor:pointer;
-}
-
-button:hover{
-background:#e68900;
-}
-
-#result{
-margin-top:20px;
-padding:15px;
-border:1px solid #ccc;
-border-radius:5px;
-min-height:40px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Санҷиши Edge Function</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; line-height: 1.6; }
+        button { padding: 12px 24px; background: #ff9800; color: white; border: none; border-radius: 5px; width: 100%; font-weight: bold; cursor: pointer; }
+        button:hover { background: #e68900; }
+        #result { margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; min-height: 40px; word-wrap: break-word; }
+    </style>
 </head>
-
 <body>
 
-<h1>Санҷиши Edge Function</h1>
-<p>Ин функсия ба Telegram паём мефиристад.</p>
+    <h1>Санҷиши Edge Function</h1>
+    <p>Ин функсия ба Telegram паём мефиристад.</p>
 
-<button onclick="sendTest()">Фиристодани паёми санҷишӣ</button>
+    <button onclick="sendTest()">Фиристодани паёми санҷишӣ</button>
 
-<div id="result">Натиҷа дар ин ҷо нишон дода мешавад...</div>
+    <div id="result">Натиҷа дар ин ҷо нишон дода мешавад...</div>
 
-<script>
+    <script>
+        const FUNCTION_URL = "https://seagtlajnnhoitytsgd.supabase.co/functions/v1/test-function-html";
+        // Калиди шумо барои иҷозати дархост аз тарафи Supabase Gateway
+        const ANON_KEY = "sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP";
 
-const FUNCTION_URL =
-"https://seagtlajnnhoitytsgd.supabase.co/functions/v1/test-function-html";
+        async function sendTest() {
+            const result = document.getElementById("result");
+            result.innerHTML = "Фиристода истодааст...";
+            result.style.color = "blue";
 
-async function sendTest(){
+            try {
+                const response = await fetch(FUNCTION_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "apikey": ANON_KEY,
+                        "Authorization": `Bearer ${ANON_KEY}`
+                    },
+                    body: JSON.stringify({
+                        text: "🔔 Санҷиш аз сайти khayom1.github.io"
+                    })
+                });
 
-const result=document.getElementById("result");
-result.innerHTML="Фиристода истодааст...";
-result.style.color="blue";
+                // Агар статус 200 набошад
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `Хатогии сервер: ${response.status}`);
+                }
 
-try{
+                const data = await response.json();
+                console.log("Response data:", data);
+                
+                result.innerHTML = "✅ Паём ба Telegram фиристода шуд!";
+                result.style.color = "green";
 
-const response=await fetch(FUNCTION_URL,{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-text:"🔔 Санҷиш аз сайт"
-})
-});
-
-const data=await response.json();
-
-if(!response.ok){
-throw new Error(data.error || "Server error");
-}
-
-result.innerHTML="✅ Паём ба Telegram фиристода шуд!";
-result.style.color="green";
-
-}
-catch(error){
-
-result.innerHTML="❌ Хатогӣ: "+error.message;
-result.style.color="red";
-
-}
-
-}
-
-</script>
+            } catch (error) {
+                console.error("Full error details:", error);
+                result.innerHTML = "❌ Хатогӣ: " + error.message;
+                result.style.color = "red";
+            }
+        }
+    </script>
 
 </body>
 </html>
