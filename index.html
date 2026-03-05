@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bozorcha - Хуш омадед!</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg: #FFFFFF;
@@ -195,6 +196,20 @@
     </div>
 
     <script>
+        // ========== ФУНКСИЯИ МУҲОФИЗАТӢ (XSS) ==========
+        function escapeHTML(str) {
+            if (!str) return '';
+            const p = document.createElement('p');
+            p.textContent = str;
+            return p.innerHTML;
+        }
+
+        // ========== ТАНЗИМИ SUPABASE ==========
+        const _supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'  // Ин anon_key аст, бехатар аст
+        );
+
         // ========== ТАРҶУМАҲО ==========
         const i18n = {
             tj: { flag: "🇹🇯", title: "Хуш омадед!", sub: "Барои оғоз ворид шавед ё сабти ном кунед.", reg: "Сабти ном", login: "Дохилшавӣ", foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд." },
@@ -217,10 +232,34 @@
         document.body.setAttribute('data-theme', currentTheme);
         applyLanguage(currentLang);
 
+        // ========== САНҶИШИ АВТОРИЗАТСИЯ ==========
+        async function checkAuth() {
+            const { data: { session }, error } = await _supabase.auth.getSession();
+            
+            if (session?.user) {
+                // Агар корбар ворид шуда бошад, ба dashboard мегузарем
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        // ========== НАЗОРАТИ ДОИМИИ СЕССИЯ (AUTH OBSERVER) ==========
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                // Агар корбар ҳозир ворид шуда бошад
+                window.location.href = 'dashboard.html';
+            } else if (event === 'SIGNED_OUT') {
+                // Агар корбар баромада бошад, дар ҳамин саҳифа мемонад
+                console.log('Корбар баромад');
+            }
+        });
+
         // ========== ФУНКСИЯҲО ==========
 
         // Splash Screen (бо 3.2 сония аниматсия)
         window.onload = () => {
+            // Аввал санҷиши авторизатсия
+            checkAuth();
+            
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
                 setTimeout(() => {
@@ -276,13 +315,6 @@
         loginBtn.onclick = () => {
             window.location.href = 'login.html';
         };
-
-        // ========== САНҶИШИ ВОРИДШАВӢ ==========
-        // Агар корбар аллакай ворид шуда бошад (userId дошта бошад), ба dashboard мегузарем
-        const userId = localStorage.getItem('userId');
-        if (userId) {
-            window.location.href = 'dashboard.html';
-        }
     </script>
 </body>
 </html>
