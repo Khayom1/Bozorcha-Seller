@@ -716,14 +716,19 @@
         }
 
         async function saveProduct() {
-            const name = document.getElementById('productName').value;
-            const price = document.getElementById('productPrice').value;
-            const desc = document.getElementById('productDesc').value;
+    const btn = document.querySelector('button[onclick="saveProduct()"]');
+    
+    // Гирифтани userId-и бехатар аз Supabase
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
 
-            if (!name) {
-                showError('Номи маҳсулотро ворид кунед');
-                return;
-            }
+    if (authError || !user) {
+        showError('Сессия ба охир расид. Лутфан дубора ворид шавед.');
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    const userId = user.id;
+
             if (!price) {
                 showError('Нархро ворид кунед');
                 return;
