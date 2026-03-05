@@ -5,212 +5,371 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Интихоби усул - Bozorcha</title>
     
+    <meta name="description" content="Интихоби усули сабти ном дар Bozorcha">
+    
+    <!-- Пайваст кардани шрифтҳо -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- Пайваст кардани файлҳои CSS -->
-    <link rel="stylesheet" href="../../../src/styles/main.css">
-    <link rel="stylesheet" href="../../../src/styles/theme.css">
+    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="../src/styles/theme.css">
     
     <!-- Пайваст кардани файлҳои JavaScript -->
-    <script src="../../../src/js/config.js"></script>
-    <script src="../../../src/js/i18n.js"></script>
-    <script src="../../../src/js/theme.js"></script>
-    <script src="../../../src/js/utils.js"></script>
+    <script src="../src/js/config.js" defer></script>
+    <script src="../src/js/i18n.js" defer></script>
+    <script src="../src/js/theme.js" defer></script>
+    <script src="../src/js/utils.js" defer></script>
     
     <style>
-        :root {
-            --bg: #FFFFFF;
-            --surface: #F8F9FA;
-            --text-primary: #1A1C1E;
-            --text-secondary: #6C757D;
-            --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
-            --border: #EEEEEE;
-            --shadow: 0 15px 35px rgba(0,0,0,0.05);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
-
-        [data-theme="dark"] {
-            --bg: #0A0A0B;
-            --surface: #161618;
-            --text-primary: #F8F9FA;
-            --text-secondary: #ADB5BD;
-            --border: #2C2E33;
-            --shadow: 0 15px 35px rgba(0,0,0,0.3);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
 
         body {
-            background-color: var(--bg); color: var(--text-primary);
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 20px;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
-        @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
-
-        .card {
-            background: var(--surface); border-radius: 35px; padding: 40px 30px;
-            box-shadow: var(--shadow); border: 1px solid var(--border);
-            max-width: 400px; width: 100%; position: relative; text-align: center;
+        .auth-card {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-radius: 48px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
+        /* Header */
+        .auth-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
 
         .back-btn {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: var(--bg); border: 1px solid var(--border);
-            cursor: pointer; display: flex; justify-content: center; align-items: center;
-            font-size: 20px; color: var(--text-primary);
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
         }
 
-        .controls { display: flex; gap: 8px; }
+        .back-btn:hover {
+            background: #FF9F43;
+            border-color: #FF9F43;
+            transform: scale(1.05);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area svg {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 10px 20px rgba(255, 159, 67, 0.3));
+        }
+
+        .logo-area span {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF9F43, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
         .icon-btn {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: var(--bg); border: 1px solid var(--border);
-            cursor: pointer; display: flex; justify-content: center; align-items: center;
-            font-size: 18px; position: relative; overflow: hidden;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .theme-icon-box { position: relative; width: 20px; height: 20px; }
-        .sun, .moon { position: absolute; inset: 0; transition: all 0.5s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
-        [data-theme="light"] .sun { transform: translateY(0); opacity: 1; }
-        [data-theme="light"] .moon { transform: translateY(25px); opacity: 0; }
-        [data-theme="dark"] .sun { transform: translateY(-25px); opacity: 0; }
-        [data-theme="dark"] .moon { transform: translateY(0); opacity: 1; }
-
-        .dropdown { position: relative; }
-        .dropdown-menu {
-            position: absolute; top: 50px; right: 0;
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 15px; box-shadow: var(--shadow);
-            display: none; flex-direction: column; overflow: hidden; z-index: 100; min-width: 120px;
+        .icon-btn:hover {
+            background: #FF9F43;
+            border-color: #FF9F43;
+            transform: scale(1.05);
         }
-        .dropdown-menu.show { display: flex; }
-        .dropdown-item { padding: 12px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; gap: 8px; justify-content: flex-start; }
-        .dropdown-item:hover { background: var(--accent-gradient); color: white; }
 
-        .title { font-size: 22px; font-weight: 800; margin-bottom: 30px; text-align: center; }
+        /* Title */
+        .auth-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
+        .auth-title h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .auth-title p {
+            color: #94A3B8;
+            font-size: 16px;
+        }
+
+        /* Method Buttons */
         .method-buttons {
-            display: flex; flex-direction: column; gap: 15px;
-            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 30px;
         }
 
         .method-btn {
-            width: 100%; padding: 20px; border-radius: 20px;
-            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
-            transition: transform 0.2s, opacity 0.3s;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: left;
         }
-        .method-btn.phone { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
-        .method-btn.email { background: var(--bg); border: 2px solid var(--border); color: var(--text-primary); }
-        .method-btn:active { transform: scale(0.96); }
 
-        footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
+        .method-btn:hover {
+            border-color: #FF9F43;
+            background: rgba(255, 159, 67, 0.1);
+            transform: translateX(5px);
+        }
+
+        .method-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 159, 67, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #FF9F43;
+        }
+
+        .method-info {
+            flex: 1;
+        }
+
+        .method-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .method-info p {
+            color: #94A3B8;
+            font-size: 14px;
+        }
+
+        .method-arrow {
+            color: #94A3B8;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+        .method-btn:hover .method-arrow {
+            color: #FF9F43;
+            transform: translateX(5px);
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            color: #94A3B8;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #FF9F43;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .auth-footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #64748B;
+            font-size: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .auth-card { padding: 30px 20px; }
+            .auth-title h1 { font-size: 28px; }
+            .method-btn { padding: 16px 20px; }
+            .method-icon { width: 48px; height: 48px; font-size: 20px; }
+        }
     </style>
 </head>
 <body data-theme="light">
-    <div class="card">
-        <header>
-            <div class="header-left">
-                <button class="back-btn" onclick="history.back()">←</button>
-                <svg width="45" height="45" viewBox="0 0 200 200">
-                    <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
-                    <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
-                    <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+    <div class="auth-card">
+        <!-- Header -->
+        <header class="auth-header">
+            <a href="index.html" class="back-btn" aria-label="Back to home">←</a>
+            
+            <div class="logo-area">
+                <!-- Логотипи SVG илова шуд -->
+                <svg width="40" height="40" viewBox="0 0 200 200">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FF9F43"/>
+                            <stop offset="100%" stop-color="#FF6B6B"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="url(#logoGradient)"/>
                 </svg>
+                <span>Bozorcha</span>
             </div>
-            <div class="controls">
-                <div class="dropdown">
-                    <button class="icon-btn" id="langBtn">🇹🇯</button>
-                    <div class="dropdown-menu" id="langMenu">
-                        <div class="dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
-                        <div class="dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
-                        <div class="dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
-                    </div>
-                </div>
-                <button class="icon-btn" id="themeBtn">
-                    <div class="theme-icon-box">
-                        <span class="sun">☀️</span>
-                        <span class="moon">🌙</span>
-                    </div>
-                </button>
+
+            <div class="header-actions">
+                <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☀️</button>
             </div>
         </header>
 
-        <h1 class="title" id="t-title">Усули воридшавиро интихоб кунед</h1>
-
-        <div class="method-buttons">
-            <button class="method-btn phone" id="phoneBtn">Бо рақами телефон</button>
-            <button class="method-btn email" id="emailBtn">Бо почтаи электронӣ</button>
+        <!-- Title -->
+        <div class="auth-title">
+            <h1>Ба Bozorcha ҳамроҳ шавед</h1>
+            <p>Усули дилхоҳи худро интихоб кунед</p>
         </div>
 
-        <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
+        <!-- Method Buttons -->
+        <div class="method-buttons">
+            <div class="method-btn"
+                 id="phoneMethod"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Register with phone">
+                <div class="method-icon">📱</div>
+                <div class="method-info">
+                    <h3>Бо рақами телефон</h3>
+                    <p>Сабти ном тавассути SMS-код</p>
+                </div>
+                <div class="method-arrow">→</div>
+            </div>
+
+            <div class="method-btn"
+                 id="emailMethod"
+                 role="button"
+                 tabindex="0"
+                 aria-label="Register with email">
+                <div class="method-icon">✉️</div>
+                <div class="method-info">
+                    <h3>Бо почтаи электронӣ</h3>
+                    <p>Сабти ном тавассути почта</p>
+                </div>
+                <div class="method-arrow">→</div>
+            </div>
+        </div>
+
+        <!-- Login Link -->
+        <div class="login-link">
+            Аллакай ҳисоб доред?
+            <a href="login.html">Ворид шавед</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="auth-footer">
+            © 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.
+        </div>
     </div>
 
     <script>
-        // ========== ТАНЗИМИ МАВЗӮЪ ==========
-        initTheme();
-        
-        // ========== ЗАБОНИ ҶОРӢ ==========
-        let currentLang = localStorage.getItem('lang') || 'tj';
-        
-        // ========== ФУНКСИЯИ ИВАЗИ ЗАБОН ==========
-        function setLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('lang', lang);
-            
-            // Танзими парчам
-            const flag = lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : '🇬🇧');
-            document.getElementById('langBtn').innerText = flag;
-            
-            // Танзими матнҳо
-            document.getElementById('t-title').innerText = 
-                lang === 'tj' ? 'Усули воридшавиро интихоб кунед' : 
-                (lang === 'ru' ? 'Выберите способ входа' : 'Choose login method');
-            
-            document.getElementById('phoneBtn').innerText = 
-                lang === 'tj' ? 'Бо рақами телефон' : 
-                (lang === 'ru' ? 'По номеру телефона' : 'By phone number');
-            
-            document.getElementById('emailBtn').innerText = 
-                lang === 'tj' ? 'Бо почтаи электронӣ' : 
-                (lang === 'ru' ? 'По электронной почте' : 'By email');
-            
-            document.getElementById('t-foot').innerText = 
-                lang === 'tj' ? '© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.' : 
-                (lang === 'ru' ? '© 2026 Bozorcha. Все права защищены.' : '© 2026 Bozorcha. All rights reserved.');
-            
-            // Бастани меню
-            document.getElementById('langMenu').classList.remove('show');
+        // ========== ТАНЗИМИ МАВЗӮЪ (THEME) ==========
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeBtn').innerText = savedTheme === 'light' ? '☀️' : '🌙';
         }
         
-        // ========== ТУГМАИ ЗАБОН ==========
-        document.getElementById('langBtn').onclick = (e) => {
-            e.stopPropagation();
-            document.getElementById('langMenu').classList.toggle('show');
-        };
-        
-        // ========== ТУГМАИ МАВЗӮЪ ==========
-        document.getElementById('themeBtn').onclick = () => {
-            toggleTheme();
-        };
-        
-        // ========== ТУГМАҲО ==========
-        document.getElementById('phoneBtn').onclick = () => {
-            window.location.href = 'register-phone.html';
-        };
-        
-        document.getElementById('emailBtn').onclick = () => {
-            window.location.href = 'register-email.html';
-        };
-        
-        // ========== ПӮШИДАНИ МЕНЮ ==========
-        window.onclick = () => {
-            document.getElementById('langMenu').classList.remove('show');
-        };
-        
-        // ========== ТАНЗИМИ АВВАЛ ==========
-        setLang(currentLang);
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            const newTheme = current === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('themeBtn').innerText = newTheme === 'light' ? '☀️' : '🌙';
+        }
+
+        // ========== КОР БО КЛАВИАТУРА (KEYBOARD ACCESSIBILITY) ==========
+        function activateWithKeyboard(element, callback) {
+            element.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    callback();
+                }
+            });
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+
+            const themeBtn = document.getElementById('themeBtn');
+            themeBtn.addEventListener('click', toggleTheme);
+
+            const phoneBtn = document.getElementById('phoneMethod');
+            const emailBtn = document.getElementById('emailMethod');
+
+            // Интиқол ба саҳифаи сабти ном бо телефон
+            phoneBtn.addEventListener('click', function() {
+                window.location.href = 'register-phone.html';
+            });
+
+            // Интиқол ба саҳифаи сабти ном бо почта
+            emailBtn.addEventListener('click', function() {
+                window.location.href = 'register-email.html';
+            });
+
+            // Дастгирии клавиатура
+            activateWithKeyboard(phoneBtn, function() {
+                window.location.href = 'register-phone.html';
+            });
+
+            activateWithKeyboard(emailBtn, function() {
+                window.location.href = 'register-email.html';
+            });
+        });
     </script>
 </body>
 </html>
