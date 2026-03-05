@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Фиристодани мағоза - Bozorcha</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <style>
+        :root {
+            --bg: #FFFFFF;
+            --surface: #F8F9FA;
+            --text-primary: #1A1C1E;
+            --text-secondary: #6C757D;
+            --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
+            --border: #EEEEEE;
+            --shadow: 0 15px 35px rgba(0,0,0,0.05);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0A0A0B;
+            --surface: #161618;
+            --text-primary: #F8F9FA;
+            --text-secondary: #ADB5BD;
+            --border: #2C2E33;
+            --shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
+
+        body {
+            background-color: var(--bg); color: var(--text-primary);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
+
+        .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
+        @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
+
+        .card {
+            background: var(--surface); border-radius: 35px; padding: 40px 30px;
+            box-shadow: var(--shadow); border: 1px solid var(--border);
+            max-width: 500px; width: 100%; position: relative; text-align: center;
+        }
+
+        header { display: flex; align-items: center; margin-bottom: 35px; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+
+        .back-btn {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: var(--bg); border: 1px solid var(--border);
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            font-size: 20px; color: var(--text-primary);
+        }
+
+        .title { font-size: 24px; font-weight: 800; margin-bottom: 15px; text-align: left; }
+        .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; text-align: left; line-height: 1.4; }
+
+        .shop-info {
+            background: var(--accent-light);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .shop-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+        }
+
+        .shop-details {
+            flex: 1;
+            text-align: left;
+        }
+
+        .shop-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .shop-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .shop-status.verified { background: #e8f5e9; color: var(--success); }
+        .shop-status.pending { background: #fff3e0; color: var(--warning); }
+        .shop-status.unverified { background: #fee2e2; color: var(--danger); }
+
+        .qr-section {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #qrContainer {
+            width: 250px;
+            height: 250px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qrContainer img, #qrContainer canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .shop-link-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .shop-link {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .shop-link span {
+            font-size: 14px;
+            color: var(--text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .copy-btn {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
+
+        .share-options {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .share-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .share-icons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .share-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .share-icon:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .telegram { color: #0088cc; }
+        .whatsapp { color: #25D366; }
+        .instagram { color: #E4405F; }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="card">
+        <header>
+            <div class="header-left">
+                <button class="back-btn" id="backBtn">←</button>
+                <svg width="45" height="45" viewBox="0 0 200 200">
+                    <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
+                    <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
+                    <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
+                </svg>
+            </div>
+        </header>
+
+        <h1 class="title" id="t-title">Фиристодани мағоза</h1>
+        <p class="subtitle" id="t-sub">QR Code ва ссылкаи мағозаи худро мубодила кунед</p>
+
+        <!-- Маълумоти мағоза -->
+        <div class="shop-info" id="shopInfo">
+            <div class="shop-avatar" id="shopAvatar">🏪</div>
+            <div class="shop-details">
+                <div class="shop-name" id="shopName">Мағозаи ман</div>
+                <span class="shop-status" id="shopStatus">Тасдиқшуда</span>
+            </div>
+        </div>
+
+        <!-- QR Code -->
+        <div class="qr-section">
+            <div id="qrContainer"></div>
+            
+            <!-- Ссылка -->
+            <div class="shop-link-container">
+                <div class="shop-link">
+                    <span id="shopLink">...</span>
+                    <button class="copy-btn" id="copyBtn">Нусхабардорӣ</button>
+                </div>
+            </div>
+
+            <!-- Тугмаҳо -->
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="downloadBtn">📥 Зеркашӣ</button>
+                <button class="btn btn-primary" id="shareBtn">📤 Фиристодан</button>
+            </div>
+        </div>
+
+        <!-- Шабакаҳои иҷтимоӣ -->
+        <div class="share-options">
+            <div class="share-title">Мубодила дар шабакаҳо:</div>
+            <div class="share-icons">
+                <div class="share-icon telegram" id="shareTelegram" title="Telegram">
+                    <i class="fab fa-telegram"></i>
+                </div>
+                <div class="share-icon whatsapp" id="shareWhatsapp" title="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <div class="share-icon instagram" id="shareInstagram" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+
+        <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        const _supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const shopId = urlParams.get('id') || localStorage.getItem('currentShopId');
+
+        let currentShop = null;
+        let currentLang = localStorage.getItem('lang') || 'tj';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
+        document.body.setAttribute('data-theme', currentTheme);
+
+        const i18n = {
+            tj: {
+                title: "Фиристодани мағоза",
+                sub: "QR Code ва ссылкаи мағозаи худро мубодила кунед",
+                copy: "Нусхабардорӣ",
+                download: "Зеркашӣ",
+                share: "Фиристодан",
+                foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.",
+                copied: "Ссылка нусхабардорӣ шуд!",
+                verified: "Тасдиқшуда",
+                pending: "Дар ҳоли тасдиқ",
+                unverified: "Тасдиқнашуда"
+            },
+            ru: {
+                title: "Поделиться магазином",
+                sub: "Поделитесь QR-кодом и ссылкой на ваш магазин",
+                copy: "Копировать",
+                download: "Скачать",
+                share: "Поделиться",
+                foot: "© 2026 Bozorcha. Все права защищены.",
+                copied: "Ссылка скопирована!",
+                verified: "Подтвержден",
+                pending: "На проверке",
+                unverified: "Не подтвержден"
+            },
+            en: {
+                title: "Share Shop",
+                sub: "Share your shop's QR Code and link",
+                copy: "Copy",
+                download: "Download",
+                share: "Share",
+                foot: "© 2026 Bozorcha. All rights reserved.",
+                copied: "Link copied!",
+                verified: "Verified",
+                pending: "Pending",
+                unverified: "Unverified"
+            }
+        };
+
+        applyLang(currentLang);
+
+        function applyLang(lang) {
+            const d = i18n[lang];
+            document.getElementById('t-title').innerText = d.title;
+            document.getElementById('t-sub').innerText = d.sub;
+            document.getElementById('copyBtn').innerText = d.copy;
+            document.getElementById('downloadBtn').innerText = d.download;
+            document.getElementById('shareBtn').innerText = d.share;
+            document.getElementById('t-foot').innerText = d.foot;
+        }
+
+        backBtn.onclick = () => history.back();
+
+        async function loadShopData() {
+            if (!shopId) {
+                alert('ID-и мағоза ёфт нашуд');
+                return;
+            }
+
+            const { data, error } = await _supabase
+                .from('shops')
+                .select('*')
+                .eq('id', shopId)
+                .single();
+
+            if (error) {
+                console.error('Error loading shop:', error);
+                return;
+            }
+
+            currentShop = data;
+
+            // Нишон додани маълумот
+            document.getElementById('shopName').innerText = data.shop_name || 'Мағозаи ман';
+            
+            // Статус
+            const statusEl = document.getElementById('shopStatus');
+            if (data.moderation_status === 'approved') {
+                statusEl.innerText = i18n[currentLang].verified;
+                statusEl.className = 'shop-status verified';
+            } else if (data.moderation_status === 'pending') {
+                statusEl.innerText = i18n[currentLang].pending;
+                statusEl.className = 'shop-status pending';
+            } else {
+                statusEl.innerText = i18n[currentLang].unverified;
+                statusEl.className = 'shop-status unverified';
+            }
+
+            // Эҷоди ссылка (барои лоиҳаи харидорон)
+            // Шумо метавонед инро баъдтар ба домени дуруст иваз кунед
+            const buyerAppUrl = `https://khayom1.github.io/Bozorcha-Buyer/shop.html?id=${shopId}`;
+            document.getElementById('shopLink').innerText = buyerAppUrl;
+
+            // Эҷоди QR Code
+            generateQR(buyerAppUrl);
+        }
+
+        function generateQR(text) {
+            // Тоза кардани қисми қаблӣ
+            const container = document.getElementById('qrContainer');
+            container.innerHTML = '';
+
+            // Эҷоди QR код
+            const qr = qrcode(0, 'H');
+            qr.addData(text);
+            qr.make();
+
+            // Табдил ба img
+            const img = document.createElement('img');
+            img.src = qr.createDataURL(4, 0);
+            img.alt = 'QR Code';
+            container.appendChild(img);
+        }
+
+        // Нусхабардории ссылка
+        document.getElementById('copyBtn').onclick = () => {
+            const link = document.getElementById('shopLink').innerText;
+            navigator.clipboard.writeText(link);
+            alert(i18n[currentLang].copied);
+        };
+
+        // Зеркашии QR Code
+        document.getElementById('downloadBtn').onclick = () => {
+            const img = document.querySelector('#qrContainer img');
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = `shop-${shopId}-qr.png`;
+            link.click();
+        };
+
+        // Фиристодан (бо истифода аз Web Share API)
+        document.getElementById('shareBtn').onclick = () => {
+            const link = document.getElementById('shopLink').innerText;
+            const shopName = document.getElementById('shopName').innerText;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: shopName,
+                    text: `Мағозаи ${shopName} дар Bozorcha`,
+                    url: link
+                }).catch(console.error);
+            } else {
+                alert('Браузери шумо фиристоданро дастгирӣ намекунад');
+            }
+        };
+
+        // Мубодила дар Telegram
+        document.getElementById('shareTelegram').onclick = () => {
+            const link = document.getElementById('shopLink').innerText;
+            const shopName = document.getElementById('shopName').innerText;
+            const text = encodeURIComponent(`Мағозаи ${shopName} дар Bozorcha: ${link}`);
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`, '_blank');
+        };
+
+        // Мубодила дар WhatsApp
+        document.getElementById('shareWhatsapp').onclick = () => {
+            const link = document.getElementById('shopLink').innerText;
+            const shopName = document.getElementById('shopName').innerText;
+            const text = encodeURIComponent(`Мағозаи ${shopName} дар Bozorcha: ${link}`);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        };
+
+        // Мубодила дар Instagram (танҳо метавонад ссылка гузорад)
+        document.getElementById('shareInstagram').onclick = () => {
+            const link = document.getElementById('shopLink').innerText;
+            navigator.clipboard.writeText(link);
+            alert('Ссылка нусхабардорӣ шуд. Онро дар Instagram гузоред.');
+        };
+
+        // Боркунии маълумот
+        loadShopData();
+    </script>
+</body>
+</html>
