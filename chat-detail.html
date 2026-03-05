@@ -337,11 +337,19 @@
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         );
 
+        // Функсияи муҳофизатӣ барои тоза кардани матн
+        function escapeHTML(str) {
+            if (!str) return '';
+            const p = document.createElement('p');
+            p.textContent = str;
+            return p.innerHTML;
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('chat');
         const productId = urlParams.get('product');
 
-        let currentUserId = localStorage.getItem('userId');
+        let currentUserId = null;
         let otherUserId = null;
         let messages = [];
         let chatData = null;
@@ -353,18 +361,23 @@
             }
         });
 
- document.addEventListener('DOMContentLoaded', async () => {
-    // Гирифтани корбари воқеӣ аз Supabase
-    const { data: { user }, error } = await _supabase.auth.getUser();
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Гирифтани корбари воқеӣ аз Supabase
+            const { data: { user }, error } = await _supabase.auth.getUser();
 
-    if (error || !user) {
-        window.location.href = 'index.html';
-        return;
-    }
+            if (error || !user) {
+                window.location.href = 'index.html';
+                return;
+            }
 
-    currentUserId = user.id; // Акнун ID аз сессияи тасдиқшуда гирифта мешавад
-    // ... боқимондаи код
+            currentUserId = user.id;
 
+            // Назорати доимии сессия (Auth Observer)
+            _supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_OUT' || !session) {
+                    window.location.href = 'index.html';
+                }
+            });
 
             await loadChat();
             await loadMessages();
@@ -400,8 +413,10 @@
                 .single();
 
             const name = user.full_name || user.shop_name || 'Корбар';
-            document.getElementById('userName').innerText = name;
-            document.getElementById('avatar').innerText = name.charAt(0);
+            // Истифодаи escapeHTML барои муҳофизат
+            const safeName = escapeHTML(name);
+            document.getElementById('userName').innerText = safeName;
+            document.getElementById('avatar').innerText = safeName.charAt(0);
 
             // Агар productId дар URL бошад
             if (productId) {
@@ -413,8 +428,8 @@
                 
                 if (product) {
                     productData = product;
-                    document.getElementById('productName').innerText = product.name;
-                    document.getElementById('productPrice').innerText = product.price + ' с';
+                    document.getElementById('productName').innerText = escapeHTML(product.name);
+                    document.getElementById('productPrice').innerText = escapeHTML(product.price) + ' с';
                     document.getElementById('productCard').classList.remove('hidden');
                 }
             }
@@ -439,7 +454,7 @@
             messages.forEach(msg => {
                 const date = new Date(msg.created_at).toLocaleDateString();
                 if (date !== lastDate) {
-                    html += `<div style="text-align:center; font-size:11px; color:var(--text-muted); margin:10px 0;">${date}</div>`;
+                    html += `<div style="text-align:center; font-size:11px; color:var(--text-muted); margin:10px 0;">${escapeHTML(date)}</div>`;
                     lastDate = date;
                 }
 
@@ -457,14 +472,15 @@
                     }
                 }
                 if (msg.content) {
-                    contentHtml += `<div class="message-content">${msg.content}</div>`;
+                    // ИСТИФОДАИ МУҲИМ: escapeHTML барои муҳофизат аз XSS
+                    contentHtml += `<div class="message-content">${escapeHTML(msg.content)}</div>`;
                 }
 
                 html += `
                     <div class="message ${isMine ? 'sent' : 'received'}">
                         ${contentHtml}
                         <div class="message-time">
-                            ${time}
+                            ${escapeHTML(time)}
                             <span class="message-status">${isMine ? '<i class="fas fa-check"></i>' : ''}</span>
                         </div>
                     </div>
