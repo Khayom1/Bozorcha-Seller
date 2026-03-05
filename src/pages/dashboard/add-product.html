@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Иловаи маҳсулот - Bozorcha</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --bg: #f8fafc;
+            --bg-card: #ffffff;
+            --text: #0f172a;
+            --text-light: #475569;
+            --text-muted: #64748b;
+            --accent: #ff9800;
+            --accent-light: #fff3e0;
+            --accent-dark: #f57c00;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.05);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gradient: linear-gradient(135deg, #ff9800, #ff6b6b);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            width: 100%;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+            background: var(--bg-card);
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-bottom: 15px;
+        }
+
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-light);
+            font-size: 14px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb-item:hover {
+            color: var(--accent);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .breadcrumb-separator {
+            color: var(--border);
+        }
+
+        #categoryList {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 12px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+
+        .category-item:hover {
+            background: var(--accent-light);
+            transform: translateX(5px);
+        }
+
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .category-name {
+            font-weight: 500;
+        }
+
+        .category-arrow {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        label i {
+            color: var(--accent);
+            margin-right: 6px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 4px var(--accent-light);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,152,0,0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text);
+            margin-bottom: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .loading i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--accent);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: var(--success);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3><i class="fas fa-plus-circle" style="margin-right: 10px;"></i>Иловаи маҳсулот</h3>
+    
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+    
+    <div id="categorySection">
+        <div class="breadcrumb" id="breadcrumb">
+            <span class="breadcrumb-item active">Категорияҳо</span>
+        </div>
+        <div id="categoryList">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Боргирии категорияҳо...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="productForm" style="display: none;">
+        <button class="btn btn-secondary" onclick="resetCategory()">
+            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>Иваз кардани категория
+        </button>
+        
+        <div class="form-group">
+            <label><i class="fas fa-tag"></i>Номи маҳсулот</label>
+            <input type="text" id="pName" placeholder="Масалан: iPhone 15" autocomplete="off">
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fas fa-dollar-sign"></i>Нарх (сомонӣ)</label>
+            <input type="number" id="pPrice" placeholder="0" min="0" step="0.01">
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fas fa-image"></i>Акс (ихтиёрӣ)</label>
+            <input type="file" id="pImage" accept="image/*">
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fas fa-align-left"></i>Тавсиф (ихтиёрӣ)</label>
+            <textarea id="pDesc" rows="3" placeholder="Тавсифи мухтасар..."></textarea>
+        </div>
+        
+        <button class="btn" id="saveBtn" onclick="saveProduct()">
+            <i class="fas fa-save" style="margin-right: 8px;"></i>Сабт ва огоҳинома
+        </button>
+    </div>
+</div>
+
+<script>
+    // ========== ФУНКСИЯИ МУҲОФИЗАТӢ (XSS) ==========
+    function escapeHTML(str) {
+        if (!str) return '';
+        const p = document.createElement('p');
+        p.textContent = str;
+        return p.innerHTML;
+    }
+
+    // ========== ТАНЗИМИ SUPABASE ==========
+    const _supabase = supabase.createClient(
+        'https://seagtlaujnnhoyitgsdd.supabase.co',
+        'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+    );
+
+    let selectedCatId = null;
+    let categoryPath = []; // Барои нигоҳ доштани роҳ (масалан: [12, 34, 56])
+    let categoriesMap = new Map(); // Барои нигоҳ доштани маълумоти категорияҳо
+    let currentUserId = null;
+
+    // ========== САНҶИШИ АВТОРИЗАТСИЯ ==========
+    document.addEventListener('DOMContentLoaded', async () => {
+        const { data: { user }, error } = await _supabase.auth.getUser();
+
+        if (error || !user) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        currentUserId = user.id;
+        
+        // Назорати сессия
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT' || !session) {
+                window.location.href = 'login.html';
+            }
+        });
+
+        loadCategories();
+    });
+
+    // ========== БОРГИРИИ КАТЕГОРИЯҲО ==========
+    async function loadCategories(parentId = null) {
+        const list = document.getElementById('categoryList');
+        
+        try {
+            // Сохтани query
+            let query = _supabase
+                .from('categories')
+                .select('*')
+                .order('name_tg');
+            
+            if (parentId === null) {
+                // Категорияҳои асосӣ (parent_id = null)
+                query = query.is('parent_id', null);
+            } else {
+                // Зеркатегорияҳо
+                query = query.eq('parent_id', parentId);
+            }
+
+            const { data: categories, error } = await query;
+
+            if (error) throw error;
+
+            // Нигоҳ доштани категорияҳо дар Map
+            categories.forEach(cat => categoriesMap.set(cat.id, cat));
+
+            // Агар категория ёфт нашуд ва parentId мавҷуд аст, пас ин категорияи охирин аст
+            if (categories.length === 0 && parentId !== null) {
+                showForm(parentId);
+                return;
+            }
+
+            displayCategories(categories, parentId);
+            
+        } catch (error) {
+            showError('Хатогӣ дар боркунии категорияҳо: ' + error.message);
+            list.innerHTML = '<div style="text-align: center; padding: 20px;">Хатогӣ рух дод</div>';
+        }
+    }
+
+    // ========== НИШОН ДОДАНИ КАТЕГОРИЯҲО ==========
+    function displayCategories(categories, parentId) {
+        const list = document.getElementById('categoryList');
+        
+        if (categories.length === 0) {
+            list.innerHTML = '<div style="text-align: center; padding: 20px;">Ҳеҷ категория ёфт нашуд</div>';
+            return;
+        }
+
+        let html = '';
+        categories.forEach(cat => {
+            const safeName = escapeHTML(cat.name_tg || '');
+            const icon = cat.icon || 'folder';
+            
+            html += `
+                <div class="category-item" onclick="selectCategory('${cat.id}', ${cat.id})">
+                    <div class="category-info">
+                        <div class="category-icon"><i class="fas fa-${escapeHTML(icon)}"></i></div>
+                        <span class="category-name">${safeName}</span>
+                    </div>
+                    <i class="fas fa-chevron-right category-arrow"></i>
+                </div>
+            `;
+        });
+        
+        list.innerHTML = html;
+        updateBreadcrumb(parentId);
+    }
+
+    // ========== ИНТИХОБИ КАТЕГОРИЯ ==========
+    function selectCategory(catId) {
+        categoryPath.push(catId);
+        loadCategories(catId);
+    }
+
+    // ========== БОЗГАШТ БА КАТЕГОРИЯИ ҚАБЛӢ ==========
+    function goBack() {
+        if (categoryPath.length === 0) {
+            resetCategory();
+            return;
+        }
+
+        categoryPath.pop();
+
+        if (categoryPath.length === 0) {
+            loadCategories(null);
+        } else {
+            const parentId = categoryPath[categoryPath.length - 1];
+            loadCategories(parentId);
+        }
+    }
+
+    // ========== БАРҚАРОР КАРДАНИ КАТЕГОРИЯ ==========
+    function resetCategory() {
+        selectedCatId = null;
+        categoryPath = [];
+        document.getElementById('categorySection').style.display = 'block';
+        document.getElementById('productForm').style.display = 'none';
+        loadCategories(null);
+    }
+
+    // ========== НИШОН ДОДАНИ ФОРМА ==========
+    function showForm(catId) {
+        selectedCatId = catId;
+        document.getElementById('categorySection').style.display = 'none';
+        document.getElementById('productForm').style.display = 'block';
+    }
+
+    // ========== БАРӮЗ КАРДАНИ BREADCRUMB ==========
+    function updateBreadcrumb(currentParentId) {
+        const breadcrumb = document.getElementById('breadcrumb');
+        breadcrumb.innerHTML = '';
+
+        // Қисми "Категорияҳо"
+        const homeSpan = document.createElement('span');
+        homeSpan.className = 'breadcrumb-item' + (categoryPath.length === 0 ? ' active' : '');
+        homeSpan.innerHTML = '<i class="fas fa-home"></i> Асосӣ';
+        homeSpan.onclick = () => {
+            categoryPath = [];
+            loadCategories(null);
+        };
+        breadcrumb.appendChild(homeSpan);
+
+        // Қисмҳои дигар
+        for (let i = 0; i < categoryPath.length; i++) {
+            const catId = categoryPath[i];
+            const cat = categoriesMap.get(catId);
+            if (!cat) continue;
+
+            const sep = document.createElement('span');
+            sep.className = 'breadcrumb-separator';
+            sep.innerHTML = '›';
+            breadcrumb.appendChild(sep);
+
+            const span = document.createElement('span');
+            span.className = 'breadcrumb-item' + (i === categoryPath.length - 1 ? ' active' : '');
+            span.innerText = escapeHTML(cat.name_tg || '');
+            
+            // Имконияти гузаштан ба категорияи қаблӣ
+            span.onclick = (function(id, index) {
+                return function() {
+                    categoryPath = categoryPath.slice(0, index + 1);
+                    loadCategories(id);
+                };
+            })(catId, i);
+            
+            breadcrumb.appendChild(span);
+        }
+    }
+
+    // ========== САБТ ВА ФИРИСТОДАНИ ОГОҲИНОМА ==========
+    async function saveProduct() {
+        const name = document.getElementById('pName').value.trim();
+        const price = document.getElementById('pPrice').value.trim();
+        const file = document.getElementById('pImage').files[0];
+        const desc = document.getElementById('pDesc').value.trim();
+        const btn = document.getElementById('saveBtn');
+
+        if (!name) {
+            showError('Номи маҳсулотро ворид кунед!');
+            return;
+        }
+        if (!price) {
+            showError('Нархро ворид кунед!');
+            return;
+        }
+        if (!selectedCatId) {
+            showError('Категория интихоб нашудааст!');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сабт шуда истодааст...';
+
+        try {
+            let imageUrl = '';
+            if (file) {
+                const fileName = `${Date.now()}_${file.name}`;
+                const { error: uploadError } = await _supabase.storage
+                    .from('product-images')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: urlData } = _supabase.storage
+                    .from('product-images')
+                    .getPublicUrl(fileName);
+
+                imageUrl = urlData.publicUrl;
+            }
+
+            // Сабт дар база
+            const { data: product, error } = await _supabase
+                .from('products')
+                .insert([{
+                    name: escapeHTML(name),
+                    price: parseFloat(price),
+                    description: desc ? escapeHTML(desc) : null,
+                    category_id: selectedCatId,
+                    image: imageUrl,
+                    user_id: currentUserId,
+                    created_at: new Date()
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            // ФИРИСТОДАНИ ОГОҲИНОМА БА ТЕЛЕГРАМ
+            try {
+                const { data: { session } } = await _supabase.auth.getSession();
+                
+                if (session) {
+                    const notificationText = `🚀 **Маҳсулоти нав дар Bozorcha!**\n\n` +
+                        `👤 Корбар: ${session.user?.email || 'Меҳмон'}\n` +
+                        `📦 Маҳсулот: ${name}\n` +
+                        `💰 Нарх: ${price} сомонӣ\n` +
+                        `📝 Тавсиф: ${desc || '—'}\n` +
+                        `🔗 Категория ID: ${selectedCatId}`;
+
+                    await fetch('https://seagtlaujnnhoyitgsdd.supabase.co/functions/v1/test-function-html', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP',
+                            'Authorization': `Bearer ${session.access_token}`
+                        },
+                        body: JSON.stringify({
+                            text: notificationText
+                        })
+                    });
+                }
+            } catch (notifyError) {
+                console.error('Хатогӣ ҳангоми фиристодани огоҳинома:', notifyError);
+                // Огоҳинома нарасад ҳам, ба корбар халал намерасонем
+            }
+
+            // Нишон додани паёми муваффақият
+            const successMsg = document.getElementById('successMessage');
+            successMsg.innerText = '✅ Маҳсулот бомуваффақият сабт шуд ва админ огоҳ карда шуд!';
+            successMsg.classList.add('show');
+
+            setTimeout(() => {
+                window.location.href = 'home.html';
+            }, 2000);
+
+        } catch (error) {
+            showError('Хатогӣ: ' + error.message);
+            console.error(error);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Сабт ва огоҳинома';
+        }
+    }
+
+    // ========== НИШОН ДОДАНИ ХАТОГӢ ==========
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.innerText = '❌ ' + message;
+        errorDiv.classList.add('show');
+
+        setTimeout(() => {
+            errorDiv.classList.remove('show');
+        }, 3000);
+    }
+</script>
+</body>
+</html>
