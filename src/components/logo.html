@@ -1,0 +1,74 @@
+<svg class="animated-logo" width="45" height="45" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="sweepGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0)" />
+            <stop offset="50%" stop-color="rgba(255,255,255,0.6)" />
+            <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+        </linearGradient>
+    </defs>
+    <g class="logo-group">
+        <!-- Пасҳои логотипи аслии шумо -->
+        <path class="stroke-path" d="M50,250 L450,250" />
+        <circle class="fill-shape" cx="250" cy="250" r="80" />
+        <rect class="highlight" x="0" y="0" width="500" height="500" fill="url(#sweepGradient)" />
+    </g>
+</svg>
+
+<style>
+    .animated-logo {
+        opacity: 0;
+        transform: scale(0.95);
+        animation: ambientReveal 0.4s ease forwards;
+    }
+
+    .animated-logo .stroke-path {
+        stroke: #000;
+        stroke-width: 2;
+        fill: none;
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: drawStroke 1.3s ease forwards;
+        animation-delay: 0.4s;
+    }
+
+    .animated-logo .fill-shape {
+        fill: #000;
+        opacity: 0;
+        animation: fillBloom 0.6s ease forwards;
+        animation-delay: 1.7s;
+    }
+
+    .animated-logo .logo-group {
+        animation: bounce 0.5s cubic-bezier(.25,1.25,.5,1) forwards;
+        animation-delay: 2.3s;
+    }
+
+    .animated-logo .highlight {
+        opacity: 0;
+        animation: sweep 0.4s linear forwards;
+        animation-delay: 2.8s;
+    }
+
+    @keyframes ambientReveal {
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes drawStroke {
+        to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes fillBloom {
+        to { opacity: 1; }
+    }
+
+    @keyframes bounce {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes sweep {
+        from { opacity: 0; transform: translateX(-100%); }
+        to { opacity: 1; transform: translateX(100%); }
+    }
+</style>
