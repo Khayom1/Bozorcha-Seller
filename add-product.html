@@ -49,55 +49,39 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            padding: 20px;
         }
 
-        /* App Bar */
-        .app-bar {
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
             background: var(--bg-card);
-            height: 60px;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            width: 100%;
         }
 
-        .back-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text);
-        }
-
-        .back-btn:hover {
-            background: var(--accent-light);
-            color: var(--accent);
-        }
-
-        .page-title {
-            flex: 1;
+        h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-align: center;
-            font-size: 18px;
-            font-weight: 600;
         }
 
-        /* Breadcrumb */
         .breadcrumb {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 16px;
+            padding: 12px 0;
             background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
             overflow-x: auto;
             white-space: nowrap;
+            margin-bottom: 15px;
         }
 
         .breadcrumb-item {
@@ -123,55 +107,47 @@
             color: var(--border);
         }
 
-        /* Content */
-        .content {
-            flex: 1;
-            padding: 20px 16px;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* Category List */
-        .category-list {
-            list-style: none;
+        #categoryList {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 12px;
         }
 
         .category-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 0;
+            padding: 16px;
             border-bottom: 1px solid var(--border);
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            border-radius: 8px;
         }
 
         .category-item:hover {
             background: var(--accent-light);
-            padding-left: 8px;
+            transform: translateX(5px);
         }
 
         .category-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .category-icon {
             width: 40px;
             height: 40px;
-            border-radius: 12px;
+            border-radius: 10px;
             background: var(--accent-light);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--accent);
-            font-size: 20px;
+            font-size: 18px;
         }
 
         .category-name {
-            font-size: 16px;
             font-weight: 500;
         }
 
@@ -180,16 +156,11 @@
             font-size: 14px;
         }
 
-        /* Product Form */
-        .product-form {
-            margin-top: 20px;
-        }
-
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-label {
+        label {
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
@@ -197,108 +168,46 @@
             font-size: 14px;
         }
 
-        .form-label i {
+        label i {
             color: var(--accent);
             margin-right: 6px;
         }
 
-        .form-input, .form-textarea, .form-select {
+        input, select, textarea {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 16px;
             border: 2px solid var(--border);
-            border-radius: 16px;
-            background: var(--bg-card);
+            border-radius: 12px;
+            background: var(--bg);
             color: var(--text);
-            font-size: 16px;
+            font-size: 15px;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
 
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: var(--accent);
             outline: none;
             box-shadow: 0 0 0 4px var(--accent-light);
         }
 
-        .form-textarea {
+        textarea {
             min-height: 100px;
             resize: vertical;
         }
 
-        .image-upload-area {
-            border: 2px dashed var(--border);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--bg-card);
-        }
-
-        .image-upload-area:hover {
-            border-color: var(--accent);
-            background: var(--accent-light);
-        }
-
-        .image-upload-area i {
-            font-size: 40px;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .image-upload-area p {
-            color: var(--text-light);
-        }
-
-        .image-preview {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-
-        .preview-item {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--border);
-        }
-
-        .preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .preview-remove {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: var(--danger);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             border: none;
-            border-radius: 16px;
+            border-radius: 14px;
             background: var(--gradient);
             color: white;
             font-weight: 600;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .btn:hover {
@@ -309,6 +218,24 @@
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text);
+            margin-bottom: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .hidden {
+            display: none;
         }
 
         .loading {
@@ -354,473 +281,364 @@
         .success-message.show {
             display: block;
         }
-
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <div class="app-bar">
-        <div class="back-btn" onclick="goBack()">
-            <i class="fas fa-arrow-left"></i>
+
+<div class="container">
+    <h3><i class="fas fa-plus-circle" style="margin-right: 10px;"></i>Иловаи маҳсулот</h3>
+    
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+    
+    <div id="categorySection">
+        <div class="breadcrumb" id="breadcrumb">
+            <span class="breadcrumb-item active">Категорияҳо</span>
         </div>
-        <div class="page-title">Иловаи маҳсулот</div>
-        <div style="width: 40px;"></div>
-    </div>
-
-    <!-- Breadcrumb -->
-    <div class="breadcrumb" id="breadcrumb"></div>
-
-    <div class="content">
-        <div class="error-message" id="errorMessage"></div>
-        <div class="success-message" id="successMessage"></div>
-
-        <div id="loading" class="loading">
-            <i class="fas fa-spinner"></i>
-            <p>Боргирии категорияҳо...</p>
-        </div>
-
-        <!-- Category List Container -->
-        <div id="categoryListContainer" class="hidden">
-            <ul class="category-list" id="categoryList"></ul>
-        </div>
-
-        <!-- Product Form Container -->
-        <div id="productFormContainer" class="hidden">
-            <div class="product-form">
-                <!-- Product Name -->
-                <div class="form-group">
-                    <label class="form-label"><i class="fas fa-heading"></i> Номи маҳсулот</label>
-                    <input type="text" class="form-input" id="productName" placeholder="Масалан: Футболка Adidas">
-                </div>
-
-                <!-- Price -->
-                <div class="form-group">
-                    <label class="form-label"><i class="fas fa-dollar-sign"></i> Нарх (c.)</label>
-                    <input type="number" class="form-input" id="productPrice" placeholder="0">
-                </div>
-
-                <!-- Images -->
-                <div class="form-group">
-                    <label class="form-label"><i class="fas fa-image"></i> Аксҳо</label>
-                    <div class="image-upload-area" id="imageUploadArea">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <p>Барои боркунии аксҳо зер кунед</p>
-                        <p style="font-size: 12px;">PNG, JPG, GIF (то 10MB)</p>
-                    </div>
-                    <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
-                    <div class="image-preview" id="imagePreview"></div>
-                </div>
-
-                <!-- Description -->
-                <div class="form-group">
-                    <label class="form-label"><i class="fas fa-align-left"></i> Тавсиф</label>
-                    <textarea class="form-textarea" id="productDesc" placeholder="Тавсифи мухтасар..."></textarea>
-                </div>
-
-                <!-- Dynamic Attributes -->
-                <div id="attributesContainer"></div>
-
-                <!-- Save Button -->
-                <button class="btn" id="saveBtn" onclick="saveProduct()">Сабт кардан</button>
+        <div id="categoryList">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Боргирии категорияҳо...</p>
             </div>
         </div>
     </div>
 
-    <script>
-        const supabaseClient = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-        );
+    <div id="productForm" style="display: none;">
+        <button class="btn btn-secondary" onclick="resetCategory()">
+            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>Иваз кардани категория
+        </button>
+        
+        <div class="form-group">
+            <label><i class="fas fa-tag"></i>Номи маҳсулот</label>
+            <input type="text" id="pName" placeholder="Масалан: iPhone 15" autocomplete="off">
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fas fa-dollar-sign"></i>Нарх (сомонӣ)</label>
+            <input type="number" id="pPrice" placeholder="0" min="0" step="0.01">
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fas fa-image"></i>Акс (ихтиёрӣ)</label>
+            <input type="file" id="pImage" accept="image/*">
+        </div>
+        
+        <div class="form-group">
+            <label><i class="fas fa-align-left"></i>Тавсиф (ихтиёрӣ)</label>
+            <textarea id="pDesc" rows="3" placeholder="Тавсифи мухтасар..."></textarea>
+        </div>
+        
+        <button class="btn" id="saveBtn" onclick="saveProduct()">
+            <i class="fas fa-save" style="margin-right: 8px;"></i>Сабт ва огоҳинома
+        </button>
+    </div>
+</div>
 
-        // Navigation stack: stores category IDs as we drill down
-        let categoryPath = []; // e.g. [12, 34, 56] where 12 is parent, 34 child, etc.
-        let categoriesMap = new Map(); // id -> category object
-        let currentLevelCategories = [];
-        let selectedCategoryId = null;
-        let attributeFields = [];
-        let uploadedFiles = [];
+<script>
+    // ========== ФУНКСИЯИ МУҲОФИЗАТӢ (XSS) ==========
+    function escapeHTML(str) {
+        if (!str) return '';
+        const p = document.createElement('p');
+        p.textContent = str;
+        return p.innerHTML;
+    }
 
-        // For theme changes from parent
-        window.addEventListener('message', function(event) {
-            if (event.data.type === 'theme') {
-                document.body.setAttribute('data-theme', event.data.theme);
+    // ========== ТАНЗИМИ SUPABASE ==========
+    const _supabase = supabase.createClient(
+        'https://seagtlaujnnhoyitgsdd.supabase.co',
+        'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+    );
+
+    let selectedCatId = null;
+    let categoryPath = []; // Барои нигоҳ доштани роҳ (масалан: [12, 34, 56])
+    let categoriesMap = new Map(); // Барои нигоҳ доштани маълумоти категорияҳо
+    let currentUserId = null;
+
+    // ========== САНҶИШИ АВТОРИЗАТСИЯ ==========
+    document.addEventListener('DOMContentLoaded', async () => {
+        const { data: { user }, error } = await _supabase.auth.getUser();
+
+        if (error || !user) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        currentUserId = user.id;
+        
+        // Назорати сессия
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT' || !session) {
+                window.location.href = 'login.html';
             }
         });
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadInitialCategories();
-        });
+        loadCategories();
+    });
 
-        async function loadInitialCategories() {
-            showLoading();
-            try {
-                // Load root categories (parent_id is null)
-                const { data, error } = await supabaseClient
-                    .from('categories')
-                    .select('*')
-                    .is('parent_id', null)
-                    .order('name_tg');
-
-                if (error) throw error;
-
-                currentLevelCategories = data || [];
-                // Store in map for quick access
-                currentLevelCategories.forEach(cat => categoriesMap.set(cat.id, cat));
-                displayCategories();
-                updateBreadcrumb();
-            } catch (error) {
-                showError('Хатогӣ дар боркунии категорияҳо: ' + error.message);
-            } finally {
-                hideLoading();
+    // ========== БОРГИРИИ КАТЕГОРИЯҲО ==========
+    async function loadCategories(parentId = null) {
+        const list = document.getElementById('categoryList');
+        
+        try {
+            // Сохтани query
+            let query = _supabase
+                .from('categories')
+                .select('*')
+                .order('name_tg');
+            
+            if (parentId === null) {
+                // Категорияҳои асосӣ (parent_id = null)
+                query = query.is('parent_id', null);
+            } else {
+                // Зеркатегорияҳо
+                query = query.eq('parent_id', parentId);
             }
-        }
 
-        async function loadSubcategories(parentId) {
-            showLoading();
-            try {
-                const { data, error } = await supabaseClient
-                    .from('categories')
-                    .select('*')
-                    .eq('parent_id', parentId)
-                    .order('name_tg');
+            const { data: categories, error } = await query;
 
-                if (error) throw error;
+            if (error) throw error;
 
-                currentLevelCategories = data || [];
-                currentLevelCategories.forEach(cat => categoriesMap.set(cat.id, cat));
-                displayCategories();
-                updateBreadcrumb();
-            } catch (error) {
-                showError('Хатогӣ дар боркунии зеркатегорияҳо: ' + error.message);
-            } finally {
-                hideLoading();
-            }
-        }
+            // Нигоҳ доштани категорияҳо дар Map
+            categories.forEach(cat => categoriesMap.set(cat.id, cat));
 
-        function displayCategories() {
-            const container = document.getElementById('categoryListContainer');
-            const list = document.getElementById('categoryList');
-            container.classList.remove('hidden');
-            document.getElementById('productFormContainer').classList.add('hidden');
-
-            list.innerHTML = '';
-            if (currentLevelCategories.length === 0) {
-                // No subcategories, so this is a leaf category – show product form
-                showProductFormForCurrentCategory();
+            // Агар категория ёфт нашуд ва parentId мавҷуд аст, пас ин категорияи охирин аст
+            if (categories.length === 0 && parentId !== null) {
+                showForm(parentId);
                 return;
             }
 
-            currentLevelCategories.forEach(cat => {
-                const li = document.createElement('li');
-                li.className = 'category-item';
-                li.onclick = () => selectCategory(cat.id);
-                li.innerHTML = `
+            displayCategories(categories, parentId);
+            
+        } catch (error) {
+            showError('Хатогӣ дар боркунии категорияҳо: ' + error.message);
+            list.innerHTML = '<div style="text-align: center; padding: 20px;">Хатогӣ рух дод</div>';
+        }
+    }
+
+    // ========== НИШОН ДОДАНИ КАТЕГОРИЯҲО ==========
+    function displayCategories(categories, parentId) {
+        const list = document.getElementById('categoryList');
+        
+        if (categories.length === 0) {
+            list.innerHTML = '<div style="text-align: center; padding: 20px;">Ҳеҷ категория ёфт нашуд</div>';
+            return;
+        }
+
+        let html = '';
+        categories.forEach(cat => {
+            const safeName = escapeHTML(cat.name_tg || '');
+            const icon = cat.icon || 'folder';
+            
+            html += `
+                <div class="category-item" onclick="selectCategory('${cat.id}', ${cat.id})">
                     <div class="category-info">
-                        <div class="category-icon"><i class="fas fa-${cat.icon || 'folder'}"></i></div>
-                        <span class="category-name">${cat.name_tg}</span>
+                        <div class="category-icon"><i class="fas fa-${escapeHTML(icon)}"></i></div>
+                        <span class="category-name">${safeName}</span>
                     </div>
                     <i class="fas fa-chevron-right category-arrow"></i>
-                `;
-                list.appendChild(li);
-            });
-        }
-
-        function selectCategory(catId) {
-            // Push to path
-            categoryPath.push(catId);
-            // Load its children
-            loadSubcategories(catId);
-        }
-
-        function goBack() {
-            if (categoryPath.length === 0) {
-                // At root, go back to home.html
-                window.location.href = 'home.html';
-                return;
-            }
-
-            // Pop last category from path
-            categoryPath.pop();
-
-            if (categoryPath.length === 0) {
-                // Back to root
-                loadInitialCategories();
-            } else {
-                // Load previous level
-                const parentId = categoryPath[categoryPath.length - 1];
-                loadSubcategories(parentId);
-            }
-        }
-
-        function updateBreadcrumb() {
-            const breadcrumb = document.getElementById('breadcrumb');
-            breadcrumb.innerHTML = '';
-
-            // Add "Асосӣ" link
-            const homeSpan = document.createElement('span');
-            homeSpan.className = 'breadcrumb-item';
-            homeSpan.innerText = 'Асосӣ';
-            homeSpan.onclick = () => {
-                categoryPath = [];
-                loadInitialCategories();
-            };
-            breadcrumb.appendChild(homeSpan);
-
-            // Add path items
-            for (let i = 0; i < categoryPath.length; i++) {
-                const catId = categoryPath[i];
-                const cat = categoriesMap.get(catId);
-                if (!cat) continue;
-
-                const sep = document.createElement('span');
-                sep.className = 'breadcrumb-separator';
-                sep.innerText = '›';
-                breadcrumb.appendChild(sep);
-
-                const span = document.createElement('span');
-                span.className = 'breadcrumb-item' + (i === categoryPath.length - 1 ? ' active' : '');
-                span.innerText = cat.name_tg;
-                // Allow navigation to any previous level
-                span.onclick = (function(id, index) {
-                    return function() {
-                        categoryPath = categoryPath.slice(0, index + 1);
-                        loadSubcategories(id);
-                    };
-                })(catId, i);
-                breadcrumb.appendChild(span);
-            }
-        }
-
-        async function showProductFormForCurrentCategory() {
-            // Current leaf category is the last in path
-            if (categoryPath.length === 0) return;
-            const leafCategoryId = categoryPath[categoryPath.length - 1];
-            selectedCategoryId = leafCategoryId;
-
-            // Load category fields
-            await loadCategoryFields(leafCategoryId);
-
-            // Hide category list, show product form
-            document.getElementById('categoryListContainer').classList.add('hidden');
-            document.getElementById('productFormContainer').classList.remove('hidden');
-        }
-
-        async function loadCategoryFields(categoryId) {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('category_fields')
-                    .select('*')
-                    .eq('category_id', categoryId);
-
-                if (error) throw error;
-
-                attributeFields = data || [];
-                displayAttributes();
-            } catch (error) {
-                console.error('Error loading fields:', error);
-            }
-        }
-
-        function displayAttributes() {
-            const container = document.getElementById('attributesContainer');
-            container.innerHTML = '';
-
-            if (attributeFields.length === 0) return;
-
-            const title = document.createElement('div');
-            title.className = 'form-group';
-            title.innerHTML = '<label class="form-label"><i class="fas fa-list"></i> Хусусиятҳо</label>';
-            container.appendChild(title);
-
-            attributeFields.forEach(field => {
-                const fieldGroup = document.createElement('div');
-                fieldGroup.className = 'form-group';
-
-                let inputHtml = '';
-                if (field.field_type === 'select') {
-                    inputHtml = `
-                        <select class="form-select" id="attr_${field.id}">
-                            <option value="">Интихоб кунед...</option>
-                        </select>
-                    `;
-                } else if (field.field_type === 'textarea') {
-                    inputHtml = `<textarea class="form-textarea" id="attr_${field.id}" placeholder="${field.label_tg}"></textarea>`;
-                } else {
-                    inputHtml = `<input type="${field.field_type}" class="form-input" id="attr_${field.id}" placeholder="${field.label_tg}">`;
-                }
-
-                fieldGroup.innerHTML = `
-                    <label class="form-label">${field.label_tg}</label>
-                    ${inputHtml}
-                `;
-
-                container.appendChild(fieldGroup);
-            });
-        }
-
-        // Image upload
-        document.getElementById('imageUploadArea').addEventListener('click', () => {
-            document.getElementById('imageInput').click();
+                </div>
+            `;
         });
-
-        document.getElementById('imageInput').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-
-            files.forEach(file => {
-                if (file.size > 10 * 1024 * 1024) {
-                    showError('Акс набояд аз 10MB калонтар бошад');
-                    return;
-                }
-
-                uploadedFiles.push(file);
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('imagePreview');
-                    const item = document.createElement('div');
-                    item.className = 'preview-item';
-                    item.innerHTML = `
-                        <img src="${e.target.result}">
-                        <div class="preview-remove" onclick="removeImage(${uploadedFiles.length - 1})">
-                            <i class="fas fa-times"></i>
-                        </div>
-                    `;
-                    preview.appendChild(item);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-
-        function removeImage(index) {
-            uploadedFiles.splice(index, 1);
-            document.getElementById('imagePreview').innerHTML = '';
-            // Re-render preview
-            uploadedFiles.forEach((file, i) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('imagePreview');
-                    const item = document.createElement('div');
-                    item.className = 'preview-item';
-                    item.innerHTML = `
-                        <img src="${e.target.result}">
-                        <div class="preview-remove" onclick="removeImage(${i})">
-                            <i class="fas fa-times"></i>
-                        </div>
-                    `;
-                    preview.appendChild(item);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        async function saveProduct() {
-    const btn = document.querySelector('button[onclick="saveProduct()"]');
-    
-    // Гирифтани userId-и бехатар аз Supabase
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-
-    if (authError || !user) {
-        showError('Сессия ба охир расид. Лутфан дубора ворид шавед.');
-        window.location.href = 'login.html';
-        return;
+        
+        list.innerHTML = html;
+        updateBreadcrumb(parentId);
     }
-    
-    const userId = user.id;
 
-            if (!price) {
-                showError('Нархро ворид кунед');
-                return;
-            }
-            if (!selectedCategoryId) {
-                showError('Категория интихоб нашудааст');
-                return;
-            }
+    // ========== ИНТИХОБИ КАТЕГОРИЯ ==========
+    function selectCategory(catId) {
+        categoryPath.push(catId);
+        loadCategories(catId);
+    }
 
-            const btn = document.getElementById('saveBtn');
-            btn.disabled = true;
-            btn.innerText = 'Сабт шуда истодааст...';
+    // ========== БОЗГАШТ БА КАТЕГОРИЯИ ҚАБЛӢ ==========
+    function goBack() {
+        if (categoryPath.length === 0) {
+            resetCategory();
+            return;
+        }
 
-            try {
-                let imageUrls = [];
-                if (uploadedFiles.length > 0) {
-                    for (const file of uploadedFiles) {
-                        const fileName = `${Date.now()}_${file.name}`;
-                        const { data, error } = await supabaseClient.storage
-                            .from('product-images')
-                            .upload(fileName, file);
+        categoryPath.pop();
 
-                        if (error) throw error;
+        if (categoryPath.length === 0) {
+            loadCategories(null);
+        } else {
+            const parentId = categoryPath[categoryPath.length - 1];
+            loadCategories(parentId);
+        }
+    }
 
-                        const { data: urlData } = supabaseClient.storage
-                            .from('product-images')
-                            .getPublicUrl(fileName);
+    // ========== БАРҚАРОР КАРДАНИ КАТЕГОРИЯ ==========
+    function resetCategory() {
+        selectedCatId = null;
+        categoryPath = [];
+        document.getElementById('categorySection').style.display = 'block';
+        document.getElementById('productForm').style.display = 'none';
+        loadCategories(null);
+    }
 
-                        imageUrls.push(urlData.publicUrl);
-                    }
-                }
+    // ========== НИШОН ДОДАНИ ФОРМА ==========
+    function showForm(catId) {
+        selectedCatId = catId;
+        document.getElementById('categorySection').style.display = 'none';
+        document.getElementById('productForm').style.display = 'block';
+    }
 
-                const attributes = {};
-                attributeFields.forEach(field => {
-                    const input = document.getElementById(`attr_${field.id}`);
-                    if (input && input.value) {
-                        attributes[field.label_tg] = input.value;
-                    }
-                });
+    // ========== БАРӮЗ КАРДАНИ BREADCRUMB ==========
+    function updateBreadcrumb(currentParentId) {
+        const breadcrumb = document.getElementById('breadcrumb');
+        breadcrumb.innerHTML = '';
 
-                const productData = {
-                    name: name,
-                    price: parseFloat(price),
-                    category_id: selectedCategoryId,
-                    description: desc || null,
-                    images: imageUrls,
-                    attributes: attributes,
-                    created_at: new Date()
+        // Қисми "Категорияҳо"
+        const homeSpan = document.createElement('span');
+        homeSpan.className = 'breadcrumb-item' + (categoryPath.length === 0 ? ' active' : '');
+        homeSpan.innerHTML = '<i class="fas fa-home"></i> Асосӣ';
+        homeSpan.onclick = () => {
+            categoryPath = [];
+            loadCategories(null);
+        };
+        breadcrumb.appendChild(homeSpan);
+
+        // Қисмҳои дигар
+        for (let i = 0; i < categoryPath.length; i++) {
+            const catId = categoryPath[i];
+            const cat = categoriesMap.get(catId);
+            if (!cat) continue;
+
+            const sep = document.createElement('span');
+            sep.className = 'breadcrumb-separator';
+            sep.innerHTML = '›';
+            breadcrumb.appendChild(sep);
+
+            const span = document.createElement('span');
+            span.className = 'breadcrumb-item' + (i === categoryPath.length - 1 ? ' active' : '');
+            span.innerText = escapeHTML(cat.name_tg || '');
+            
+            // Имконияти гузаштан ба категорияи қаблӣ
+            span.onclick = (function(id, index) {
+                return function() {
+                    categoryPath = categoryPath.slice(0, index + 1);
+                    loadCategories(id);
                 };
+            })(catId, i);
+            
+            breadcrumb.appendChild(span);
+        }
+    }
 
-                const { data, error } = await supabaseClient
-                    .from('products')
-                    .insert([productData])
-                    .select();
+    // ========== САБТ ВА ФИРИСТОДАНИ ОГОҲИНОМА ==========
+    async function saveProduct() {
+        const name = document.getElementById('pName').value.trim();
+        const price = document.getElementById('pPrice').value.trim();
+        const file = document.getElementById('pImage').files[0];
+        const desc = document.getElementById('pDesc').value.trim();
+        const btn = document.getElementById('saveBtn');
 
-                if (error) throw error;
+        if (!name) {
+            showError('Номи маҳсулотро ворид кунед!');
+            return;
+        }
+        if (!price) {
+            showError('Нархро ворид кунед!');
+            return;
+        }
+        if (!selectedCatId) {
+            showError('Категория интихоб нашудааст!');
+            return;
+        }
 
-                const successMsg = document.getElementById('successMessage');
-                successMsg.innerText = '✅ Маҳсулот бомуваффақият сабт шуд!';
-                successMsg.classList.add('show');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сабт шуда истодааст...';
 
-                setTimeout(() => {
-                    window.location.href = 'home.html';
-                }, 1500);
+        try {
+            let imageUrl = '';
+            if (file) {
+                const fileName = `${Date.now()}_${file.name}`;
+                const { error: uploadError } = await _supabase.storage
+                    .from('product-images')
+                    .upload(fileName, file);
 
-            } catch (error) {
-                showError('Хатогӣ: ' + error.message);
-                console.error(error);
-                btn.disabled = false;
-                btn.innerText = 'Сабт кардан';
+                if (uploadError) throw uploadError;
+
+                const { data: urlData } = _supabase.storage
+                    .from('product-images')
+                    .getPublicUrl(fileName);
+
+                imageUrl = urlData.publicUrl;
             }
-        }
 
-        function showLoading() {
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('categoryListContainer').classList.add('hidden');
-            document.getElementById('productFormContainer').classList.add('hidden');
-        }
+            // Сабт дар база
+            const { data: product, error } = await _supabase
+                .from('products')
+                .insert([{
+                    name: escapeHTML(name),
+                    price: parseFloat(price),
+                    description: desc ? escapeHTML(desc) : null,
+                    category_id: selectedCatId,
+                    image: imageUrl,
+                    user_id: currentUserId,
+                    created_at: new Date()
+                }])
+                .select()
+                .single();
 
-        function hideLoading() {
-            document.getElementById('loading').classList.add('hidden');
-        }
+            if (error) throw error;
 
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.innerText = '❌ ' + message;
-            errorDiv.classList.add('show');
+            // ФИРИСТОДАНИ ОГОҲИНОМА БА ТЕЛЕГРАМ
+            try {
+                const { data: { session } } = await _supabase.auth.getSession();
+                
+                if (session) {
+                    const notificationText = `🚀 **Маҳсулоти нав дар Bozorcha!**\n\n` +
+                        `👤 Корбар: ${session.user?.email || 'Меҳмон'}\n` +
+                        `📦 Маҳсулот: ${name}\n` +
+                        `💰 Нарх: ${price} сомонӣ\n` +
+                        `📝 Тавсиф: ${desc || '—'}\n` +
+                        `🔗 Категория ID: ${selectedCatId}`;
+
+                    await fetch('https://seagtlaujnnhoyitgsdd.supabase.co/functions/v1/test-function-html', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP',
+                            'Authorization': `Bearer ${session.access_token}`
+                        },
+                        body: JSON.stringify({
+                            text: notificationText
+                        })
+                    });
+                }
+            } catch (notifyError) {
+                console.error('Хатогӣ ҳангоми фиристодани огоҳинома:', notifyError);
+                // Огоҳинома нарасад ҳам, ба корбар халал намерасонем
+            }
+
+            // Нишон додани паёми муваффақият
+            const successMsg = document.getElementById('successMessage');
+            successMsg.innerText = '✅ Маҳсулот бомуваффақият сабт шуд ва админ огоҳ карда шуд!';
+            successMsg.classList.add('show');
 
             setTimeout(() => {
-                errorDiv.classList.remove('show');
-            }, 3000);
+                window.location.href = 'home.html';
+            }, 2000);
+
+        } catch (error) {
+            showError('Хатогӣ: ' + error.message);
+            console.error(error);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Сабт ва огоҳинома';
         }
-    </script>
+    }
+
+    // ========== НИШОН ДОДАНИ ХАТОГӢ ==========
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.innerText = '❌ ' + message;
+        errorDiv.classList.add('show');
+
+        setTimeout(() => {
+            errorDiv.classList.remove('show');
+        }, 3000);
+    }
+</script>
 </body>
 </html>
