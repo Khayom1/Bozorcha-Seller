@@ -16,23 +16,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome Icons (барои иконкаҳо) -->
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="src/styles/main.css">
-    <link rel="stylesheet" href="src/styles/theme.css">
-    
-    <!-- JavaScript -->
-    <script src="src/js/config.js" defer></script>
-    <script src="src/js/i18n.js" defer></script>
-    <script src="src/js/theme.js" defer></script>
-    <script src="src/js/utils.js" defer></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
     
     <style>
         /* ===== RESET & BASE ===== */
@@ -40,6 +28,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            cursor: none; /* Custom cursor */
         }
 
         body {
@@ -48,6 +37,32 @@
             color: #fff;
             line-height: 1.5;
             overflow-x: hidden;
+        }
+
+        /* ===== CUSTOM CURSOR SHADOW ===== */
+        .cursor-shadow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,149,0,0.15) 0%, rgba(255,149,0,0) 70%);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s;
+        }
+
+        /* ===== SCROLL PROGRESS BAR ===== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #ff9500, #ff6b6b);
+            z-index: 1001;
+            transition: width 0.1s;
+            box-shadow: 0 0 15px #ff9500;
         }
 
         /* ===== UTILITY CLASSES ===== */
@@ -111,26 +126,102 @@
 
         .header-actions {
             display: flex;
-            gap: 16px;
+            gap: 24px;
             align-items: center;
         }
 
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff9500;
+        }
+
+        /* ===== LANGUAGE BUTTON (PREMIUM) ===== */
         .lang-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 18px;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
         .lang-btn:hover {
-            background: #ff9500;
             border-color: #ff9500;
-            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,149,0,0.3);
+        }
+
+        .globe-3d {
+            width: 30px;
+            height: 30px;
+            transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .globe-3d svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .country-glow {
+            transition: fill 0.5s, filter 0.5s;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: rgba(20, 20, 20, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 8px;
+            min-width: 160px;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .lang-dropdown.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lang-dropdown-item {
+            padding: 12px 16px;
+            color: #94a3b8;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .lang-dropdown-item:hover {
+            background: #ff9500;
+            color: white;
         }
 
         /* ===== HERO SECTION ===== */
@@ -176,10 +267,32 @@
         .hero p {
             font-size: 18px;
             color: #94a3b8;
-            margin-bottom: 40px;
+            margin-bottom: 24px;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            color: #ff9500;
+            font-size: 14px;
+            font-weight: 500;
+            background: rgba(255,149,0,0.1);
+            padding: 8px 16px;
+            border-radius: 40px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid rgba(255,149,0,0.2);
+        }
+
+        .trust-badge i {
+            font-size: 16px;
         }
 
         .hero-buttons {
@@ -222,6 +335,66 @@
         .btn-outline:hover {
             border-color: #ff9500;
             color: #ff9500;
+        }
+
+        /* ===== HOW IT WORKS SECTION ===== */
+        .how-it-works {
+            margin: 80px 0;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff9500;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: #ff9500;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 30px rgba(255,149,0,0.3);
+        }
+
+        .step-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .step-card p {
+            color: #94a3b8;
+            font-size: 14px;
         }
 
         /* ===== STATS GRID ===== */
@@ -267,9 +440,9 @@
 
         /* ===== ANALYTICS CARD ===== */
         .analytics-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 32px;
             padding: 48px;
             margin: 80px 0;
@@ -347,9 +520,9 @@
         }
 
         .pricing-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 24px;
             padding: 32px 24px;
             transition: all 0.3s;
@@ -359,20 +532,27 @@
         .pricing-card:hover {
             transform: translateY(-5px) scale(1.02);
             border-color: #ff9500;
+            box-shadow: 0 20px 40px rgba(255,149,0,0.1);
         }
 
         .pricing-card.popular {
             border-color: #ff9500;
-            box-shadow: 0 0 30px rgba(255, 149, 0, 0.2);
+            box-shadow: 0 0 30px rgba(255,149,0,0.15);
         }
 
         .pricing-card.ultra {
-            animation: glow 2s ease-in-out infinite;
+            animation: ultraGlow 2s ease-in-out infinite;
         }
 
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px #ff9500; }
-            50% { box-shadow: 0 0 30px #ff9500; }
+        @keyframes ultraGlow {
+            0%, 100% { 
+                box-shadow: 0 0 15px rgba(255,149,0,0.2);
+                border-color: rgba(255,149,0,0.3);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(255,149,0,0.4);
+                border-color: #ff9500;
+            }
         }
 
         .popular-badge {
@@ -435,28 +615,193 @@
             color: white;
         }
 
-        /* ===== LOGISTICS SECTION ===== */
+        /* ===== BOZORCHA SKY (LOGISTICS) ===== */
         .logistics {
-            background: linear-gradient(145deg, rgba(255,149,0,0.1), transparent);
-            border: 1px solid rgba(255, 149, 0, 0.2);
+            background: linear-gradient(145deg, rgba(255,149,0,0.08), transparent);
+            border: 1px solid rgba(255,149,0,0.15);
             border-radius: 32px;
             padding: 80px 48px;
             text-align: center;
             margin: 80px 0;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+
+        .drone-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
         }
 
         .drone-icon {
-            font-size: 80px;
-            color: #ff9500;
-            margin-bottom: 24px;
-            animation: float 3s ease-in-out infinite;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 0 20px rgba(255,149,0,0.5));
+            animation: droneHover 5s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+        @keyframes droneHover {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            20% {
+                transform: translateY(-8px) rotate(-2deg);
+            }
+            40% {
+                transform: translateY(-12px) rotate(3deg);
+            }
+            60% {
+                transform: translateY(-5px) rotate(-1deg);
+            }
+            80% {
+                transform: translateY(-15px) rotate(4deg);
+            }
+        }
+
+        .drone-shadow {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 20px;
+            background: radial-gradient(ellipse at center, rgba(255,149,0,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(8px);
+            z-index: 1;
+            animation: shadowPulse 5s ease-in-out infinite;
+        }
+
+        @keyframes shadowPulse {
+            0%, 100% {
+                width: 80px;
+                opacity: 0.3;
+            }
+            20% {
+                width: 90px;
+                opacity: 0.4;
+            }
+            40% {
+                width: 100px;
+                opacity: 0.5;
+            }
+            60% {
+                width: 85px;
+                opacity: 0.4;
+            }
+            80% {
+                width: 110px;
+                opacity: 0.6;
+            }
+        }
+
+        .package-box {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid #ff9500;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s;
+            animation: packageAppear 6s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255,149,0,0.3);
+        }
+
+        .package-box img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+
+        @keyframes packageAppear {
+            0%, 20% {
+                opacity: 0;
+                transform: translateX(-50%) scale(0.8);
+            }
+            25%, 80% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+            85%, 100% {
+                opacity: 0;
+                transform: translateX(-50%) scale(0.8);
+            }
+        }
+
+        .drone-path {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .drone-path::before,
+        .drone-path::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, #ff9500, transparent);
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.3;
+            animation: pathPulse 3s ease-in-out infinite;
+        }
+
+        .drone-path::before {
+            top: 20px;
+            animation-delay: 0s;
+        }
+
+        .drone-path::after {
+            bottom: 20px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes pathPulse {
+            0%, 100% { opacity: 0.2; transform: translateX(-50%) scaleY(1); }
+            50% { opacity: 0.6; transform: translateX(-50%) scaleY(1.2); }
+        }
+
+        .coming-soon-text {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ff9500;
+            margin-top: 20px;
+            opacity: 0;
+            animation: typing 3s ease-in-out forwards;
+            animation-delay: 5s;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid #ff9500;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes typing {
+            from {
+                opacity: 1;
+                width: 0;
+            }
+            to {
+                opacity: 1;
+                width: 160px;
+            }
         }
 
         .logistics h2 {
@@ -469,7 +814,7 @@
             color: #94a3b8;
             font-size: 18px;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto 0;
         }
 
         .grid-overlay {
@@ -484,9 +829,9 @@
 
         /* ===== CTA SECTION ===== */
         .cta-section {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 32px;
             padding: 64px;
             text-align: center;
@@ -532,14 +877,14 @@
             width: 0;
             height: 0;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
 
         .ripple-btn:hover::after {
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
         }
 
         /* ===== FOOTER ===== */
@@ -561,12 +906,31 @@
             .stats-grid { grid-template-columns: 1fr; }
             .analytics-grid { grid-template-columns: 1fr; }
             .pricing-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
             .logistics { padding: 48px 24px; }
             .cta-section { padding: 40px 24px; }
+            .header-actions { gap: 12px; }
+            .nav-links { gap: 12px; }
+            .nav-links a { font-size: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 28px; }
+            .trust-badge { font-size: 12px; padding: 6px 12px; }
+            .btn { padding: 12px 24px; font-size: 14px; }
+            .section-title { font-size: 28px; }
+            .stat-number { font-size: 36px; }
+            .coming-soon-text { font-size: 18px; }
         }
     </style>
 </head>
 <body>
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Custom Cursor Shadow -->
+    <div class="cursor-shadow" id="cursorShadow"></div>
+
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -575,13 +939,23 @@
                 <span>Bozorcha</span>
             </div>
             <div class="header-actions">
+                <div class="nav-links">
+                    <a href="about.html">About me</a>
+                    <a href="contact.html">Contact us</a>
+                    <a href="support.html">Tech support</a>
+                </div>
                 <div class="lang-selector">
-                    <button class="lang-btn" id="langBtn">🇹🇯</button>
+                    <div class="lang-btn" id="langBtn">
+                        <div class="globe-3d" id="globe3d">
+                            <svg viewBox="0 0 100 100">
+                                <!-- Глобуси 3D (код пурра дар поён) -->
+                            </svg>
+                        </div>
+                    </div>
                     <div class="lang-dropdown" id="langMenu">
                         <div class="lang-dropdown-item" onclick="setLang('tj')">🇹🇯 Тоҷикӣ</div>
                         <div class="lang-dropdown-item" onclick="setLang('ru')">🇷🇺 Русский</div>
                         <div class="lang-dropdown-item" onclick="setLang('en')">🇬🇧 English</div>
-                        <div class="lang-dropdown-item" onclick="setLang('uz')">🇺🇿 O'zbek</div>
                     </div>
                 </div>
             </div>
@@ -595,6 +969,14 @@
             <div class="container" data-aos="fade-up" data-aos-duration="1000">
                 <h1>Тиҷорати худро ба сатҳи <span class="gradient-text">нав</span> бардоред</h1>
                 <p>Платформаи муосири фурӯшандагон бо дастрасӣ ба миллионҳо харидор ва воситаҳои пешрафтаи таҳлил.</p>
+                
+                <!-- Trust Badge -->
+                <div class="trust-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    Пардохти кафолатдор (Escrow) - 100% бехатар
+                    <i class="fas fa-check-circle"></i>
+                </div>
+
                 <div class="hero-buttons">
                     <button class="btn btn-primary" id="registerBtn">
                         Фурӯшро оғоз кунед <i class="fas fa-arrow-right"></i>
@@ -605,6 +987,30 @@
                 </div>
             </div>
         </section>
+
+        <!-- How It Works Section -->
+        <div class="container">
+            <div class="how-it-works" data-aos="fade-up">
+                <h2 class="section-title">Тарзи <span class="gradient-text">кор</span></h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>Сабти ном (KYC)</h3>
+                        <p>Маълумоти худро ворид кунед ва ҳувияти худро тасдиқ намоед</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>Иловаи маҳсулот</h3>
+                        <p>Маҳсулотҳои худро бо расм ва тавсиф илова кунед</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>Гирифтани пул</h3>
+                        <p>Пас аз 3 рӯзи кафолат, маблағ ба ҳисоби шумо гузаронида мешавад</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Stats Section -->
         <div class="container">
@@ -653,7 +1059,7 @@
 
         <!-- Pricing Section -->
         <div class="container">
-            <h2 class="analytics-title" style="text-align: center; margin-bottom: 48px;" data-aos="fade-up">
+            <h2 class="section-title" data-aos="fade-up">
                 Планҳои <span class="gradient-text">тарифӣ</span>
             </h2>
             <div class="pricing-grid">
@@ -666,7 +1072,7 @@
                         <li>✓ Омори асосӣ</li>
                         <li>✓ Дастгирии почта</li>
                     </ul>
-                    <button class="plan-btn">Интихоб кардан</button>
+                    <button class="plan-btn" onclick="selectPlan('free')">Интихоб кардан</button>
                 </div>
 
                 <!-- Basic Plan -->
@@ -679,7 +1085,7 @@
                         <li>✓ Таҳлили пешрафта</li>
                         <li>✓ Дастгирии афзалиятнок</li>
                     </ul>
-                    <button class="plan-btn">Интихоб кардан</button>
+                    <button class="plan-btn" onclick="selectPlan('basic')">Интихоб кардан</button>
                 </div>
 
                 <!-- Pro Plan -->
@@ -691,7 +1097,7 @@
                         <li>✓ Чат бо харидорон</li>
                         <li>✓ API дастрасӣ</li>
                     </ul>
-                    <button class="plan-btn">Интихоб кардан</button>
+                    <button class="plan-btn" onclick="selectPlan('pro')">Интихоб кардан</button>
                 </div>
 
                 <!-- Ultra Plan -->
@@ -703,18 +1109,52 @@
                         <li>✓ Менеҷери шахсӣ</li>
                         <li>✓ Логистикаи дрон</li>
                     </ul>
-                    <button class="plan-btn">Интихоб кардан</button>
+                    <button class="plan-btn" onclick="selectPlan('ultra')">Интихоб кардан</button>
                 </div>
             </div>
         </div>
 
-        <!-- Logistics Section -->
+        <!-- Bozorcha Sky (Logistics) -->
         <div class="container">
             <div class="logistics" data-aos="fade-up">
                 <div class="grid-overlay"></div>
-                <i class="fas fa-rocket drone-icon"></i>
+                <div class="drone-container">
+                    <div class="drone-icon">
+                        <svg viewBox="0 0 100 100" width="100%" height="100%">
+                            <!-- Drone SVG -->
+                            <circle cx="50" cy="40" r="15" fill="#ff9500" opacity="0.2"/>
+                            <circle cx="50" cy="40" r="12" fill="none" stroke="#ff9500" stroke-width="2"/>
+                            <!-- Drone body -->
+                            <rect x="30" y="35" width="40" height="10" rx="5" fill="#ff9500" opacity="0.8"/>
+                            <rect x="40" y="25" width="20" height="20" rx="5" fill="#ff9500"/>
+                            <!-- Propellers -->
+                            <circle cx="25" cy="25" r="8" fill="#ff9500" opacity="0.6">
+                                <animate attributeName="r" values="8;10;8" dur="0.5s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="75" cy="25" r="8" fill="#ff9500" opacity="0.6">
+                                <animate attributeName="r" values="8;10;8" dur="0.5s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="25" cy="55" r="8" fill="#ff9500" opacity="0.6">
+                                <animate attributeName="r" values="8;10;8" dur="0.5s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="75" cy="55" r="8" fill="#ff9500" opacity="0.6">
+                                <animate attributeName="r" values="8;10;8" dur="0.5s" repeatCount="indefinite"/>
+                            </circle>
+                            <!-- Lights -->
+                            <circle cx="50" cy="40" r="3" fill="white">
+                                <animate attributeName="opacity" values="1;0.3;1" dur="0.8s" repeatCount="indefinite"/>
+                            </circle>
+                        </svg>
+                    </div>
+                    <div class="package-box">
+                        <img src="assets/logo.svg" alt="Bozorcha">
+                    </div>
+                    <div class="drone-shadow"></div>
+                    <div class="drone-path"></div>
+                </div>
                 <h2>Логистикаи <span class="gradient-text">оянда</span></h2>
-                <p>Интиқоли маҳсулот тавассути дронҳо. Бозорча осмонро барои тиҷорати шумо мекушояд.</p>
+                <p>Интиқоли маҳсулот тавассути дронҳо дар осмони Тоҷикистон</p>
+                <div class="coming-soon-text">Coming Soon</div>
             </div>
         </div>
 
@@ -737,61 +1177,122 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
     <script>
-        // ========== ТАНЗИМИ ЗАБОН ==========
+        // ===== SUPABASE CONFIG =====
+        const supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        // ===== CUSTOM CURSOR =====
+        const cursor = document.getElementById('cursorShadow');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // ===== SCROLL PROGRESS BAR =====
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // ===== LANGUAGE SETTINGS =====
         let currentLang = localStorage.getItem('lang') || 'tj';
         
-        window.setLang = function(lang) {
+        // Globe rotations for different countries
+        const globeRotations = {
+            tj: 'rotate(0deg)',      // Тоҷикистон
+            ru: 'rotate(120deg)',     // Русия
+            en: 'rotate(240deg)'      // Инглистон
+        };
+
+        function setLang(lang) {
             currentLang = lang;
             localStorage.setItem('lang', lang);
-            document.getElementById('langBtn').innerText = 
-                lang === 'tj' ? '🇹🇯' : (lang === 'ru' ? '🇷🇺' : (lang === 'en' ? '🇬🇧' : '🇺🇿'));
+            
+            // Rotate globe
+            const globe = document.getElementById('globe3d');
+            if (globe) {
+                globe.style.transform = globeRotations[lang] || 'rotate(0deg)';
+            }
+            
+            // Update button text
+            document.getElementById('langBtn').innerHTML = `
+                <div class="globe-3d" style="transform: ${globeRotations[lang]}">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#ff9500" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="20" fill="none" stroke="#ff9500" stroke-width="1.5" stroke-dasharray="2 2"/>
+                        <path d="M50 5 L50 95 M5 50 L95 50" stroke="#ff9500" stroke-width="1" opacity="0.3"/>
+                    </svg>
+                </div>
+            `;
+            
             document.getElementById('langMenu').classList.remove('show');
         }
 
-        // Тугмаи забон
-        document.getElementById('langBtn').addEventListener('click', function(e) {
+        // Language button click
+        document.getElementById('langBtn').addEventListener('click', (e) => {
             e.stopPropagation();
             document.getElementById('langMenu').classList.toggle('show');
         });
 
-        // Пӯшидани меню бо пахши берун
-        window.addEventListener('click', function() {
+        // Close dropdown when clicking outside
+        window.addEventListener('click', () => {
             document.getElementById('langMenu').classList.remove('show');
         });
 
-        // Тугмаҳои асосӣ
-        document.getElementById('registerBtn')?.addEventListener('click', function() {
+        // Initialize language
+        setLang(currentLang);
+
+        // ===== PLAN SELECTION =====
+        function selectPlan(plan) {
+            window.location.href = `choose-method.html?plan=${plan}`;
+        }
+
+        // ===== BUTTON NAVIGATION =====
+        document.getElementById('registerBtn')?.addEventListener('click', () => {
             window.location.href = 'choose-method.html';
         });
         
-        document.getElementById('loginBtn')?.addEventListener('click', function() {
+        document.getElementById('loginBtn')?.addEventListener('click', () => {
             window.location.href = 'login.html';
         });
         
-        document.getElementById('ctaBtn')?.addEventListener('click', function() {
+        document.getElementById('ctaBtn')?.addEventListener('click', () => {
             window.location.href = 'choose-method.html';
         });
 
-        // Parallax эффект барои orb
-        window.addEventListener('scroll', function() {
+        // ===== PARALLAX ORB =====
+        window.addEventListener('scroll', () => {
             const orb = document.getElementById('heroOrb');
             if (orb) {
                 const scrolled = window.scrollY;
-                orb.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.3}px)) scale(${1 + scrolled * 0.0005})`;
+                orb.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.2}px)) scale(${1 + scrolled * 0.0005})`;
             }
         });
 
-        // AOS инициализатсия
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof AOS !== 'undefined') {
-                AOS.init({
-                    duration: 1000,
-                    once: true,
-                    offset: 100
-                });
-            }
+        // ===== AOS INIT =====
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
         });
+
+        // ===== CHECK AUTH =====
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+        
+        checkAuth();
     </script>
 </body>
 </html>
