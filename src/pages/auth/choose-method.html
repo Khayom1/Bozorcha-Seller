@@ -2,373 +2,51 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Интихоби усул - Bozorcha</title>
-    
-    <meta name="description" content="Интихоби усули сабти ном дар Bozorcha">
-    
-    <!-- Пайваст кардани шрифтҳо -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Пайваст кардани файлҳои CSS -->
-    <link rel="stylesheet" href="../src/styles/main.css">
-    <link rel="stylesheet" href="../src/styles/theme.css">
-    
-    <!-- Пайваст кардани файлҳои JavaScript -->
-    <script src="../src/js/config.js" defer></script>
-    <script src="../src/js/i18n.js" defer></script>
-    <script src="../src/js/theme.js" defer></script>
-    <script src="../src/js/utils.js" defer></script>
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .auth-card {
-            max-width: 500px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border-radius: 48px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Header */
-        .auth-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 40px;
-        }
-
-        .back-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
-
-        .back-btn:hover {
-            background: #FF9F43;
-            border-color: #FF9F43;
-            transform: scale(1.05);
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-area svg {
-            width: 40px;
-            height: 40px;
-            filter: drop-shadow(0 10px 20px rgba(255, 159, 67, 0.3));
-        }
-
-        .logo-area span {
-            font-size: 24px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FF9F43, #FF6B6B);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .icon-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .icon-btn:hover {
-            background: #FF9F43;
-            border-color: #FF9F43;
-            transform: scale(1.05);
-        }
-
-        /* Title */
-        .auth-title {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .auth-title h1 {
-            font-size: 32px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .auth-title p {
-            color: #94A3B8;
-            font-size: 16px;
-        }
-
-        /* Method Buttons */
-        .method-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-bottom: 30px;
-        }
-
-        .method-btn {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 20px 24px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 2px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            text-align: left;
-        }
-
-        .method-btn:hover {
-            border-color: #FF9F43;
-            background: rgba(255, 159, 67, 0.1);
-            transform: translateX(5px);
-        }
-
-        .method-icon {
-            width: 56px;
-            height: 56px;
-            background: rgba(255, 159, 67, 0.1);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #FF9F43;
-        }
-
-        .method-info {
-            flex: 1;
-        }
-
-        .method-info h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 4px;
-        }
-
-        .method-info p {
-            color: #94A3B8;
-            font-size: 14px;
-        }
-
-        .method-arrow {
-            color: #94A3B8;
-            font-size: 20px;
-            transition: all 0.3s;
-        }
-
-        .method-btn:hover .method-arrow {
-            color: #FF9F43;
-            transform: translateX(5px);
-        }
-
-        /* Login Link */
-        .login-link {
-            text-align: center;
-            color: #94A3B8;
-            font-size: 14px;
-        }
-
-        .login-link a {
-            color: #FF9F43;
-            text-decoration: none;
-            font-weight: 600;
-            margin-left: 4px;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer */
-        .auth-footer {
-            margin-top: 40px;
-            text-align: center;
-            color: #64748B;
-            font-size: 12px;
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .auth-card { padding: 30px 20px; }
-            .auth-title h1 { font-size: 28px; }
-            .method-btn { padding: 16px 20px; }
-            .method-icon { width: 48px; height: 48px; font-size: 20px; }
-        }
-    </style>
+    <title>Bozorcha — Интихоби Усул</title>
 </head>
-<body data-theme="light">
-    <div class="auth-card">
-        <!-- Header -->
-        <header class="auth-header">
-            <a href="index.html" class="back-btn" aria-label="Back to home">←</a>
-            
-            <div class="logo-area">
-                <!-- Логотипи SVG илова шуд -->
-                <svg width="40" height="40" viewBox="0 0 200 200">
-                    <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#FF9F43"/>
-                            <stop offset="100%" stop-color="#FF6B6B"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="url(#logoGradient)"/>
-                </svg>
-                <span>Bozorcha</span>
-            </div>
+<body>
+    <h1 id="title">Интихоби усул</h1>
+    <p id="description">Лутфан усули дилхоҳро интихоб кунед:</p>
 
-            <div class="header-actions">
-                <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☀️</button>
-            </div>
-        </header>
+    <button id="btn-phone" style="padding: 20px; margin: 10px; cursor: pointer;">
+        📱 Тавассути Телефон
+    </button>
 
-        <!-- Title -->
-        <div class="auth-title">
-            <h1>Ба Bozorcha ҳамроҳ шавед</h1>
-            <p>Усули дилхоҳи худро интихоб кунед</p>
-        </div>
+    <button id="btn-email" style="padding: 20px; margin: 10px; cursor: pointer;">
+        📧 Тавассути Почта (Email)
+    </button>
 
-        <!-- Method Buttons -->
-        <div class="method-buttons">
-            <div class="method-btn"
-                 id="phoneMethod"
-                 role="button"
-                 tabindex="0"
-                 aria-label="Register with phone">
-                <div class="method-icon">📱</div>
-                <div class="method-info">
-                    <h3>Бо рақами телефон</h3>
-                    <p>Сабти ном тавассути SMS-код</p>
-                </div>
-                <div class="method-arrow">→</div>
-            </div>
-
-            <div class="method-btn"
-                 id="emailMethod"
-                 role="button"
-                 tabindex="0"
-                 aria-label="Register with email">
-                <div class="method-icon">✉️</div>
-                <div class="method-info">
-                    <h3>Бо почтаи электронӣ</h3>
-                    <p>Сабти ном тавассути почта</p>
-                </div>
-                <div class="method-arrow">→</div>
-            </div>
-        </div>
-
-        <!-- Login Link -->
-        <div class="login-link">
-            Аллакай ҳисоб доред?
-            <a href="login.html">Ворид шавед</a>
-        </div>
-
-        <!-- Footer -->
-        <div class="auth-footer">
-            © 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.
-        </div>
-    </div>
+    <br>
+    <button onclick="history.back()">← Бозгашт</button>
 
     <script>
-        // ========== ТАНЗИМИ МАВЗӮЪ (THEME) ==========
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.setAttribute('data-theme', savedTheme);
-            document.getElementById('themeBtn').innerText = savedTheme === 'light' ? '☀️' : '🌙';
-        }
-        
-        function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            const newTheme = current === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            document.getElementById('themeBtn').innerText = newTheme === 'light' ? '☀️' : '🌙';
+        // 1. Гирифтани "Сигнал" аз URL (login ё register)
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action'); // 'login' ё 'register'
+        const role = localStorage.getItem('user_role'); // 'seller' ё 'buyer'
+
+        // 2. Тағйир додани матни саҳифа вобаста ба мақсад
+        if (action === 'register') {
+            document.getElementById('title').innerText = "Сабти номи нав";
+        } else {
+            document.getElementById('title').innerText = "Воридшавӣ";
         }
 
-        // ========== КОР БО КЛАВИАТУРА (KEYBOARD ACCESSIBILITY) ==========
-        function activateWithKeyboard(element, callback) {
-            element.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    callback();
-                }
-            });
-        }
+        // 3. Мантиқи тугмаҳо
+        document.getElementById('btn-phone').addEventListener('click', () => {
+            if (action === 'register') {
+                window.location.href = 'src/pages/aurh/register-phone.html';
+            } else {
+                window.location.href = 'src/pages/aurh/login-phone.html';
+            }
+        });
 
-        // ========== EVENT LISTENERS ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            initTheme();
-
-            const themeBtn = document.getElementById('themeBtn');
-            themeBtn.addEventListener('click', toggleTheme);
-
-            const phoneBtn = document.getElementById('phoneMethod');
-            const emailBtn = document.getElementById('emailMethod');
-
-            // Интиқол ба саҳифаи сабти ном бо телефон
-            phoneBtn.addEventListener('click', function() {
-                window.location.href = 'register-phone.html';
-            });
-
-            // Интиқол ба саҳифаи сабти ном бо почта
-            emailBtn.addEventListener('click', function() {
-                window.location.href = 'register-email.html';
-            });
-
-            // Дастгирии клавиатура
-            activateWithKeyboard(phoneBtn, function() {
-                window.location.href = 'register-phone.html';
-            });
-
-            activateWithKeyboard(emailBtn, function() {
-                window.location.href = 'register-email.html';
-            });
+        document.getElementById('btn-email').addEventListener('click', () => {
+            if (action === 'register') {
+                window.location.href = 'src/pages/aurh/register-email.html';
+            } else {
+                window.location.href = 'src/pages/aurh/login-email.html';
+            }
         });
     </script>
 </body>
