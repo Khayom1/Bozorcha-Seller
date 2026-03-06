@@ -2,22 +2,27 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <title>Bozorcha — Вуруд барои Харидор</title>
+    <title>Bozorcha — Харидор</title>
 </head>
 <body>
-    <h1>🛍️ Саҳифаи Харидор</h1>
-    <p>Лутфан интихоб кунед:</p>
-
-    <button onclick="window.location.href='src/pages/aurh/choose-method.html?action=login'" style="padding: 20px; margin: 10px;">
-        Ворид шудан (Login)
+    <h1>🛍️ Хуш омадед, Харидор!</h1>
+    
+    <button onclick="window.location.href='choose-method.html?action=login'" style="padding: 15px; margin: 10px;">
+        Воридшавӣ / Сабти ном
     </button>
 
-    <button onclick="window.location.href='src/pages/aurh/choose-method.html?action=register'" style="padding: 20px; margin: 10px;">
-        Сабти номи нав (Register)
+    <hr>
+
+    <button id="btn-guest" style="padding: 20px; margin: 10px; background-color: #4CAF50; color: white; cursor: pointer;">
+        🚀 Ҳамчун меҳмон ворид шудан (Бе сабти ном)
     </button>
 
-    <br>
-    <a href="index.html">← Бозгашт ба аввал</a>
+    <script>
+        document.getElementById('btn-guest').addEventListener('click', () => {
+            localStorage.setItem('user_role', 'buyer');
+            localStorage.setItem('is_guest', 'true'); // Нишона барои Меҳмон
+            window.location.href = 'src/pages/dashboard/b-home.html'; // Ё ба саҳифаи маҳсулот (market.html)
+        });
+    </script>
 </body>
 </html>
-
