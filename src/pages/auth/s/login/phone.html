@@ -76,7 +76,7 @@
                     .single();
 
                 if (profile && profile.role === 'seller') {
-                    window.location.href = "../../../../dashboard/s-main.html";
+                    window.location.href = "../../../dashboard/dashboard.html";
                 } else {
                     await supabase.auth.signOut();
                     errorMsg.innerText = "Рақам хато аст.";
