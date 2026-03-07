@@ -1,148 +1,580 @@
-<!DOCTYPE html>
-<html lang="tg">
+<!-- File: intro-anim.html -->
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Premium Logo Intro Animation</title>
 <style>
-body{
-margin:0;
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-background:radial-gradient(circle at 50% 40%,#1a1a1a,#000);
-overflow:hidden;
-}
+  :root{
+    --bg-dark:#05060a;
+    --accent-warm-1:#ff9a00;
+    --accent-warm-2:#ff4b00;
+    --accent-soft:#ffb86b;
+    --logo-black:#0b0b0b;
+  }
 
-.scene{
-perspective:1200px;
-position:relative;
-}
+  html,body{
+    height:100%;
+    margin:0;
+    background: radial-gradient(1200px 700px at 20% 20%, rgba(40,40,50,0.12), transparent 10%),
+                radial-gradient(900px 500px at 80% 80%, rgba(255,80,20,0.06), transparent 10%),
+                var(--bg-dark);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
 
-.logo{
-width:420px;
-transform-style:preserve-3d;
-}
+  /* Stage container */
+  .stage{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    perspective:1200px;
+    -webkit-perspective:1200px;
+    will-change:transform;
+  }
 
-.energy path{
-fill:none;
-stroke:#ffffff;
-stroke-width:3;
-stroke-linecap:round;
-stroke-dasharray:2500;
-stroke-dashoffset:2500;
-}
+  /* Canvas for energy trails & sparks */
+  canvas#effects{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    z-index:1;
+    pointer-events:none;
+    transform:translateZ(0);
+  }
 
-#cap{
-opacity:0;
-fill:url(#capGrad);
-}
+  /* Logo wrapper */
+  .logo-wrap{
+    position:relative;
+    width:min(44vmin,520px);
+    height:auto;
+    z-index:5;
+    transform-style:preserve-3d;
+    will-change:transform;
+  }
 
-#symbol{
-opacity:0;
-fill:#000000;
-}
+  /* Inline SVG styles */
+  svg{
+    width:100%;
+    height:auto;
+    display:block;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.6));
+    transform-origin:center center;
+    will-change:transform, filter;
+  }
 
-#wave{
-opacity:0;
-fill:url(#waveGrad);
-}
+  /* Stroke base for energy lines drawing the logo */
+  .path-energy{
+    fill:none;
+    stroke:rgba(255,255,255,0.06);
+    stroke-width:2.5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    mix-blend-mode:screen;
+  }
 
-.light{
-position:absolute;
-top:0;
-left:-120%;
-width:60%;
-height:100%;
-background:linear-gradient(120deg,transparent,rgba(255,255,255,.25),transparent);
-transform:skewX(-20deg);
-}
+  /* Visible logo fills (hidden initially) */
+  .logo-fill-top{ fill: url(#grad-top); opacity:0; filter: drop-shadow(0 6px 18px rgba(255,140,40,0.12)); }
+  .logo-fill-center{ fill: var(--logo-black); opacity:0; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.18)); }
+  .logo-fill-wave{ fill: url(#grad-wave); opacity:0; filter: drop-shadow(0 8px 28px rgba(255,60,20,0.12)); }
+
+  /* Glow pulse stroke overlay */
+  .glow-stroke{
+    fill:none;
+    stroke:rgba(255,200,120,0.0);
+    stroke-width:6;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    filter: url(#glow);
+    mix-blend-mode:screen;
+    stroke-dasharray: 6 18;
+    opacity:0;
+  }
+
+  /* Light sweep */
+  .light-sweep{
+    position:absolute;
+    inset:0;
+    z-index:8;
+    pointer-events:none;
+    mix-blend-mode:overlay;
+    opacity:0.0;
+    will-change:transform, opacity;
+  }
+
+  /* Subtle vignette */
+  .vignette{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:20;
+    background: radial-gradient(60% 40% at 50% 40%, rgba(255,255,255,0.02), transparent 20%),
+                radial-gradient(80% 60% at 50% 60%, rgba(0,0,0,0.35), rgba(0,0,0,0.6) 80%);
+    mix-blend-mode:multiply;
+  }
+
+  /* Accessibility: reduce motion */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
 </style>
 </head>
-
 <body>
+  <div class="stage" id="stage">
+    <canvas id="effects"></canvas>
 
-<div class="scene">
+    <div class="logo-wrap" id="logoWrap" aria-hidden="true">
+      <!-- Inline SVG: Replace the placeholder paths with your actual SVG logo paths if desired.
+           The structure uses three main groups: top cap, central symbol, curved wave.
+           Each path has a corresponding 'energy' path used for stroke-draw and pulse effects. -->
+      <svg id="logoSVG" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo animation">
+        <defs>
+          <!-- Warm gradient for top cap -->
+          <linearGradient id="grad-top" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#ffd07a"/>
+            <stop offset="1" stop-color="#ff8a00"/>
+          </linearGradient>
 
-<div class="light"></div>
+          <!-- Wave gradient -->
+          <linearGradient id="grad-wave" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#ff8a00"/>
+            <stop offset="1" stop-color="#ff2e00"/>
+          </linearGradient>
 
-<svg class="logo" viewBox="0 0 533 600">
+          <!-- Glow filter -->
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
 
-<defs>
+          <!-- Soft inner glow for light sweep -->
+          <linearGradient id="sweepGrad" x1="0" x2="1">
+            <stop offset="0" stop-color="rgba(255,255,255,0.0)"/>
+            <stop offset="0.45" stop-color="rgba(255,255,255,0.18)"/>
+            <stop offset="0.55" stop-color="rgba(255,255,255,0.06)"/>
+            <stop offset="1" stop-color="rgba(255,255,255,0.0)"/>
+          </linearGradient>
+        </defs>
 
-<linearGradient id="capGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-<stop offset="0%" stop-color="#F6C27C"/>
-<stop offset="100%" stop-color="#F3B66E"/>
-</linearGradient>
+        <!-- Energy guide paths (thin, invisible initially) -->
+        <g id="energyGuides" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" opacity="0.0001">
+          <!-- Top cap guide (three rounded segments) -->
+          <path id="guideTop" class="path-energy" d="M160 140 C200 80 280 80 320 140 S420 200 480 140" />
+          <!-- Central symbol guide -->
+          <path id="guideCenter" class="path-energy" d="M380 220 C360 260 360 320 420 360 C480 400 520 360 520 320" />
+          <!-- Curved wave guide -->
+          <path id="guideWave" class="path-energy" d="M160 420 C260 360 420 460 560 420 C620 400 680 380 720 420" />
+        </g>
 
-<linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-<stop offset="0%" stop-color="#FFA33A"/>
-<stop offset="50%" stop-color="#FF7A1A"/>
-<stop offset="100%" stop-color="#FF3B00"/>
-</linearGradient>
+        <!-- Visible logo shapes (hidden initially; will be revealed sequentially) -->
+        <g id="logoShapes">
+          <!-- Top cap fill -->
+          <path id="topCap" class="logo-fill-top" d="M140 120 C200 60 300 60 360 120 C420 180 520 120 580 120 C600 120 620 140 620 160 C620 180 600 200 580 200 C520 200 420 140 360 200 C300 260 200 200 140 200 C120 200 100 180 100 160 C100 140 120 120 140 120 Z" />
 
-</defs>
+          <!-- Central symbol fill (stylized 'J' placeholder) -->
+          <path id="centerSymbol" class="logo-fill-center" d="M420 220 C380 220 360 260 360 300 L360 360 C360 420 420 460 480 420 C520 400 520 360 500 340 C480 320 440 340 440 360" />
 
-<!-- snake lines -->
+          <!-- Curved wave fill -->
+          <path id="wave" class="logo-fill-wave" d="M140 420 C240 360 420 460 560 420 C620 400 680 380 720 420 L720 480 C680 460 620 460 560 480 C420 520 240 420 140 480 Z" />
+        </g>
 
-<g class="energy">
-<path id="line1" d="M80 120 L460 120"/>
-<path id="line2" d="M220 260 L220 440"/>
-<path id="line3" d="M320 360 C380 400 440 460 470 520"/>
-</g>
+        <!-- Glow stroke overlays for pulse -->
+        <g id="glowOverlays">
+          <path id="glowTop" class="glow-stroke" d="M160 140 C200 80 280 80 320 140 S420 200 480 140" />
+          <path id="glowCenter" class="glow-stroke" d="M380 220 C360 260 360 320 420 360 C480 400 520 360 520 320" />
+          <path id="glowWave" class="glow-stroke" d="M160 420 C260 360 420 460 560 420 C620 400 680 380 720 420" />
+        </g>
+      </svg>
+    </div>
 
-<!-- cap -->
-<g id="cap">
-<path d="M80 120 C120 80 420 80 460 120 L460 170 L80 170 Z"/>
-</g>
+    <!-- Light sweep overlay (SVG) -->
+    <svg class="light-sweep" viewBox="0 0 800 600" preserveAspectRatio="none" aria-hidden="true">
+      <rect x="-200" y="0" width="400" height="600" fill="url(#sweepGrad)" transform="skewX(-18)"></rect>
+    </svg>
 
-<!-- symbol -->
-<g id="symbol">
-<path d="M210 260 L210 430 L290 430 L290 260 Z"/>
-</g>
-
-<!-- wave -->
-<g id="wave">
-<path d="M320 360 C400 400 450 460 480 520 C420 520 360 470 320 420 Z"/>
-</g>
-
-</svg>
-
-</div>
+    <div class="vignette" aria-hidden="true"></div>
+  </div>
 
 <script>
+/* Intro Animation Script
+   - Uses GSAP for timeline control
+   - Canvas for energy trails and particle sparks
+   - Optimized loops and hardware-accelerated transforms
+   - Duration target: ~4.5 seconds total
+*/
 
-const tl = gsap.timeline()
+/* Load GSAP (CDN) dynamically to keep file single-file friendly */
+(function loadGSAP(cb){
+  if(window.gsap) return cb();
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
+  s.onload = () => {
+    const s2 = document.createElement('script');
+    s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js';
+    s2.onload = cb;
+    document.head.appendChild(s2);
+  };
+  document.head.appendChild(s);
+})(init);
 
-// snake draw
-tl.to("#line1",{strokeDashoffset:0,duration:1.2,ease:"power3.out"})
-.to("#line2",{strokeDashoffset:0,duration:1,ease:"power3.out"},"-=0.8")
-.to("#line3",{strokeDashoffset:0,duration:1,ease:"power3.out"},"-=0.8")
+function init(){
+  const { gsap } = window;
+  gsap.registerPlugin(window.MotionPathPlugin || {});
 
-// fill
-.to("#cap",{opacity:1,duration:.6})
-.to("#symbol",{opacity:1,duration:.6})
-.to("#wave",{opacity:1,duration:.6})
+  // Elements
+  const canvas = document.getElementById('effects');
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const stage = document.getElementById('stage');
+  const logoWrap = document.getElementById('logoWrap');
+  const svg = document.getElementById('logoSVG');
+  const guideTop = document.getElementById('guideTop');
+  const guideCenter = document.getElementById('guideCenter');
+  const guideWave = document.getElementById('guideWave');
+  const topCap = document.getElementById('topCap');
+  const centerSymbol = document.getElementById('centerSymbol');
+  const wave = document.getElementById('wave');
+  const glowTop = document.getElementById('glowTop');
+  const glowCenter = document.getElementById('glowCenter');
+  const glowWave = document.getElementById('glowWave');
+  const lightSweep = document.querySelector('.light-sweep');
 
-// 3D cinematic
-.to(".logo",{
-rotateX:12,
-rotateY:-10,
-scale:1.05,
-duration:1,
-ease:"power2.out"
-})
+  // Responsive canvas sizing
+  function resize(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = innerWidth * dpr;
+    canvas.height = innerHeight * dpr;
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  addEventListener('resize', resize, { passive:true });
+  resize();
 
-// light sweep
-.to(".light",{
-left:"120%",
-duration:1
-},"-=0.6")
+  // Utility: sample points along an SVG path
+  function getPathPoints(pathEl, segments=120){
+    const len = pathEl.getTotalLength();
+    const pts = [];
+    for(let i=0;i<=segments;i++){
+      const p = pathEl.getPointAtLength((i/segments)*len);
+      pts.push({x:p.x, y:p.y});
+    }
+    return pts;
+  }
 
+  // Energy trail objects (animated "electric snakes")
+  class EnergyTrail {
+    constructor(points, color='#fff', width=2.5){
+      this.points = points.slice();
+      this.progress = 0; // 0..1
+      this.color = color;
+      this.width = width;
+      this.noise = Math.random()*1000;
+      this.seed = Math.random()*1000;
+      this.alive = true;
+      this.direction = Math.random() > 0.5 ? 1 : -1;
+      this.speed = 0.6 + Math.random()*0.9;
+      this.trailLen = 18 + Math.floor(Math.random()*36);
+    }
+    update(dt){
+      this.progress += dt * 0.6 * this.speed;
+      if(this.progress > 1.05) this.alive = false;
+    }
+    draw(ctx){
+      const pcount = Math.floor(this.points.length * Math.min(this.progress,1));
+      if(pcount < 2) return;
+      ctx.save();
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      for(let i=0;i<Math.min(pcount, this.points.length-1); i++){
+        const a = this.points[i];
+        const b = this.points[i+1];
+        const t = i / this.points.length;
+        const jitter = Math.sin((Date.now()*0.002 + this.seed + i*3) * 2.2) * (6 * (1 - t));
+        ctx.beginPath();
+        ctx.moveTo(a.x + jitter*this.direction, a.y - jitter*this.direction);
+        ctx.lineTo(b.x + jitter*this.direction, b.y - jitter*this.direction);
+        const alpha = Math.pow((i / pcount), 1.6) * 0.95;
+        ctx.strokeStyle = `rgba(255,${180 + Math.floor(40*t)},${80 + Math.floor(60*t)},${alpha})`;
+        ctx.lineWidth = this.width * (1 + 1.2*(1 - t));
+        ctx.shadowBlur = 18 * (1 - t) + 6;
+        ctx.shadowColor = `rgba(255,${140 + Math.floor(80*t)},${60 + Math.floor(80*t)},${alpha})`;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  // Particle system for sparks
+  class Particle {
+    constructor(x,y, color){
+      this.x = x; this.y = y;
+      const ang = Math.random()*Math.PI*2;
+      const sp = 120 + Math.random()*260;
+      this.vx = Math.cos(ang)*sp;
+      this.vy = Math.sin(ang)*sp - (40 + Math.random()*80);
+      this.life = 0;
+      this.ttl = 0.6 + Math.random()*0.9;
+      this.size = 1 + Math.random()*3;
+      this.color = color || `rgba(255,${150+Math.floor(Math.random()*80)},${40+Math.floor(Math.random()*80)},1)`;
+    }
+    update(dt){
+      this.vy += 420 * dt; // gravity
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+      this.vx *= 0.995;
+      this.vy *= 0.995;
+      this.life += dt;
+    }
+    draw(ctx){
+      const t = this.life / this.ttl;
+      if(t>1) return;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.beginPath();
+      ctx.fillStyle = this.color.replace(/,1\)$/, `,${1 - t})`);
+      ctx.shadowBlur = 12 * (1 - t) + 6;
+      ctx.shadowColor = this.color;
+      ctx.arc(this.x, this.y, this.size * (1 - t) + 0.2, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+    get dead(){ return this.life >= this.ttl; }
+  }
+
+  // Manager for trails and particles
+  const trails = [];
+  const particles = [];
+
+  // Precompute path points for guides
+  const topPoints = getPathPoints(guideTop, 160);
+  const centerPoints = getPathPoints(guideCenter, 160);
+  const wavePoints = getPathPoints(guideWave, 160);
+
+  // Convert SVG coordinates to screen coordinates (SVG viewBox -> DOM)
+  function svgPointToScreen(svgEl, pt){
+    const svgRect = svgEl.getBoundingClientRect();
+    // viewBox is 0 0 800 600
+    const vbW = 800, vbH = 600;
+    const scaleX = svgRect.width / vbW;
+    const scaleY = svgRect.height / vbH;
+    const x = svgRect.left + pt.x * scaleX;
+    const y = svgRect.top + pt.y * scaleY;
+    return { x, y };
+  }
+
+  // Emit particles at a given SVG path point index
+  function emitSparksFromPath(pathPoints, idx, count=18){
+    const p = pathPoints[Math.max(0, Math.min(pathPoints.length-1, idx))];
+    const screen = svgPointToScreen(svg, p);
+    for(let i=0;i<count;i++){
+      particles.push(new Particle(screen.x + (Math.random()-0.5)*8, screen.y + (Math.random()-0.5)*8));
+    }
+  }
+
+  // Animation loop (optimized)
+  let last = performance.now();
+  function tick(now){
+    const dt = Math.min(0.032, (now - last) / 1000);
+    last = now;
+    // Clear canvas with slight fade for trails
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Update and draw trails
+    for(let i=trails.length-1;i>=0;i--){
+      const t = trails[i];
+      t.update(dt);
+      t.draw(ctx);
+      if(!t.alive) trails.splice(i,1);
+    }
+
+    // Update particles
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.update(dt);
+      p.draw(ctx);
+      if(p.dead) particles.splice(i,1);
+    }
+
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // GSAP timeline for the full sequence (~4.5s)
+  const tl = gsap.timeline({ defaults:{ ease: "power2.out" } });
+
+  // Stage 1 — Energy Line Formation (0.0 - 1.6s)
+  tl.call(() => {
+    // spawn multiple energy trails from different directions that follow guide paths
+    // top: spawn 3 trails
+    for(let i=0;i<3;i++){
+      const trail = new EnergyTrail(topPoints, '#ffb86b', 3 + Math.random()*2);
+      trail.speed = 0.9 + i*0.2;
+      trail.seed += i*50;
+      trails.push(trail);
+      // schedule sparks when trail reaches certain progress
+      gsap.to(trail, { progress:1, duration:0.9 + i*0.12, ease:"power1.inOut", onUpdate:()=>{
+        const pidx = Math.floor(trail.progress * (topPoints.length-1));
+        if(Math.random() < 0.06) emitSparksFromPath(topPoints, pidx, 6);
+      }});
+    }
+    // center: spawn 2 trails
+    for(let i=0;i<2;i++){
+      const trail = new EnergyTrail(centerPoints, '#ffd7a3', 3);
+      trail.speed = 1.1 + i*0.15;
+      trail.direction = i? -1:1;
+      trails.push(trail);
+      gsap.to(trail, { progress:1, duration:1.0 + i*0.14, ease:"power1.inOut", onUpdate:()=>{
+        const pidx = Math.floor(trail.progress * (centerPoints.length-1));
+        if(Math.random() < 0.08) emitSparksFromPath(centerPoints, pidx, 8);
+      }});
+    }
+    // wave: spawn 3 longer trails
+    for(let i=0;i<3;i++){
+      const trail = new EnergyTrail(wavePoints, '#ff7a2b', 3.5);
+      trail.speed = 0.8 + i*0.12;
+      trail.trailLen = 28 + i*6;
+      trails.push(trail);
+      gsap.to(trail, { progress:1, duration:1.2 + i*0.18, ease:"power1.inOut", onUpdate:()=>{
+        const pidx = Math.floor(trail.progress * (wavePoints.length-1));
+        if(Math.random() < 0.05) emitSparksFromPath(wavePoints, pidx, 5);
+      }});
+    }
+  }, 0);
+
+  // Stage 2 — Particle Sparks (overlaps with Stage 1, 0.6 - 1.8s)
+  tl.to({}, { duration: 0.6 }); // small spacer
+  tl.call(() => {
+    // Burst sparks at connection points (approx indices)
+    emitSparksFromPath(topPoints, Math.floor(topPoints.length*0.95), 28);
+    emitSparksFromPath(centerPoints, Math.floor(centerPoints.length*0.9), 36);
+    emitSparksFromPath(wavePoints, Math.floor(wavePoints.length*0.92), 30);
+  }, null, 0.9);
+
+  // Stage 3 — Logo Assembly (1.2 - 2.8s)
+  // Reveal top cap fill first
+  tl.to(topCap, { opacity:1, duration:0.45, ease:"power2.out", onStart:()=>{
+    // subtle scale pop
+    gsap.fromTo(topCap, { transformOrigin:"50% 50%", scale:0.98 }, { scale:1, duration:0.6, ease:"elastic.out(1,0.6)" });
+  } }, 1.2);
+
+  // Reveal center symbol second (deep black with glow)
+  tl.to(centerSymbol, { opacity:1, duration:0.45, ease:"power2.out", onStart:()=>{
+    gsap.fromTo(centerSymbol, { y:-8, transformOrigin:"50% 50%" }, { y:0, duration:0.6, ease:"power3.out" });
+  } }, 1.6);
+
+  // Reveal wave last with molten gradient flow
+  tl.to(wave, { opacity:1, duration:0.6, ease:"power2.out", onStart:()=>{
+    // animate a subtle gradient shift to feel like flowing energy
+    const grad = document.getElementById('grad-wave');
+    if(grad){
+      gsap.fromTo(grad, { x1:0 }, { x1:0.6, duration:0.9, ease:"sine.inOut" });
+    }
+  } }, 2.0);
+
+  // Stage 4 — Glow Pulse (2.6 - 3.4s)
+  tl.call(() => {
+    // Prepare glow strokes: set dashoffset and animate along path
+    [glowTop, glowCenter, glowWave].forEach((g, i) => {
+      const len = g.getTotalLength();
+      g.style.strokeDasharray = `${len}`;
+      g.style.strokeDashoffset = `${len}`;
+      g.style.opacity = 1;
+      gsap.to(g, { strokeDashoffset: 0, duration: 0.9, ease:"power2.inOut", delay: i*0.08, onComplete:()=>{
+        // fade out gently
+        gsap.to(g, { opacity:0, duration:0.6, ease:"power2.out" });
+      }});
+    });
+
+    // Add small traveling pulses along visible paths (additive glow)
+    function pulseAlong(pathEl, color){
+      const len = pathEl.getTotalLength();
+      const pulse = document.createElementNS('http://www.w3.org/2000/svg','path');
+      pulse.setAttribute('d', pathEl.getAttribute('d'));
+      pulse.setAttribute('fill','none');
+      pulse.setAttribute('stroke', color);
+      pulse.setAttribute('stroke-width','6');
+      pulse.setAttribute('stroke-linecap','round');
+      pulse.setAttribute('filter','url(#glow)');
+      pulse.style.mixBlendMode = 'screen';
+      pulse.style.opacity = 0.0;
+      svg.appendChild(pulse);
+      pulse.style.strokeDasharray = `${len}`;
+      pulse.style.strokeDashoffset = `${len}`;
+      gsap.to(pulse, { strokeDashoffset: 0, duration: 0.9, ease:"power1.inOut", onStart:()=> gsap.to(pulse, { opacity:1, duration:0.18 }) , onComplete:()=> {
+        gsap.to(pulse, { opacity:0, duration:0.4, onComplete:()=> pulse.remove() });
+      }});
+    }
+    pulseAlong(guideTop, 'rgba(255,200,120,0.95)');
+    pulseAlong(guideCenter, 'rgba(255,180,120,0.95)');
+    pulseAlong(guideWave, 'rgba(255,120,80,0.95)');
+  }, null, 2.6);
+
+  // Stage 5 — Cinematic 3D Finish (3.2 - 4.6s)
+  tl.to(logoWrap, { duration: 1.0, transformPerspective:1200, rotationX:8, rotationY:-6, scale:1.02, ease:"power3.inOut" }, 3.2);
+  tl.to(logoWrap, { duration: 0.6, rotationX:0, rotationY:0, scale:1.0, ease:"elastic.out(1,0.6)" }, 4.2);
+
+  // Light sweep across logo surface
+  tl.to(lightSweep, { opacity:1, duration:0.02 }, 3.45);
+  tl.to(lightSweep, { x: innerWidth * 1.1, duration:0.9, ease:"power2.inOut", onStart:()=>{
+    // ensure sweep starts off-left
+    lightSweep.style.transform = `translateX(${ -innerWidth * 0.6 }px)`;
+  }, onComplete:()=>{
+    gsap.to(lightSweep, { opacity:0, duration:0.35 });
+    lightSweep.style.transform = '';
+  } }, 3.48);
+
+  // Final micro-pulse and settle
+  tl.call(()=> {
+    // tiny glow pulse on fills
+    gsap.fromTo([topCap, centerSymbol, wave], { filter: 'brightness(1.05) saturate(1.05)' }, { filter:'brightness(1) saturate(1)', duration:0.9, ease:"power2.out" });
+  }, null, 4.0);
+
+  // End: subtle fade out of canvas effects and keep logo visible
+  tl.to(canvas, { opacity:0.18, duration:0.8, ease:"power2.out" }, 4.2);
+
+  // Auto-start timeline
+  tl.play();
+
+  // Additional: periodically emit tiny ambient sparks for cinematic feel (low cost)
+  gsap.ticker.add(() => {
+    if(Math.random() < 0.02){
+      const idx = Math.floor(Math.random()*topPoints.length);
+      emitSparksFromPath(topPoints, idx, 3);
+    }
+  });
+
+  // Accessibility: stop heavy animations if prefers-reduced-motion
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    gsap.globalTimeline.timeScale(0.0001);
+  }
+
+  // Expose a small API for re-triggering (useful for demos)
+  window.replayIntro = () => {
+    // clear particles and trails
+    trails.length = 0;
+    particles.length = 0;
+    // reset fills
+    [topCap, centerSymbol, wave].forEach(el => el.style.opacity = 0);
+    // reset glow overlays
+    [glowTop, glowCenter, glowWave].forEach(g => { g.style.opacity = 0; });
+    // reset canvas opacity
+    canvas.style.opacity = 1;
+    // restart timeline
+    tl.restart();
+  };
+
+  // Performance note: keep canvas drawing simple and rely on GSAP for heavy path animations
+}
 </script>
-
 </body>
 </html>
