@@ -2,51 +2,48 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <title>Bozorcha — Интихоби Усул</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Усули вуруд — Фурӯшанда</title>
 </head>
 <body>
-    <h1 id="title">Интихоби усул</h1>
-    <p id="description">Лутфан усули дилхоҳро интихоб кунед:</p>
+    <div class="container">
+        <h2 id="page-title">Сабти номи мағоза</h2>
+        <p>Усули қулайро барои тасдиқи шахсият интихоб кунед:</p>
 
-    <button id="btn-phone" style="padding: 20px; margin: 10px; cursor: pointer;">
-        📱 Тавассути Телефон
-    </button>
+        <button id="method-phone" style="display: block; width: 100%; padding: 20px; margin-bottom: 10px; background: #f0f0f0; border: 1px solid #ccc; cursor: pointer;">
+            📱 Тавассути рақами телефон
+        </button>
 
-    <button id="btn-email" style="padding: 20px; margin: 10px; cursor: pointer;">
-        📧 Тавассути Почта (Email)
-    </button>
+        <button id="method-email" style="display: block; width: 100%; padding: 20px; background: #f0f0f0; border: 1px solid #ccc; cursor: pointer;">
+            📧 Тавассути почтаи электронӣ
+        </button>
 
-    <br>
-    <button onclick="history.back()">← Бозгашт</button>
+        <br>
+        <button onclick="history.back()" style="background: none; border: none; color: blue; text-decoration: underline;">
+            ← Бозгашт
+        </button>
+    </div>
 
     <script>
-        // 1. Гирифтани "Сигнал" аз URL (login ё register)
+        // 1. Гирифтани мақсад (action) аз URL: ?action=login ё ?action=register
         const urlParams = new URLSearchParams(window.location.search);
-        const action = urlParams.get('action'); // 'login' ё 'register'
-        const role = localStorage.getItem('user_role'); // 'seller' ё 'buyer'
+        const action = urlParams.get('action') || 'register'; // Агар холӣ бошад, register ҳисоб мешавад
 
-        // 2. Тағйир додани матни саҳифа вобаста ба мақсад
-        if (action === 'register') {
-            document.getElementById('title').innerText = "Сабти номи нав";
-        } else {
-            document.getElementById('title').innerText = "Воридшавӣ";
+        // 2. Тағйири сарлавҳа вобаста ба мақсад
+        const titleElement = document.getElementById('page-title');
+        if (action === 'login') {
+            titleElement.innerText = "Воридшавӣ ба кабинет";
         }
 
-        // 3. Мантиқи тугмаҳо
-        document.getElementById('btn-phone').addEventListener('click', () => {
-            if (action === 'register') {
-                window.location.href = 'src/pages/aurh/register-phone.html';
-            } else {
-                window.location.href = 'src/pages/aurh/login-phone.html';
-            }
+        // 3. Мантиқи тугмаҳо (Redirect)
+        document.getElementById('method-phone').addEventListener('click', () => {
+            // Масалан: s-auth-phone.html?action=register
+            window.location.href = `../src/pages/auth/s-auth-phone.html?action=${action}`;
         });
 
-        document.getElementById('btn-email').addEventListener('click', () => {
-            if (action === 'register') {
-                window.location.href = 'src/pages/aurh/register-email.html';
-            } else {
-                window.location.href = 'src/pages/aurh/login-email.html';
-            }
+        document.getElementById('method-email').addEventListener('click', () => {
+            // Масалан: s-auth-email.html?action=register
+            window.location.href = `../src/pages/auth/s-auth-email.html?action=${action}`;
         });
     </script>
 </body>
