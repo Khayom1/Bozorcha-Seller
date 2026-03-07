@@ -3,38 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bozorcha — Интихоби Нақш</title>
+    <title>Bozorcha — Хуш омадед</title>
 </head>
 <body>
+    <div class="main-gate">
+        <h1>Bozorcha</h1>
+        <p>Шумо кистед?</p>
 
-    <div id="app">
-        <h1>Хуш омадед ба Bozorcha</h1>
-        <p>Лутфан яке аз роҳҳоро интихоб кунед:</p>
-
-        <button id="btn-buyer" style="padding: 20px; margin: 10px; cursor: pointer;">
-            🛍️ Ман Харидор ҳастам
+        <button id="go-buyer" style="padding: 20px; background: #2196F3; color: white;">
+            🛍️ Ман Харидор (Мехоҳам харид кунам)
         </button>
 
-        <button id="btn-seller" style="padding: 20px; margin: 10px; cursor: pointer;">
-            🏪 Ман Фурӯшанда ҳастам
+        <br><br>
+
+        <button id="go-seller" style="padding: 20px; background: #FF9800; color: white;">
+            🏪 Ман Фурӯшанда (Мехоҳам мағоза кушоям)
         </button>
     </div>
 
-    <script src="src/js/config.js"></script>
-
     <script>
-        // Интихоби Харидор
-        document.getElementById('btn-buyer').addEventListener('click', () => {
+        // ЛОГИКАИ ХАРИДОР
+        document.getElementById('go-buyer').addEventListener('click', () => {
             localStorage.setItem('user_role', 'buyer');
-            window.location.href = 'method-login-boyer.html';
+            localStorage.setItem('is_guest', 'true'); // Нишонаи меҳмон
+            window.location.href = 'b-dashboard.html'; // Рост ба маркази харид
         });
 
-        // Интихоби Фурӯшанда
-        document.getElementById('btn-seller').addEventListener('click', () => {
+        // ЛОГИКАИ ФУРӮШАНДА
+        document.getElementById('go-seller').addEventListener('click', () => {
             localStorage.setItem('user_role', 'seller');
-            window.location.href = 'method-login-seller.html';
+            localStorage.setItem('is_guest', 'false');
+            window.location.href = 'method-login-seller.html'; // Ба интихоби усули вуруд
         });
     </script>
-
 </body>
 </html>
