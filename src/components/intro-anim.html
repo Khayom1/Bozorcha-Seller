@@ -1,219 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tg">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bozorcha - The Masterpiece Animation</title>
+<title>Bozorcha - Cinematic SVG Animation</title>
 
 <style>
-    /* Reset ва Заминаи Синамоӣ */
     body {
         margin: 0;
-        background: radial-gradient(circle at 50% 40%, #1a1005 0%, #050505 80%, #000000 100%);
+        background: radial-gradient(circle at 50% 50%, #1a1005 0%, #050505 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         height: 100vh;
         overflow: hidden;
-        font-family: sans-serif;
-        perspective: 1000px; /* Барои умқи 3D */
     }
 
     /* Зарраҳои тиллоии боҳашамат */
     #particles-container {
         position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
-        pointer-events: none;
         z-index: 1;
     }
 
     .particle {
         position: absolute;
-        background: radial-gradient(circle, #ffb76b 0%, #ff8a3d 40%, transparent 80%);
+        background: #ff8a3d;
         border-radius: 50%;
         opacity: 0;
-        filter: blur(1px);
-        animation: floatUp infinite cubic-bezier(0.4, 0, 0.2, 1);
+        animation: floatUp infinite linear;
     }
 
     @keyframes floatUp {
-        0% { transform: translateY(0) scale(0.2); opacity: 0; }
-        30% { opacity: 0.9; transform: translateY(-100px) scale(1); filter: blur(0px) drop-shadow(0 0 10px #ff8a3d); }
-        70% { opacity: 0.5; transform: translateY(-300px) scale(0.8); }
-        100% { transform: translateY(-500px) scale(0.1); opacity: 0; }
+        0% { transform: translateY(0) scale(0.5); opacity: 0; }
+        50% { opacity: 0.6; }
+        100% { transform: translateY(-300px) scale(1.2); opacity: 0; }
     }
 
-    /* Контейнери марказӣ барои логотип */
-    .masterpiece-wrapper {
-        z-index: 2;
+    /* Контейнери асосии логотип */
+    .logo-container {
         position: relative;
-        /* Пайдоиши оҳиста ва боҳашамат */
-        animation: cinematicReveal 3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    /* Логотипи Бозорча */
-    .bozorcha-logo {
-        width: 250px; /* Андозаи беҳтарин барои намоиш */
-        display: block;
+    /* Эффекти Тулӯи Офтоб (Sunrise Reveal) */
+    .bozorcha-svg {
+        width: 280px; /* Андозаи калони синамоӣ */
+        height: auto;
         opacity: 0;
-        transform: scale(0.85) translateY(30px) rotateX(10deg);
+        transform: translateY(50px) scale(0.9);
         filter: drop-shadow(0 0 0px rgba(255, 138, 61, 0));
         
-        /* Аниматсияи мураккаб: Пайдоиш + Нафаскашии бозор + Шинокунӣ */
+        /* Аниматсияҳо: 1. Пайдоиш, 2. Нафаскашӣ, 3. Шинокунӣ */
         animation: 
-            logoEntrance 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s forwards,
-            marketBreathe 6s ease-in-out infinite 3s,
-            cinematicFloat 8s ease-in-out infinite 3s;
+            sunrise 2.5s cubic-bezier(0.2, 0.5, 0.2, 1) forwards,
+            breathe 5s ease-in-out infinite 2.5s,
+            float 7s ease-in-out infinite 2.5s;
     }
 
-    /* 1. Пайдоиш (Reveal) */
-    @keyframes logoEntrance {
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0) rotateX(0deg);
-            filter: drop-shadow(0 15px 35px rgba(255, 138, 61, 0.4));
-        }
+    @keyframes sunrise {
+        0% { opacity: 0; transform: translateY(50px) scale(0.9); filter: blur(10px); }
+        100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px) drop-shadow(0 15px 40px rgba(255, 138, 61, 0.5)); }
     }
 
-    /* 2. Нафаскашии бозор (Афзоиш ва тавсеа) */
-    @keyframes marketBreathe {
-        0%, 100% { 
-            transform: scale(1);
-            filter: drop-shadow(0 15px 35px rgba(255, 138, 61, 0.4)) brightness(1);
-        }
-        50% { 
-            transform: scale(1.03);
-            filter: drop-shadow(0 25px 60px rgba(255, 138, 61, 0.7)) brightness(1.15);
-        }
+    @keyframes breathe {
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 15px 40px rgba(255, 138, 61, 0.5)); }
+        50% { transform: scale(1.05); filter: drop-shadow(0 25px 70px rgba(255, 138, 61, 0.8)); }
     }
 
-    /* 3. Шинокунии 3D */
-    @keyframes cinematicFloat {
-        0%, 100% { margin-top: 0px; }
-        50% { margin-top: -15px; }
-    }
-
-    /* Дурахши паси логотип (Backlight) */
-    .ambient-glow {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 200px;
-        height: 200px;
-        transform: translate(-50%, -50%);
-        background: radial-gradient(circle, rgba(255, 138, 61, 0.2) 0%, transparent 70%);
-        z-index: -1;
-        animation: pulseGlow 6s ease-in-out infinite 3s;
-    }
-
-    @keyframes pulseGlow {
-        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-        50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
-    }
-
-</style>
-</head>
-<body>
-
-<div id="particles-container"></div>
-
-<div class="masterpiece-wrapper">
-    <div class="ambient-glow"></div>
-    <svg src="../src/components/logo.svg" alt="Bozorcha Premium Logo" class="bozorcha-logo">
-</div>
-
-<script>
-    // Системаи зарраҳои синамоӣ (Advanced Particles)
-    const container = document.getElementById('particles-container');
-    const particleCount = 60; // Зичии бештари зарраҳо барои эффекти бойтар
-
-    for (let i = 0; i < particleCount; i++) {
-        createParticle();
-    }
-
-    function createParticle() {
-        const particle = document.createElement('div');
-        particle.classList.add('particle');
-        
-        // Математика барои ҳаракати табиӣ
-        const size = Math.random() * 5 + 1; 
-        const left = Math.random() * 100; 
-        const duration = Math.random() * 4 + 4; 
-        const delay = Math.random() * 5; 
-        
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.left = `${left}%`;
-        particle.style.top = `${90 + Math.random() * 20}%`;
-        particle.style.animationDuration = `${duration}s`;
-        particle.style.animationDelay = `${delay}s`;
-        
-        container.appendChild(particle);
-    }
-</script>
-
-</body>
-</html>
-    }
-
-    /* Эффекти шинокунанда: ҳаракати нарм ба боло ва поён */
     @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-15px); }
-        100% { transform: translateY(0px); }
+        0%, 100% { margin-top: 0px; }
+        50% { margin-top: -20px; }
     }
 
+    /* Нури паси логотип */
+    .glow-effect {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255, 138, 61, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: -1;
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.4; }
+        50% { transform: scale(1.4); opacity: 0.8; }
+    }
 </style>
 </head>
 <body>
 
 <div id="particles-container"></div>
 
-<div class="floating-wrapper">
-    <div class="logoBox">
-        <svg id="logo" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#ffb76b" />
-                    <stop offset="50%" stop-color="#ff8a3d" />
-                    <stop offset="100%" stop-color="#d65a00" />
-                </linearGradient>
-            </defs>
-            
-            </svg>
-    </div>
+<div class="logo-container">
+    <div class="glow-effect"></div>
+    <img src="../src/components/logo.svg" alt="Bozorcha Logo" class="bozorcha-svg">
 </div>
 
 <script>
-    // Скрипт барои сохтани зарраҳои тиллоии шинокунанда (Cinematic Particles)
     const container = document.getElementById('particles-container');
-    const particleCount = 40; // Миқдори зарраҳо
-
-    for (let i = 0; i < particleCount; i++) {
-        createParticle();
-    }
-
-    function createParticle() {
-        const particle = document.createElement('div');
-        particle.classList.add('particle');
-        
-        // Андоза, мавқеъ ва вақти тасодуфӣ барои ҳар як зарра
-        const size = Math.random() * 6 + 2; 
-        const left = Math.random() * 100; 
-        const duration = Math.random() * 3 + 3; 
-        const delay = Math.random() * 5; 
-        
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
-        particle.style.left = `${left}%`;
-        particle.style.top = `${80 + Math.random() * 20}%`; // Аз поён оғоз мешавад
-        particle.style.animationDuration = `${duration}s`;
-        particle.style.animationDelay = `${delay}s`;
-        
-        container.appendChild(particle);
+    for (let i = 0; i < 50; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 4 + 1;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.bottom = '10%';
+        p.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        p.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(p);
     }
 </script>
 
