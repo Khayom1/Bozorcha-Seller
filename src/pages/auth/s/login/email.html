@@ -77,7 +77,7 @@
                     .single();
 
                 if (profile && profile.role === 'seller') {
-                    window.location.href = "../../dashboard/dashboard.html";
+                    window.location.href = "../../../dashboard/dashboard.html";
                 } else {
                     // Агар харидор бошад, ӯро берун мекунем
                     await supabase.auth.signOut();
