@@ -3,88 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вуруд бо Телефон — Bozorcha</title>
+    <title>Воридшавӣ - телефон (фурӯшанда)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 { color: #ff9500; margin-bottom: 30px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: white;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #ff9500;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            color: #94a3b8;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="auth-card">
-        <h2>📱 Вуруд бо телефон</h2>
-        
-        <div id="step-1">
-            <p>Рақами телефони худро ворид кунед:</p>
-            <input type="tel" id="phone" placeholder="+992 _________" required>
-            <button id="send-code-btn" style="width: 100%; padding: 15px; margin-top: 20px; background: #2196F3; color: white; border: none; cursor: pointer;">
-                Фиристодани код
-            </button>
-        </div>
-
-        <div id="step-2" style="display: none;">
-            <p>Кодеро, ки бо SMS омад, ворид кунед:</p>
-            <input type="text" id="otp-code" placeholder="6 рақам" maxlength="6" required>
-            <button id="verify-code-btn" style="width: 100%; padding: 15px; margin-top: 20px; background: #28a745; color: white; border: none; cursor: pointer;">
-                Тасдиқ ва воридшавӣ
-            </button>
-        </div>
-
-        <p id="error-message" style="color: #ff4d4d; display: none; margin-top: 15px;"></p>
+    <div class="container">
+        <h1>Воридшавӣ (фурӯшанда)</h1>
+        <input type="tel" placeholder="+992 00 000 00 00">
+        <button class="btn" onclick="window.location.href='verify.html'">Фиристодани код</button>
+        <a href="../method.html" class="back-btn">← Бозгашт</a>
     </div>
-
-    <script type="module">
-        import { supabase } from '../../../../src/js/config.js';
-
-        const phoneInput = document.getElementById('phone');
-        const otpInput = document.getElementById('otp-code');
-        const errorMsg = document.getElementById('error-message');
-
-        // 1. ФУНКСИЯИ ФИРИСТОДАНИ SMS
-        document.getElementById('send-code-btn').addEventListener('click', async () => {
-            const phone = phoneInput.value.trim();
-            
-            const { error } = await supabase.auth.signInWithOtp({
-                phone: phone,
-            });
-
-            if (error) {
-                errorMsg.innerText = "Хатогӣ ҳангоми фиристодан: " + error.message;
-                errorMsg.style.display = 'block';
-            } else {
-                document.getElementById('step-1').style.display = 'none';
-                document.getElementById('step-2').style.display = 'block';
-                errorMsg.style.display = 'none';
-            }
-        });
-
-        // 2. ФУНКСИЯИ ТАСДИҚИ КОД ВА ВУРУД
-        document.getElementById('verify-code-btn').addEventListener('click', async () => {
-            const phone = phoneInput.value.trim();
-            const token = otpInput.value.trim();
-
-            const { data, error } = await supabase.auth.verifyOtp({
-                phone: phone,
-                token: token,
-                type: 'sms'
-            });
-
-            if (error) {
-                errorMsg.innerText = "Код нодуруст аст ё вақташ гузашт.";
-                errorMsg.style.display = 'block';
-            } else {
-                // ПАЙВАСТ КАРДАНИ ROLE ENFORCEMENT (Санҷиши фурӯшанда будан)
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', data.user.id)
-                    .single();
-
-                if (profile && profile.role === 'seller') {
-                    window.location.href = "../../../dashboard/dashboard.html";
-                } else {
-                    await supabase.auth.signOut();
-                    errorMsg.innerText = "Рақам хато аст.";
-                    errorMsg.style.display = 'block';
-                }
-            }
-        });
-    </script>
 </body>
 </html>
-
