@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bozorcha - Асосӣ</title>
+    <title>Bozorcha - Санҷиш</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: #0a0a0a;
             color: white;
             display: flex;
@@ -27,30 +27,29 @@
             display: block;
             width: 100%;
             padding: 15px;
-            margin: 15px 0;
+            margin: 10px 0;
             background: #ff9500;
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 18px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            transition: 0.3s;
         }
-        .btn:active { transform: scale(0.98); }
+        .btn:hover { opacity: 0.8; }
         .btn-outline {
             background: transparent;
             border: 2px solid #ff9500;
             color: #ff9500;
         }
         .status {
-            margin-top: 30px;
-            padding: 15px;
+            margin-top: 20px;
+            padding: 10px;
             background: rgba(255,255,255,0.05);
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 14px;
             color: #94a3b8;
-            border: 1px solid rgba(255,149,0,0.2);
         }
     </style>
 </head>
@@ -61,43 +60,43 @@
         <button class="btn" id="sellerBtn">Фурӯшанда</button>
         <button class="btn btn-outline" id="buyerBtn">Харидор</button>
         
-        <div class="status" id="status">Санҷиши система...</div>
+        <div class="status" id="status">Система омода аст</div>
     </div>
 
     <script>
-        // Ислоҳи номгузорӣ: истифодаи 'supabaseClient' ба ҷои 'supabase'
+        // Танзимоти Supabase бо номи тағйирёбандаи дуруст
         const supabaseUrl = 'https://seagtlaujnnhoyitgsdd.supabase.co';
         const supabaseKey = 'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+        // Функсия барои санҷиши пайвастшавӣ
         async function checkConnection() {
             try {
-                // Санҷиши оддӣ барои тасдиқи пайвастшавӣ
-                const { data, error } = await supabaseClient.from('profiles').select('*').limit(1);
+                const { data, error } = await supabaseClient.from('profiles').select('count').limit(1);
+                const statusDiv = document.getElementById('status');
                 
-                const statusElement = document.getElementById('status');
                 if (error) {
-                    statusElement.innerHTML = '⚠️ Пайвастшавӣ ҳаст, вале хатогии база: ' + error.message;
-                    statusElement.style.color = '#ef4444';
+                    statusDiv.innerHTML = '❌ Хатогӣ дар база: ' + error.message;
                 } else {
-                    statusElement.innerHTML = '✅ Система фаъол аст';
-                    statusElement.style.color = '#10b981';
+                    statusDiv.innerHTML = '✅ Пайвастшавӣ ба Supabase муваффақ';
                 }
             } catch (err) {
-                document.getElementById('status').innerHTML = '❌ Хатогии пайвастшавӣ ба сервер';
+                document.getElementById('status').innerHTML = '❌ Хатогии сервер: ' + err.message;
             }
         }
 
-        // Функсияҳои гузариш (Navigation)
-        document.getElementById('sellerBtn').addEventListener('click', () => {
-            window.location.href = './src/pages/auth/s/method.html';
+        // Функсияҳои гузариш (Navigation) мувофиқи сохтори файлҳо
+        document.getElementById('sellerBtn').addEventListener('click', function() {
+            // Гузариш ба қисми фурӯшанда
+            window.location.href = "src/pages/auth/s/method.html";
         });
 
-        document.getElementById('buyerBtn').addEventListener('click', () => {
-            window.location.href = './src/pages/auth/b/method.html';
+        document.getElementById('buyerBtn').addEventListener('click', function() {
+            // Гузариш ба қисми харидор
+            window.location.href = "src/pages/auth/b/method.html";
         });
 
-        // Оғози санҷиш
+        // Иҷрои санҷиш ҳангоми боршавӣ
         checkConnection();
     </script>
 </body>
