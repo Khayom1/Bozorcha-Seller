@@ -3,75 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bozorcha — Усули воридшавӣ</title>
-    <link rel="stylesheet" href="../../../../src/styles/main.css">
+    <title>Интихоби усул - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 { margin-bottom: 30px; color: #ff9500; }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            background: #ff9500;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #ff9500;
+            color: #ff9500;
+        }
+        .back-btn {
+            margin-top: 20px;
+            display: inline-block;
+            color: #94a3b8;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <div id="app-content" style="display: none;" class="auth-wrapper">
-        <h1 id="txt-title"></h1>
-        <p id="txt-subtitle"></p>
-
-        <div class="selection-group">
-            <div class="method-card">
-                <button id="btn-login" onclick="nextStep('login.html')"></button>
-                <p id="desc-login" class="hint"></p>
-            </div>
-
-            <div class="divider"><span>ё</span></div>
-
-            <div class="method-card">
-                <button id="btn-register" onclick="nextStep('register.html')"></button>
-                <p id="desc-register" class="hint"></p>
-            </div>
-        </div>
-
-        <button onclick="history.back()" id="btn-back" class="btn-secondary"></button>
+    <div class="card">
+        <h1>Хуш омадед ба Bozorcha</h1>
+        <p style="margin-bottom: 20px; color: #94a3b8;">Барои фурӯшандагон</p>
+        
+        <button class="btn" onclick="goTo('login')">Ворид шудан</button>
+        <button class="btn btn-outline" onclick="goTo('register')">Сабти ном</button>
+        
+        <a href="/index.html" class="back-btn">← Бозгашт</a>
     </div>
 
-    <script type="module">
-        import { t, initI18n } from '../../../../src/js/i18n.js';
-
-        async function setup() {
-            // 1. САНҶИШИ АМНИЯТ (Оё корбар аз index.html омад?)
-            const role = sessionStorage.getItem('user_role');
-            const journey = JSON.parse(sessionStorage.getItem('steps_taken') || '[]');
-
-            if (role !== 'seller' || journey.length === 0) {
-                console.warn("Дастрасии ғайриқонунӣ рад шуд.");
-                window.location.href = '../../../../index.html';
-                return;
+    <script>
+        function goTo(type) {
+            if (type === 'login') {
+                window.location.href = 'login/phone.html'
+            } else {
+                window.location.href = 'register/phone.html'
             }
-
-            // Қайд кардани ин саҳифа дар таърихи масир
-            if (!journey.includes('method.html')) {
-                journey.push('method.html');
-                sessionStorage.setItem('steps_taken', JSON.stringify(journey));
-            }
-
-            // 2. ИНИЦИАЛИЗАТСИЯИ ТАРҶУМА
-            await initI18n();
-            
-            document.getElementById('txt-title').innerText = t('auth.method_title');
-            document.getElementById('txt-subtitle').innerText = t('auth.method_subtitle');
-            document.getElementById('btn-login').innerText = t('auth.go_to_login');
-            document.getElementById('desc-login').innerText = t('auth.login_hint');
-            document.getElementById('btn-register').innerText = t('auth.go_to_register');
-            document.getElementById('desc-register').innerText = t('auth.register_hint');
-            document.getElementById('btn-back').innerText = t('auth.back');
-
-            // 3. НАМОИШИ САҲИФА
-            document.getElementById('app-content').style.display = 'block';
         }
-
-        // Функсия барои гузариш ба қадами баъдӣ
-        window.nextStep = (page) => {
-            const journey = JSON.parse(sessionStorage.getItem('steps_taken'));
-            journey.push(page); // Саҳифаи ояндаро пешакӣ қайд мекунем
-            sessionStorage.setItem('steps_taken', JSON.stringify(journey));
-            window.location.href = page;
-        };
-
-        setup();
     </script>
 </body>
 </html>
