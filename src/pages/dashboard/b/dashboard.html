@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bozorcha - Харидор</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Content Frame */
+        .content-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #0a0a0a;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(255,149,0,0.2);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 25%;
+            height: 100%;
+            justify-content: center;
+            background: transparent;
+            border: none;
+        }
+
+        .nav-item i {
+            font-size: 22px;
+        }
+
+        .nav-item.active {
+            color: #ff9500;
+        }
+
+        .auth-guard {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .auth-guard.show {
+            display: flex;
+        }
+
+        .auth-guard button {
+            padding: 15px 30px;
+            background: #ff9500;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,149,0,0.3);
+            border-top-color: #ff9500;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Auth Guard -->
+    <div class="auth-guard" id="authGuard">
+        <h2 style="color: white;">Барои идома ворид шавед</h2>
+        <button onclick="window.location.href='/src/pages/auth/b/method.html'">Воридшавӣ</button>
+    </div>
+
+    <!-- Content Frame -->
+    <iframe src="home/home.html" class="content-frame" id="contentFrame"></iframe>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="loadPage('home')">
+            <i class="fas fa-home"></i>
+            <span>Асосӣ</span>
+        </button>
+        <button class="nav-item" onclick="loadPage('chat')">
+            <i class="fas fa-comment"></i>
+            <span>Паём</span>
+        </button>
+        <button class="nav-item" onclick="loadPage('cart')">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Сабад</span>
+        </button>
+        <button class="nav-item" onclick="loadPage('profile')">
+            <i class="fas fa-user"></i>
+            <span>Профил</span>
+        </button>
+    </div>
+
+    <script>
+        const supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        );
+
+        let currentUser = null;
+
+        async function checkAuth() {
+            const { data: { user }, error } = await supabase.auth.getUser();
+            
+            if (error || !user) {
+                document.getElementById('authGuard').classList.add('show');
+                document.getElementById('loading').style.display = 'none';
+                return false;
+            }
+            
+            currentUser = user;
+            document.getElementById('loading').style.display = 'none';
+            return true;
+        }
+
+        function loadPage(page) {
+            document.getElementById('contentFrame').src = page + '/' + page + '.html';
+            
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        // Auth check
+        checkAuth();
+
+        // Пайғами аз iframe
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'requireAuth') {
+                checkAuth();
+            }
+        });
+    </script>
+</body>
+</html>
