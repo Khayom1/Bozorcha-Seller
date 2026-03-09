@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Фурӯшанда - метод</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,6 +34,11 @@
             border-radius: 8px;
             cursor: pointer;
         }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #ff9500;
+            color: #ff9500;
+        }
         .back-btn {
             display: inline-block;
             margin-top: 20px;
@@ -47,8 +53,8 @@
         
         <button class="btn" onclick="window.location.href='login/phone.html'">Воридшавӣ бо телефон</button>
         <button class="btn" onclick="window.location.href='login/email.html'">Воридшавӣ бо почта</button>
-        <button class="btn" onclick="window.location.href='register/phone.html'">Сабти ном бо телефон</button>
-        <button class="btn" onclick="window.location.href='register/email.html'">Сабти ном бо почта</button>
+        <button class="btn btn-outline" onclick="window.location.href='register/phone.html'">Сабти ном бо телефон</button>
+        <button class="btn btn-outline" onclick="window.location.href='register/email.html'">Сабти ном бо почта</button>
         
         <a href="/index.html" class="back-btn">← Бозгашт</a>
     </div>
