@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистикаи муфассал - Bozorcha</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #ff9500;
+            border-color: #ff9500;
+        }
+
+        h1 {
+            font-size: 28px;
+            background: linear-gradient(135deg, #ff9500, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .plan-badge {
+            background: #ff9500;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .period-selector {
+            display: flex;
+            gap: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 30px;
+            padding: 5px;
+        }
+
+        .period-btn {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .period-btn:hover {
+            color: #ff9500;
+        }
+
+        .period-btn.active {
+            background: #ff9500;
+            color: white;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #ff9500;
+        }
+
+        .stat-title {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-title i {
+            color: #ff9500;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Region Grid */
+        .region-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .region-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 15px;
+        }
+
+        .region-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ff9500;
+        }
+
+        .city-list {
+            list-style: none;
+        }
+
+        .city-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .city-item:last-child {
+            border-bottom: none;
+        }
+
+        .city-orders {
+            color: #ff9500;
+            font-weight: 600;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-title i {
+            color: #ff9500;
+        }
+
+        canvas {
+            width: 100%;
+            height: 250px;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: rgba(255,149,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff9500;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-shop {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .product-stats {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .product-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+        }
+
+        .product-stat i {
+            color: #ff9500;
+        }
+
+        /* Customer Stats */
+        .customer-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .age-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .age-label {
+            width: 50px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .age-progress {
+            flex: 1;
+            height: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .age-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9500, #ff6b6b);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        .age-count {
+            width: 40px;
+            font-size: 12px;
+            color: #ff9500;
+            font-weight: 600;
+        }
+
+        .gender-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .gender-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gender-label i.male { color: #3b82f6; }
+        .gender-label i.female { color: #ec4899; }
+
+        .gender-count {
+            font-weight: 600;
+            color: #ff9500;
+        }
+
+        /* Activity Timeline */
+        .timeline {
+            margin-top: 15px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .timeline-date {
+            width: 80px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .timeline-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timeline-action i.add { color: #10b981; }
+        .timeline-action i.delete { color: #ef4444; }
+
+        .timeline-count {
+            margin-left: auto;
+            font-weight: 600;
+        }
+
+        /* Pro features (hidden by default) */
+        .pro-feature, .premium-feature {
+            display: none;
+        }
+
+        body.plan-pro .pro-feature,
+        body.plan-premium .pro-feature,
+        body.plan-premium .premium-feature {
+            display: block;
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, #ff9500, #ff6b6b);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .stats-grid,
+            .region-grid,
+            .two-column,
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid,
+            .region-grid,
+            .two-column,
+            .products-grid,
+            .customer-stats {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='../stats.html'">
+                <i class="fas fa-arrow-left"></i> Бозгашт
+            </button>
+            <h1><i class="fas fa-chart-pie"></i> Статистикаи муфассал</h1>
+            <div>
+                <span class="plan-badge" id="planBadge">Start</span>
+            </div>
+        </div>
+
+        <!-- Period Selector -->
+        <div class="period-selector" id="periodSelector">
+            <button class="period-btn" data-period="day">Рӯз</button>
+            <button class="period-btn active" data-period="week">Ҳафта</button>
+            <button class="period-btn" data-period="month">Моҳ</button>
+            <button class="period-btn" data-period="year">Сол</button>
+        </div>
+
+        <!-- Basic Stats (Ҳама планҳо) -->
+        <div class="stats-grid" id="basicStats">
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-shopping-cart"></i> Фурӯхта шуд</div>
+                <div class="stat-value" id="totalSold">0</div>
+                <div class="stat-sub" id="totalSoldPeriod">дар ин давра</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title"><i class="fas fa-dollar-sign"></i> Даромад</div>
+                <div class="stat-value" id="totalRevenue">0</div>
+                <div class="stat-sub" id="totalRevenuePeriod">дар ин давра</div>
+            </div>
+            <div class="stat-card pro-feature">
+                <div class="stat-title"><i class="fas fa-map-marker-alt"></i> Минтақаҳо</div>
+                <div class="stat-value" id="totalRegions">0</div>
+                <div class="stat-sub">бо харид</div>
+            </div>
+            <div class="stat-card premium-feature">
+                <div class="stat-title"><i class="fas fa-users"></i> Харидорон</div>
+                <div class="stat-value" id="totalCustomers">0</div>
+                <div class="stat-sub">харидор</div>
+            </div>
+        </div>
+
+        <!-- Region Stats (Pro, Premium) -->
+        <div class="pro-feature">
+            <h2 style="margin: 30px 0 15px; font-size: 20px;">
+                <i class="fas fa-map-marked-alt" style="color: #ff9500; margin-right: 10px;"></i>
+                Маълумоти минтақавӣ
+            </h2>
+            <div class="region-grid" id="regionStats">
+                <!-- Regions will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Two Column Charts -->
+        <div class="two-column">
+            <!-- Product Revenue Chart -->
+            <div class="chart-card premium-feature">
+                <div class="chart-title">
+                    <i class="fas fa-chart-line"></i>
+                    Даромад аз ҳар маҳсул
+                </div>
+                <canvas id="productRevenueChart"></canvas>
+            </div>
+
+            <!-- Customer Demographics (Premium) -->
+            <div class="chart-card premium-feature">
+                <div class="chart-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Гурӯҳҳои синнусолӣ
+                </div>
+                <div id="ageGroups" class="customer-stats">
+                    <!-- Age groups will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Top Products (Premium) -->
+        <div class="premium-feature">
+            <h2 style="margin: 30px 0 15px; font-size: 20px;">
+                <i class="fas fa-crown" style="color: #ff9500; margin-right: 10px;"></i>
+                Маҳсулоти беҳтарини моҳ (умумӣ)
+            </h2>
+            <div class="products-grid" id="globalTopProducts">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Activity Timeline (Premium) -->
+        <div class="premium-feature">
+            <h2 style="margin: 30px 0 15px; font-size: 20px;">
+                <i class="fas fa-history" style="color: #ff9500; margin-right: 10px;"></i>
+                Фаъолият (илова/пок)
+            </h2>
+            <div class="timeline" id="activityTimeline">
+                <!-- Timeline will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { supabase } from '../../../../js/supabase.js'
+
+        let currentPeriod = 'week'
+        let charts = {}
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserPlan()
+            await loadDetailedStats(currentPeriod)
+            setupPeriodSelector()
+        })
+
+        // Бор кардани плани корбар
+        async function loadUserPlan() {
+            const { data: subscription } = await supabase
+                .from('user_subscriptions')
+                .select('*, plans(*)')
+                .eq('status', 'active')
+                .single()
+
+            const plan = subscription?.plans?.name || 'start'
+            document.getElementById('planBadge').textContent = 
+                plan === 'start' ? 'Start' :
+                plan === 'plus' ? 'Plus' :
+                plan === 'pro' ? 'Pro' : 'Premium'
+
+            document.body.className = `plan-${plan}`
+        }
+
+        // Бор кардани статистика
+        async function loadDetailedStats(period) {
+            try {
+                const { data, error } = await supabase.functions.invoke('get-detailed-stats', {
+                    body: { period }
+                })
+
+                if (error) throw error
+
+                updateBasicStats(data)
+                if (data.locationStats) updateRegionStats(data.locationStats)
+                if (data.customerStats) updateCustomerStats(data.customerStats)
+                if (data.globalTopProducts) updateGlobalTopProducts(data.globalTopProducts)
+                if (data.activityStats) updateActivityTimeline(data.activityStats)
+                
+            } catch (error) {
+                console.error('Error loading stats:', error)
+            }
+        }
+
+        // Навсозии статистикаи асосӣ
+        function updateBasicStats(data) {
+            document.getElementById('totalSold').textContent = data.totalSold || 0
+            document.getElementById('totalRevenue').textContent = (data.totalRevenue || 0) + ' с'
+            document.getElementById('totalRegions').textContent = data.locationStats?.length || 0
+            document.getElementById('totalCustomers').textContent = data.totalCustomers || 0
+        }
+
+        // Навсозии статистикаи минтақавӣ
+        function updateRegionStats(locations) {
+            const container = document.getElementById('regionStats')
+            container.innerHTML = ''
+
+            const regions = {}
+            
+            // Гурӯҳбандӣ аз рӯи вилоят
+            locations.forEach(loc => {
+                if (!regions[loc.region_id]) {
+                    regions[loc.region_id] = {
+                        name: loc.regions?.name_tj || 'Номаълум',
+                        cities: [],
+                        total: 0
+                    }
+                }
+                regions[loc.region_id].cities.push({
+                    name: loc.cities?.name_tj || 'Номаълум',
+                    orders: loc.order_count,
+                    revenue: loc.total_revenue
+                })
+                regions[loc.region_id].total += loc.order_count
+            })
+
+            // Сортировкаи дуруст
+            Object.values(regions)
+                .sort((a, b) => b.total - a.total)
+                .forEach(region => {
+                    const card = document.createElement('div')
+                    card.className = 'region-card'
+                    
+                    let citiesHtml = ''
+                    region.cities
+                        .sort((a, b) => b.orders - a.orders)
+                        .forEach(city => {
+                            citiesHtml += `
+                                <div class="city-item">
+                                    <span>${city.name}</span>
+                                    <span class="city-orders">${city.orders}</span>
+                                </div>
+                            `
+                        })
+
+                    card.innerHTML = `
+                        <div class="region-name">${region.name}</div>
+                        <div class="city-list">${citiesHtml}</div>
+                    `
+                    container.appendChild(card)
+                })
+        }
+
+        // Навсозии маълумоти харидорон
+        function updateCustomerStats(stats) {
+            const ageContainer = document.getElementById('ageGroups')
+            const total = Object.values(stats.ageGroups).reduce((a, b) => a + b, 0)
+
+            let ageHtml = ''
+            const ageOrder = ['0-17', '18-25', '26-35', '36-50', '50+', 'unknown']
+            
+            ageOrder.forEach(group => {
+                const count = stats.ageGroups[group] || 0
+                const percent = total > 0 ? (count / total * 100).toFixed(1) : 0
+                
+                if (count > 0 || group === 'unknown') {
+                    ageHtml += `
+                        <div class="age-bar">
+                            <span class="age-label">${group}</span>
+                            <div class="age-progress">
+                                <div class="age-progress-fill" style="width: ${percent}%"></div>
+                            </div>
+                            <span class="age-count">${count}</span>
+                        </div>
+                    `
+                }
+            })
+
+            // Gender stats
+            ageHtml += '<div style="margin-top: 20px;">'
+            const genderOrder = ['male', 'female', 'unknown']
+            genderOrder.forEach(gender => {
+                const count = stats.genderGroups[gender] || 0
+                const icon = gender === 'male' ? 'mars' : gender === 'female' ? 'venus' : 'question'
+                const color = gender === 'male' ? 'male' : gender === 'female' ? 'female' : ''
+                
+                ageHtml += `
+                    <div class="gender-row">
+                        <span class="gender-label">
+                            <i class="fas fa-${icon} ${color}"></i>
+                            ${gender === 'male' ? 'Мард' : gender === 'female' ? 'Зан' : 'Номаълум'}
+                        </span>
+                        <span class="gender-count">${count}</span>
+                    </div>
+                `
+            })
+            ageHtml += '</div>'
+
+            ageContainer.innerHTML = ageHtml
+        }
+
+        // Навсозии маҳсулоти топ (умумӣ)
+        function updateGlobalTopProducts(products) {
+            const container = document.getElementById('globalTopProducts')
+            container.innerHTML = ''
+
+            products.slice(0, 5).forEach(product => {
+                const p = product.products
+                const card = document.createElement('div')
+                card.className = 'product-card'
+                card.innerHTML = `
+                    <div class="product-image">
+                        ${p?.image ? `<img src="${p.image}" alt="${p.name}">` : '<i class="fas fa-box"></i>'}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${p?.name || 'Маҳсулот'}</div>
+                        <div class="product-shop">${p?.profiles?.shop_name || 'Мағоза'}</div>
+                        <div class="product-stats">
+                            <span class="product-stat"><i class="fas fa-shopping-cart"></i> ${product.order_count}</span>
+                            <span class="product-stat"><i class="fas fa-dollar-sign"></i> ${product.total_revenue || 0}</span>
+                        </div>
+                    </div>
+                `
+                container.appendChild(card)
+            })
+        }
+
+        // Навсозии timeline
+        function updateActivityTimeline(activities) {
+            const container = document.getElementById('activityTimeline')
+            container.innerHTML = ''
+
+            activities.slice(0, 10).forEach(act => {
+                const date = new Date(act.stat_date).toLocaleDateString('tg-TJ')
+                const item = document.createElement('div')
+                item.className = 'timeline-item'
+                item.innerHTML = `
+                    <span class="timeline-date">${date}</span>
+                    <div class="timeline-action">
+                        <i class="fas fa-plus-circle add"></i> +${act.products_added || 0}
+                    </div>
+                    <div class="timeline-action">
+                        <i class="fas fa-minus-circle delete"></i> -${act.products_deleted || 0}
+                    </div>
+                    <span class="timeline-count">${(act.products_added || 0) + (act.products_deleted || 0)}</span>
+                `
+                container.appendChild(item)
+            })
+        }
+
+        // Танзими period selector
+        function setupPeriodSelector() {
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'))
+                    e.target.classList.add('active')
+                    currentPeriod = e.target.dataset.period
+                    await loadDetailedStats(currentPeriod)
+                })
+            })
+        }
+    </script>
+</body>
+</html>
