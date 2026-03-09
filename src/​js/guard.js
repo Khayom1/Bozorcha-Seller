@@ -1,17 +1,15 @@
 // src/js/guard.js
-import { supabase } from './supabase.js'
+import { supabase, getCurrentUser } from './supabase.js'
 
-// Намудҳои корбар
-const USER_TYPES = {
+export const USER_TYPES = {
     SELLER: 'seller',
     BUYER: 'buyer',
     ADMIN: 'admin',
     UNKNOWN: 'unknown'
 }
 
-// Гирифтани намуди корбар
-async function getUserType() {
-    const { data: { user } } = await supabase.auth.getUser()
+export async function getUserType() {
+    const user = await getCurrentUser()
     if (!user) return USER_TYPES.UNKNOWN
 
     // Санҷиши админ
@@ -23,7 +21,7 @@ async function getUserType() {
     
     if (admin) return USER_TYPES.ADMIN
 
-    // Санҷиши фурӯшанда
+    // Санҷиши фурӯшанда (бо shops)
     const { data: seller } = await supabase
         .from('shops')
         .select('id')
@@ -32,78 +30,45 @@ async function getUserType() {
     
     if (seller) return USER_TYPES.SELLER
 
-    // Харидор
     return USER_TYPES.BUYER
 }
 
-// Роҳнамоӣ ба dashboard мувофиқ
-async function redirectToDashboard() {
+export async function protectPage(allowedTypes) {
     const type = await getUserType()
-    
-    switch(type) {
-        case USER_TYPES.SELLER:
-            window.location.href = '/src/pages/dashboard/s/dashboard.html'
-            break
-        case USER_TYPES.BUYER:
-            window.location.href = '/src/pages/dashboard/b/dashboard.html'
-            break
-        case USER_TYPES.ADMIN:
-            window.location.href = '/src/pages/admin/s/admin-panel.html'
-            break
-        default:
-            window.location.href = '/index.html'
-    }
-}
+    const currentPath = window.location.pathname
 
-// Роҳнамоӣ ба method барои сабти ном
-function redirectToMethod(userType) {
-    if (userType === 'seller') {
-        window.location.href = '/src/pages/auth/s/method.html'
-    } else {
-        window.location.href = '/src/pages/auth/b/method.html'
-    }
-}
-
-// Роҳнамоӣ ба login
-function redirectToLogin(userType) {
-    if (userType === 'seller') {
-        window.location.href = '/src/pages/auth/s/login/phone.html'
-    } else {
-        window.location.href = '/src/pages/auth/b/login/phone.html'
-    }
-}
-
-// Муҳофизати саҳифа
-async function protectPage(allowedTypes) {
-    const type = await getUserType()
-    
     if (!allowedTypes.includes(type)) {
         if (type === USER_TYPES.UNKNOWN) {
             window.location.href = '/index.html'
-        } else {
-            redirectToDashboard()
+        } else if (type === USER_TYPES.SELLER) {
+            window.location.href = '/src/pages/dashboard/s/dashboard.html'
+        } else if (type === USER_TYPES.BUYER) {
+            window.location.href = '/src/pages/dashboard/b/dashboard.html'
+        } else if (type === USER_TYPES.ADMIN) {
+            window.location.href = '/src/pages/admin/s/admin-panel.html'
         }
         return false
     }
     return true
 }
 
-// Гирифтани роҳи бозгашт
-function getBackPath(currentPath) {
-    if (currentPath.includes('/dashboard/s/')) {
-        return '/src/pages/dashboard/s/dashboard.html'
-    }
-    if (currentPath.includes('/dashboard/b/')) {
-        return '/src/pages/dashboard/b/dashboard.html'
-    }
-    if (currentPath.includes('/auth/s/')) {
+export function getBackPath() {
+    const path = window.location.pathname
+    
+    if (path.includes('/auth/s/')) {
         return '/src/pages/auth/s/method.html'
     }
-    if (currentPath.includes('/auth/b/')) {
+    if (path.includes('/auth/b/')) {
         return '/src/pages/auth/b/method.html'
     }
+    if (path.includes('/dashboard/s/')) {
+        return '/src/pages/dashboard/s/dashboard.html'
+    }
+    if (path.includes('/dashboard/b/')) {
+        return '/src/pages/dashboard/b/dashboard.html'
+    }
     return '/index.html'
-}
+}}
 
 export {
     USER_TYPES,
