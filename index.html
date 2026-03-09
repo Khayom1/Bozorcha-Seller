@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bozorcha - Санҷиш</title>
-    
-    <!-- Танҳо Supabase барои санҷиш -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,10 +22,7 @@
             width: 100%;
             text-align: center;
         }
-        h1 {
-            color: #ff9500;
-            margin-bottom: 30px;
-        }
+        h1 { color: #ff9500; margin-bottom: 30px; }
         .btn {
             display: block;
             width: 100%;
@@ -46,6 +40,14 @@
             border: 1px solid #ff9500;
             color: #ff9500;
         }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -54,6 +56,8 @@
         
         <button class="btn" id="sellerBtn">Фурӯшанда</button>
         <button class="btn" id="buyerBtn">Харидор</button>
+        
+        <div class="status" id="status">Ин санҷиши пайвастшавӣ ба Supabase аст</div>
     </div>
 
     <script>
@@ -62,13 +66,21 @@
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         )
 
+        async function checkConnection() {
+            const { data, error } = await supabase.from('profiles').select('count').limit(1)
+            if (error) {
+                document.getElementById('status').innerHTML = '❌ Хатогӣ: ' + error.message
+            } else {
+                document.getElementById('status').innerHTML = '✅ Пайвастшавӣ ба Supabase муваффақ'
+            }
+        }
+        checkConnection()
+
         document.getElementById('sellerBtn').addEventListener('click', () => {
             window.location.href = '/src/pages/auth/s/method.html'
         })
 
-        document.getElementById('buyerBtn').addEventListener('click', async () => {
-            // Барои санҷиш: корбари харидорро муваққатан ворид мекунем
-            // Дар ҳолати воқеӣ, ин бояд ба login барад
+        document.getElementById('buyerBtn').addEventListener('click', () => {
             window.location.href = '/src/pages/dashboard/b/dashboard.html'
         })
     </script>
