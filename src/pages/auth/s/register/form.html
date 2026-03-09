@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Маълумоти профил - фурӯшанда</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 { color: #ff9500; margin-bottom: 10px; }
+        .subtitle { color: #94a3b8; margin-bottom: 30px; }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: white;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #ff9500;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #ef4444;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Маълумоти профил</h1>
+        <p class="subtitle">Барои идома, маълумоти худро ворид кунед</p>
+        
+        <input type="text" id="shopName" placeholder="Номи мағоза">
+        <input type="text" id="fullName" placeholder="Номи пурра">
+        <textarea id="bio" placeholder="Тавсифи мағоза (ихтиёрӣ)"></textarea>
+        
+        <div class="error" id="error"></div>
+
+        <button class="btn" id="submitBtn">Сабт кардан</button>
+    </div>
+
+    <script>
+        const supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        )
+
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const shopName = document.getElementById('shopName').value.trim()
+            const fullName = document.getElementById('fullName').value.trim()
+            const bio = document.getElementById('bio').value.trim()
+            const btn = document.getElementById('submitBtn')
+            const error = document.getElementById('error')
+
+            if (!shopName || !fullName) {
+                error.style.display = 'block'
+                error.textContent = 'Номи мағоза ва номи пурраро пур кунед'
+                return
+            }
+
+            btn.disabled = true
+            btn.textContent = 'Сабт шуда истодааст...'
+
+            const userId = localStorage.getItem('userId')
+            const phone = localStorage.getItem('temp_phone') || null
+            const email = localStorage.getItem('temp_email') || null
+
+            // Сабти профил
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert({
+                    id: userId,
+                    full_name: fullName,
+                    phone: phone,
+                    email: email,
+                    role: 'seller',
+                    bio: bio || null,
+                    created_at: new Date()
+                })
+
+            if (profileError) {
+                error.style.display = 'block'
+                error.textContent = profileError.message
+                btn.disabled = false
+                btn.textContent = 'Сабт кардан'
+                return
+            }
+
+            // Сабти мағоза
+            const { error: shopError } = await supabase
+                .from('shops')
+                .insert({
+                    user_id: userId,
+                    shop_name: shopName,
+                    description: bio || null,
+                    moderation_status: 'pending',
+                    created_at: new Date()
+                })
+
+            if (shopError) {
+                error.style.display = 'block'
+                error.textContent = shopError.message
+                btn.disabled = false
+                btn.textContent = 'Сабт кардан'
+                return
+            }
+
+            localStorage.removeItem('temp_phone')
+            localStorage.removeItem('temp_email')
+            window.location.href = '/src/pages/dashboard/s/dashboard.html'
+        })
+    </script>
+</body>
+</html>
