@@ -61,28 +61,38 @@
     </div>
 
     <script>
+        // Таърифи supabase
         const supabase = supabase.createClient(
             'https://seagtlaujnnhoyitgsdd.supabase.co',
             'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
         )
 
+        // Функсия барои санҷиши пайвастшавӣ
         async function checkConnection() {
-            const { data, error } = await supabase.from('profiles').select('count').limit(1)
-            if (error) {
-                document.getElementById('status').innerHTML = '❌ Хатогӣ: ' + error.message
-            } else {
-                document.getElementById('status').innerHTML = '✅ Пайвастшавӣ ба Supabase муваффақ'
+            try {
+                const { data, error } = await supabase.from('profiles').select('count').limit(1)
+                if (error) {
+                    document.getElementById('status').innerHTML = '❌ Хатогӣ: ' + error.message
+                } else {
+                    document.getElementById('status').innerHTML = '✅ Пайвастшавӣ ба Supabase муваффақ'
+                }
+            } catch (err) {
+                document.getElementById('status').innerHTML = '❌ Хатогӣ: ' + err.message
             }
         }
-        checkConnection()
 
-        document.getElementById('sellerBtn').addEventListener('click', () => {
+        // Функсия барои тугмаи фурӯшанда
+        document.getElementById('sellerBtn').onclick = function() {
             window.location.href = '/src/pages/auth/s/method.html'
-        })
+        }
 
-        document.getElementById('buyerBtn').addEventListener('click', () => {
-            window.location.href = '/src/pages/dashboard/b/dashboard.html'
-        })
+        // Функсия барои тугмаи харидор
+        document.getElementById('buyerBtn').onclick = function() {
+            window.location.href = '/src/pages/auth/b/method.html'
+        }
+
+        // Санҷиши пайвастшавӣ
+        checkConnection()
     </script>
 </body>
 </html>
