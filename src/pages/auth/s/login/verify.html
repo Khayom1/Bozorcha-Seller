@@ -1,1 +1,127 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тасдиқи код</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 { color: #ff9500; margin-bottom: 10px; }
+        .info {
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: white;
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 8px;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #ff9500;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тасдиқи код</h1>
+        <div class="info" id="info">Код ба рақами телефон/почта фиристода шуд</div>
+        <input type="text" id="otp" maxlength="6" placeholder="000000">
+        <div class="error" id="error"></div>
+        <button class="btn" id="verifyBtn">Тасдиқ кардан</button>
+    </div>
 
+    <script>
+        const supabase = supabase.createClient(
+            'https://seagtlaujnnhoyitgsdd.supabase.co',
+            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
+        )
+
+        const phone = localStorage.getItem('temp_phone')
+        const email = localStorage.getItem('temp_email')
+        const info = document.getElementById('info')
+        
+        if (phone) {
+            info.textContent = `Код ба рақами ${phone} фиристода шуд`
+        } else if (email) {
+            info.textContent = `Код ба почтаи ${email} фиристода шуд`
+        }
+
+        document.getElementById('verifyBtn').addEventListener('click', async () => {
+            const token = document.getElementById('otp').value.trim()
+            const btn = document.getElementById('verifyBtn')
+            const error = document.getElementById('error')
+
+            if (token.length !== 6) {
+                error.style.display = 'block'
+                error.textContent = 'Коди 6-рақамаро ворид кунед'
+                return
+            }
+
+            btn.disabled = true
+            btn.textContent = 'Сабр кунед...'
+
+            let verifyData = {}
+            if (phone) {
+                verifyData = { phone, token, type: 'sms' }
+            } else if (email) {
+                verifyData = { email, token, type: 'email' }
+            }
+
+            const { data, error: verifyError } = await supabase.auth.verifyOtp(verifyData)
+
+            if (verifyError) {
+                error.style.display = 'block'
+                error.textContent = verifyError.message
+                btn.disabled = false
+                btn.textContent = 'Тасдиқ кардан'
+            } else {
+                localStorage.setItem('userId', data.user.id)
+                localStorage.removeItem('temp_phone')
+                localStorage.removeItem('temp_email')
+                window.location.href = '/src/pages/dashboard/s/dashboard.html'
+            }
+        })
+    </script>
+</body>
+</html>
