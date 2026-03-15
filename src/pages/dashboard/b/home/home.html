@@ -4,392 +4,661 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Асосӣ - Bozorcha</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Стилҳои асосӣ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
-            color: white;
-            padding: 20px 16px 30px;
+        
+        .home-container {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
-
-        .search-container {
-            margin-bottom: 20px;
-        }
-
-        .search-box {
+        
+        /* Header */
+        .home-header {
             display: flex;
             align-items: center;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 8px 16px;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
         }
-
-        .search-box i {
-            color: #ff9500;
-            margin-right: 10px;
+        
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #E02E24;
+            cursor: pointer;
         }
-
-        .search-box input {
+        
+        .search-wrapper {
             flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .search-box input::placeholder {
-            color: #94a3b8;
-        }
-
-        .categories {
             display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .category-btn {
+            align-items: center;
+            background: #f5f5f5;
+            border-radius: 20px;
             padding: 8px 16px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 30px;
-            color: white;
+            margin: 0 12px;
+        }
+        
+        .search-wrapper input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        .search-icon, .filter-icon, .menu-icon {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .search-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3C/svg%3E");
+            margin-right: 8px;
+        }
+        
+        .filter-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M4 6h16v2H4zm2 4h12v2H6zm3 4h6v2H9z'/%3E%3C/svg%3E");
+            margin-right: 12px;
+        }
+        
+        .menu-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'/%3E%3C/svg%3E");
+        }
+        
+        /* Категорияҳои сатҳи 1 */
+        .categories-level1 {
+            display: flex;
+            overflow-x: auto;
             white-space: nowrap;
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            transition: transform 0.3s ease;
+            scrollbar-width: none;
+        }
+        
+        .categories-level1::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category1-item {
+            display: inline-block;
+            padding: 6px 16px;
+            margin-right: 8px;
+            font-size: 14px;
+            border-radius: 20px;
+            background: #f5f5f5;
+            color: #333;
             cursor: pointer;
             transition: all 0.3s;
         }
-
-        .category-btn:hover {
-            background: #ff9500;
+        
+        .category1-item.active {
+            background: #E02E24;
+            color: white;
         }
-
-        .category-btn.active {
-            background: #ff9500;
-            border-color: #ff9500;
+        
+        /* Категорияҳои сатҳи 2 */
+        .categories-level2 {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: none; /* Default: пинҳон */
         }
-
+        
+        .categories-level2.visible {
+            display: block;
+        }
+        
+        .level2-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .level2-item {
+            background: #f9f9f9;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .level2-item.more, .level2-item.less {
+            background: #E02E24;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .level2-item.less {
+            background: #666;
+        }
+        
+        /* Grid маҳсулот */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 16px;
+            background: #f4f4f4;
         }
-
+        
         .product-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
+            background: white;
+            border-radius: 8px;
             overflow: hidden;
-            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
         }
-
-        .product-card:hover {
-            transform: translateY(-2px);
-            border-color: #ff9500;
-        }
-
+        
         .product-image {
             width: 100%;
-            aspect-ratio: 1;
-            background: rgba(255,149,0,0.1);
+            aspect-ratio: 1/1;
+            background: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ff9500;
-            font-size: 40px;
-            overflow: hidden;
+            color: #999;
+            font-size: 12px;
         }
-
+        
         .product-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
+        
         .product-info {
-            padding: 12px;
-        }
-
-        .product-name {
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .product-price {
-            color: #ff9500;
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .product-seller {
-            color: #94a3b8;
-            font-size: 11px;
-            margin-bottom: 8px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .add-to-cart {
-            flex: 1;
             padding: 8px;
-            background: #ff9500;
-            color: white;
+        }
+        
+        .product-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .product-price {
+            color: #E02E24;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .product-rating {
+            font-size: 12px;
+            color: #ff9800;
+            margin-bottom: 4px;
+        }
+        
+        .product-sold {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .product-buttons {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .btn-add-to-cart, .btn-buy {
+            flex: 1;
+            padding: 8px 0;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s;
         }
-
-        .add-to-cart:hover {
-            background: #e08600;
+        
+        .btn-add-to-cart {
+            background: #f0f0f0;
+            color: #333;
         }
-
-        .add-to-cart:disabled {
+        
+        .btn-buy {
+            background: #E02E24;
+            color: white;
+        }
+        
+        .btn-add-to-cart:disabled, .btn-buy:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-
+        
+        /* Loading indicator */
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #94a3b8;
+            padding: 20px;
+            color: #999;
         }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,149,0,0.3);
-            border-top-color: #ff9500;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        
+        /* No products */
         .no-products {
+            grid-column: 1 / -1;
             text-align: center;
             padding: 40px;
-            color: #94a3b8;
-            grid-column: 1 / -1;
+            color: #999;
         }
-
-        @media (min-width: 768px) {
-            .products-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
+        
+        /* Хиддани элементҳо */
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <div class="search-container">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Ҷустуҷӯи маҳсулот...">
+    <div class="home-container">
+        <!-- Header -->
+        <div class="home-header">
+            <div class="logo" onclick="window.goToHome ? window.goToHome() : window.location.href='/src/pages/b/dashboard.html'">Bozorcha</div>
+            
+            <div class="search-wrapper">
+                <span class="search-icon"></span>
+                <input type="text" id="searchInput" placeholder="Ҷустуҷӯи маҳсулот..." autocomplete="off">
+            </div>
+            
+            <span class="filter-icon" onclick="window.location.href='/src/pages/b/filter.html'"></span>
+            <span class="menu-icon" onclick="window.location.href='/src/pages/b/settings.html'"></span>
+        </div>
+        
+        <!-- Категорияҳои сатҳи 1 -->
+        <div class="categories-level1" id="categoriesLevel1">
+            <span class="category1-item active" data-id="for-you">Барои шумо</span>
+            <!-- Дигар категорияҳо бо JavaScript илова мешаванд -->
+        </div>
+        
+        <!-- Категорияҳои сатҳи 2 -->
+        <div class="categories-level2" id="categoriesLevel2">
+            <div class="level2-grid" id="level2Grid"></div>
+        </div>
+        
+        <!-- Grid маҳсулот -->
+        <div class="products-grid" id="productsGrid">
+            <div class="loading">Маҳсулот бор мешавад...</div>
         </div>
     </div>
 
-    <div class="categories" id="categories">
-        <button class="category-btn active" onclick="filterByCategory('all')">Ҳама</button>
-    </div>
-
-    <div class="products-grid" id="productsGrid">
-        <div class="loading">
-            <div class="loading-spinner"></div>
-            <p>Боркунии маҳсулот...</p>
-        </div>
-    </div>
-
-    <script>
-        const supabase = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-        );
-
-        let currentUser = null;
-        let products = [];
-        let categories = [];
-        let currentCategory = 'all';
-
-        async function checkAuth() {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            currentUser = user;
-        }
-
-        async function loadCategories() {
-            const { data, error } = await supabase
-                .from('categories')
-                .select('*')
-                .order('name_tg');
-
-            if (!error && data) {
-                categories = data;
-                renderCategories();
-            }
-        }
-
-        function renderCategories() {
-            const container = document.getElementById('categories');
-            container.innerHTML = '<button class="category-btn active" onclick="filterByCategory(\'all\')">Ҳама</button>';
-            
-            categories.forEach(cat => {
-                container.innerHTML += `
-                    <button class="category-btn" onclick="filterByCategory('${cat.id}')">${cat.name_tg || cat.name_ru || 'Category'}</button>
-                `;
-            });
-        }
-
-        async function loadProducts(categoryId = null) {
-            const productsGrid = document.getElementById('productsGrid');
-            productsGrid.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Боркунии маҳсулот...</p></div>';
-
-            let query = supabase
-                .from('products')
-                .select(`
-                    *,
-                    shops!inner (
-                        id,
-                        shop_name
-                    )
-                `)
-                .order('created_at', { ascending: false });
-
-            if (categoryId && categoryId !== 'all') {
-                query = query.eq('category_id', categoryId);
-            }
-
-            const { data, error } = await query;
-
-            if (error) {
-                productsGrid.innerHTML = '<div class="no-products">Хатогӣ дар боркунии маҳсулот</div>';
-                return;
-            }
-
-            products = data || [];
-            renderProducts(products);
-        }
-
-        function renderProducts(productsToRender) {
-            const productsGrid = document.getElementById('productsGrid');
-            
-            if (productsToRender.length === 0) {
-                productsGrid.innerHTML = '<div class="no-products">Ҳеҷ маҳсулоте ёфт нашуд</div>';
-                return;
-            }
-
-            productsGrid.innerHTML = '';
-            
-            productsToRender.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+        import { supabase } from '/src/js/supabase.js'
+        import { checkAuth } from '/src/js/guard.js'
+        
+        // Тағирёбандаҳо
+        let currentCategory1 = 'for-you'
+        let currentCategory2 = null
+        let currentSearch = ''
+        let currentFilters = {}
+        let offset = 0
+        let limit = 20
+        let loading = false
+        let hasMore = true
+        let allLevel2Categories = []
+        let showingAllLevel2 = false
+        
+        // Бор кардани категорияҳои сатҳи 1
+        async function loadCategoriesLevel1() {
+            try {
+                const { data: categories, error } = await supabase
+                    .from('categories')
+                    .select('id, name_tj')
+                    .eq('level', 1)
+                    .eq('is_active', true)
+                    .order('sort_order')
                 
-                const imageUrl = product.images && product.images[0] ? product.images[0] : null;
+                if (error) throw error
                 
-                card.innerHTML = `
-                    <div class="product-image">
-                        ${imageUrl ? `<img src="${imageUrl}" alt="${product.name}">` : '<i class="fas fa-box"></i>'}
+                const container = document.getElementById('categoriesLevel1')
+                if (categories && categories.length > 0) {
+                    categories.forEach(cat => {
+                        container.innerHTML += `<span class="category1-item" data-id="${cat.id}">${cat.name_tj}</span>`
+                    })
+                }
+                
+                // Илова кардани event listener ба категорияҳо
+                document.querySelectorAll('.category1-item').forEach(item => {
+                    item.addEventListener('click', async (e) => {
+                        document.querySelectorAll('.category1-item').forEach(el => el.classList.remove('active'))
+                        e.target.classList.add('active')
+                        
+                        currentCategory1 = e.target.dataset.id
+                        currentSearch = ''
+                        document.getElementById('searchInput').value = ''
+                        
+                        if (currentCategory1 === 'for-you') {
+                            // Пинҳон кардани категорияҳои сатҳи 2
+                            document.getElementById('categoriesLevel2').classList.remove('visible')
+                            currentCategory2 = null
+                        } else {
+                            // Намоён кардани категорияҳои сатҳи 2 ва бор кардани онҳо
+                            await loadCategoriesLevel2(currentCategory1)
+                        }
+                        
+                        // Бор кардани маҳсулот
+                        resetAndLoadProducts()
+                    })
+                })
+                
+            } catch (error) {
+                console.error('Error loading level 1 categories:', error)
+            }
+        }
+        
+        // Бор кардани категорияҳои сатҳи 2
+        async function loadCategoriesLevel2(parentId) {
+            try {
+                const { data: categories, error } = await supabase
+                    .from('categories')
+                    .select('id, name_tj')
+                    .eq('parent_id', parentId)
+                    .eq('level', 2)
+                    .eq('is_active', true)
+                    .order('sort_order')
+                
+                if (error) throw error
+                
+                if (categories && categories.length > 0) {
+                    allLevel2Categories = categories
+                    showingAllLevel2 = false
+                    renderLevel2Categories(categories.slice(0, 12))
+                    document.getElementById('categoriesLevel2').classList.add('visible')
+                } else {
+                    document.getElementById('categoriesLevel2').classList.remove('visible')
+                }
+                
+            } catch (error) {
+                console.error('Error loading level 2 categories:', error)
+            }
+        }
+        
+        // Нишон додани категорияҳои сатҳи 2
+        function renderLevel2Categories(categories) {
+            const grid = document.getElementById('level2Grid')
+            grid.innerHTML = ''
+            
+            let html = ''
+            for (let i = 0; i < categories.length; i++) {
+                html += `<div class="level2-item" data-id="${categories[i].id}">${categories[i].name_tj}</div>`
+            }
+            
+            // Агар категорияҳои зиёд бошад, "More" илова кун
+            if (allLevel2Categories.length > 12 && !showingAllLevel2) {
+                html += '<div class="level2-item more" id="moreBtn">➕ More</div>'
+            }
+            
+            // Агар ҳамаи категорияҳо нишон дода шуда бошанд, "Less" илова кун
+            if (showingAllLevel2) {
+                // Ҳамаи категорияҳоро дар grid ҷойгир кун
+                html = ''
+                for (let i = 0; i < allLevel2Categories.length; i++) {
+                    html += `<div class="level2-item" data-id="${allLevel2Categories[i].id}">${allLevel2Categories[i].name_tj}</div>`
+                }
+                html += '<div class="level2-item less" id="lessBtn">🔼 Less</div>'
+            }
+            
+            grid.innerHTML = html
+            
+            // Илова кардани event listener ба категорияҳои сатҳи 2
+            document.querySelectorAll('.level2-item[data-id]').forEach(item => {
+                item.addEventListener('click', () => {
+                    currentCategory2 = item.dataset.id
+                    resetAndLoadProducts()
+                })
+            })
+            
+            // Event listener барои тугмаи "More"
+            const moreBtn = document.getElementById('moreBtn')
+            if (moreBtn) {
+                moreBtn.addEventListener('click', () => {
+                    showingAllLevel2 = true
+                    renderLevel2Categories(allLevel2Categories)
+                })
+            }
+            
+            // Event listener барои тугмаи "Less"
+            const lessBtn = document.getElementById('lessBtn')
+            if (lessBtn) {
+                lessBtn.addEventListener('click', () => {
+                    showingAllLevel2 = false
+                    renderLevel2Categories(allLevel2Categories.slice(0, 12))
+                })
+            }
+        }
+        
+        // Бор кардани маҳсулот
+        async function loadProducts(reset = false) {
+            if (loading) return
+            if (!hasMore && !reset) return
+            
+            loading = true
+            
+            if (reset) {
+                offset = 0
+                hasMore = true
+                document.getElementById('productsGrid').innerHTML = '<div class="loading">Маҳсулот бор мешавад...</div>'
+            }
+            
+            try {
+                const { data, error } = await supabase.rpc('search_products', {
+                    p_search: currentSearch || null,
+                    p_category_id: currentCategory2 || (currentCategory1 !== 'for-you' ? currentCategory1 : null),
+                    p_min_price: currentFilters.min_price || null,
+                    p_max_price: currentFilters.max_price || null,
+                    p_sort_by: 'relevance',
+                    p_limit: limit,
+                    p_offset: offset
+                })
+                
+                if (error) throw error
+                
+                const products = data || []
+                const grid = document.getElementById('productsGrid')
+                
+                if (reset) {
+                    grid.innerHTML = ''
+                }
+                
+                if (products.length === 0) {
+                    if (reset) {
+                        grid.innerHTML = '<div class="no-products">Ҳеҷ маҳсулоте ёфт нашуд</div>'
+                    }
+                    hasMore = false
+                } else {
+                    products.forEach(product => {
+                        grid.appendChild(createProductCard(product))
+                    })
+                    
+                    offset += products.length
+                    hasMore = products.length === limit
+                }
+                
+            } catch (error) {
+                console.error('Error loading products:', error)
+                if (reset) {
+                    document.getElementById('productsGrid').innerHTML = '<div class="no-products">Хатогӣ рух дод</div>'
+                }
+            } finally {
+                loading = false
+            }
+        }
+        
+        // Эҷоди корти маҳсулот
+        function createProductCard(product) {
+            const card = document.createElement('div')
+            card.className = 'product-card'
+            card.onclick = () => window.location.href = `/src/pages/b/home-details.html?id=${product.id}`
+            
+            const imageUrl = product.image_url || ''
+            
+            card.innerHTML = `
+                <div class="product-image">
+                    ${imageUrl ? `<img src="${imageUrl}" alt="${product.title}">` : '🖼️'}
+                </div>
+                <div class="product-info">
+                    <div class="product-title">${product.title}</div>
+                    <div class="product-price">${product.price} с</div>
+                    <div class="product-rating">⭐ ${product.rating || '0.0'}</div>
+                    <div class="product-sold">${product.order_count || 0} фурӯхта шуд</div>
+                    <div class="product-buttons">
+                        <button class="btn-add-to-cart" onclick="event.stopPropagation(); window.addToCart('${product.id}')">➕ Сабад</button>
+                        <button class="btn-buy" onclick="event.stopPropagation(); window.buyNow('${product.id}')">💰 Харид</button>
                     </div>
-                    <div class="product-info">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price">${product.price} с</div>
-                        <div class="product-seller">${product.shops?.shop_name || 'Мағоза'}</div>
-                        <div class="product-actions">
-                            <button class="add-to-cart" onclick="addToCart('${product.id}')" ${!currentUser ? 'disabled' : ''}>
-                                <i class="fas fa-cart-plus"></i> Ба сабад
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                productsGrid.appendChild(card);
-            });
+                </div>
+            `
+            
+            return card
         }
-
-        window.filterByCategory = function(categoryId) {
-            currentCategory = categoryId;
+        
+        // Reset ва бор кардани маҳсулот
+        function resetAndLoadProducts() {
+            offset = 0
+            hasMore = true
+            loadProducts(true)
+        }
+        
+        // Илова ба сабад
+        window.addToCart = async (productId) => {
+            const { data: { user } } = await supabase.auth.getUser()
             
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-            
-            loadProducts(categoryId);
-        };
-
-        window.addToCart = async function(productId) {
-            if (!currentUser) {
-                window.parent.postMessage({ type: 'requireAuth' }, '*');
-                alert('Лутфан аввал ворид шавед');
-                return;
+            if (!user) {
+                sessionStorage.setItem('returnUrl', window.location.href)
+                window.location.href = '/src/pages/auth/b/login/email.html'
+                return
             }
-
-            const { error } = await supabase
-                .from('carts')
-                .upsert({
-                    user_id: currentUser.id,
-                    product_id: productId,
-                    quantity: 1,
-                    selected: true
-                }, {
-                    onConflict: 'user_id, product_id',
-                    ignoreDuplicates: false
-                });
-
+            
+            // Санҷидани мавҷудияти вариантҳо
+            const { data: variants, error } = await supabase
+                .from('product_variants')
+                .select('id')
+                .eq('product_id', productId)
+                .limit(1)
+            
             if (error) {
-                alert('Хатогӣ: ' + error.message);
+                console.error('Error checking variants:', error)
+                return
+            }
+            
+            if (variants && variants.length > 0) {
+                // Агар вариант дошта бошад, ба саҳифаи тафсилот меравад
+                window.location.href = `/src/pages/b/home-details.html?id=${productId}`
             } else {
-                alert('Маҳсулот ба сабад илова шуд');
+                // Агар вариант надошта бошад, мустақиман илова мекунад
+                // Ин ҷо логикаи илова ба сабад
+                console.log('Add to cart:', productId)
+                alert('Маҳсулот ба сабад илова шуд')
             }
-        };
-
-        window.searchProducts = async function() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        }
+        
+        // Харид
+        window.buyNow = async (productId) => {
+            const { data: { user } } = await supabase.auth.getUser()
             
-            if (!searchTerm) {
-                loadProducts(currentCategory);
-                return;
+            if (!user) {
+                sessionStorage.setItem('returnUrl', window.location.href)
+                window.location.href = '/src/pages/auth/b/login/email.html'
+                return
             }
-
-            const filtered = products.filter(p => 
-                p.name.toLowerCase().includes(searchTerm) || 
-                (p.description && p.description.toLowerCase().includes(searchTerm))
-            );
             
-            renderProducts(filtered);
-        };
-
-        document.getElementById('searchInput').addEventListener('input', searchProducts);
-
-        // Initialize
-        checkAuth().then(() => {
-            loadCategories();
-            loadProducts();
-        });
+            window.location.href = `/src/pages/b/checkout.html?product=${productId}`
+        }
+        
+        // Ҷустуҷӯ
+        let searchTimeout
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout)
+            
+            searchTimeout = setTimeout(() => {
+                const searchTerm = e.target.value.trim()
+                
+                if (searchTerm) {
+                    // Пинҳон кардани категорияҳо
+                    document.querySelector('.categories-level1').style.display = 'none'
+                    document.getElementById('categoriesLevel2').classList.remove('visible')
+                    
+                    currentSearch = searchTerm
+                    currentCategory1 = null
+                    currentCategory2 = null
+                } else {
+                    // Намоён кардани категорияҳо
+                    document.querySelector('.categories-level1').style.display = 'flex'
+                    if (currentCategory1 && currentCategory1 !== 'for-you') {
+                        document.getElementById('categoriesLevel2').classList.add('visible')
+                    }
+                    
+                    currentSearch = ''
+                    currentCategory1 = 'for-you'
+                    document.querySelectorAll('.category1-item').forEach(el => el.classList.remove('active'))
+                    document.querySelector('.category1-item[data-id="for-you"]').classList.add('active')
+                }
+                
+                resetAndLoadProducts()
+            }, 500)
+        })
+        
+        // Infinite scroll
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY
+            const categoriesLevel1 = document.querySelector('.categories-level1')
+            const categoriesLevel2 = document.getElementById('categoriesLevel2')
+            
+            // Пинҳон/намоён кардани категорияҳо ҳангоми скролл
+            if (scrollY > 50) {
+                categoriesLevel1.style.opacity = '0'
+                categoriesLevel1.style.pointerEvents = 'none'
+                categoriesLevel2.style.opacity = '0'
+                categoriesLevel2.style.pointerEvents = 'none'
+            } else {
+                categoriesLevel1.style.opacity = '1'
+                categoriesLevel1.style.pointerEvents = 'auto'
+                categoriesLevel2.style.opacity = '1'
+                categoriesLevel2.style.pointerEvents = 'auto'
+            }
+            
+            // Infinite scroll
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                loadProducts()
+            }
+        })
+        
+        // Гирифтани фильтрҳо аз URL (барои оянда)
+        function getFiltersFromURL() {
+            const params = new URLSearchParams(window.location.search)
+            return {
+                min_price: params.get('min_price'),
+                max_price: params.get('max_price'),
+                rating: params.get('rating')
+            }
+        }
+        
+        // Оғоз
+        async function init() {
+            currentFilters = getFiltersFromURL()
+            await loadCategoriesLevel1()
+            await loadProducts(true)
+        }
+        
+        init()
     </script>
 </body>
 </html>
