@@ -16,17 +16,27 @@ export const clearReturnUrl = () => {
     sessionStorage.removeItem('returnUrl')
 }
 
+// Муайян кардани нақш аз URL
+export const getRoleFromPath = () => {
+    const path = window.location.pathname
+    if (path.includes('/s/')) return 'seller'
+    if (path.includes('/b/')) return 'buyer'
+    if (path.includes('/admin/')) return 'admin'
+    return null
+}
+
 // Санҷидани воридшавӣ ва бозгардонидан ба макони аслӣ
 export const requireAuth = async (returnToOnFail = true) => {
     const { data: { user } } = await getCurrentUser()
+    const role = getRoleFromPath()
     
-    if (!user && returnToOnFail) {
+    if (!user && returnToOnFail && role) {
         // Нигоҳ доштани URL-и ҷорӣ
         const currentUrl = window.location.pathname + window.location.search
         saveReturnUrl(currentUrl)
         
-        // Ба саҳифаи интихоби нақш равон кун
-        window.location.href = '/src/pages/auth/method.html'
+        // Ба саҳифаи воридшавии мувофиқи нақш равон кун
+        window.location.href = `/src/pages/auth/${role}/login/email.html`
         return false
     }
     
@@ -34,13 +44,20 @@ export const requireAuth = async (returnToOnFail = true) => {
 }
 
 // Санҷидани нақш ва бозгардонидан
-export const requireRole = async (allowedRoles, redirectTo = '/src/pages/auth/method.html') => {
+export const requireRole = async (allowedRoles) => {
     const { data: { user } } = await getCurrentUser()
+    const currentRole = getRoleFromPath()
     
     if (!user) {
         const currentUrl = window.location.pathname + window.location.search
         saveReturnUrl(currentUrl)
-        window.location.href = redirectTo
+        
+        // Ба саҳифаи воридшавии мувофиқ равон кун
+        if (currentRole) {
+            window.location.href = `/src/pages/auth/${currentRole}/login/email.html`
+        } else {
+            window.location.href = '/'
+        }
         return false
     }
     
@@ -52,11 +69,15 @@ export const requireRole = async (allowedRoles, redirectTo = '/src/pages/auth/me
     
     if (error || !profile) {
         console.error('Profile not found:', error)
-        window.location.href = '/src/pages/auth/method.html'
+        if (currentRole) {
+            window.location.href = `/src/pages/auth/${currentRole}/register/form.html`
+        } else {
+            window.location.href = '/'
+        }
         return false
     }
     
-    // Санҷидани нақш (агар profile.roles массив бошад)
+    // Санҷидани нақш
     const userRoles = profile.roles || []
     const hasAllowedRole = allowedRoles.some(role => userRoles.includes(role))
     
@@ -76,20 +97,33 @@ export const requireRole = async (allowedRoles, redirectTo = '/src/pages/auth/me
 }
 
 // Функсия барои пас аз воридшавӣ
-export const handlePostAuth = (userRole) => {
+export const handlePostAuth = async () => {
+    const { data: { user } } = await getCurrentUser()
+    if (!user) return
+    
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('roles')
+        .eq('id', user.id)
+        .single()
+    
     const returnUrl = getReturnUrl()
     clearReturnUrl()
     
     if (returnUrl && returnUrl !== '/') {
         window.location.href = returnUrl
-    } else {
-        // Ба дашборди мувофиқ равон кун
-        if (userRole === 'seller') {
+    } else if (profile) {
+        const userRoles = profile.roles || []
+        if (userRoles.includes('seller')) {
             window.location.href = '/src/pages/dashboard/s/dashboard.html'
-        } else if (userRole === 'buyer') {
+        } else if (userRoles.includes('buyer')) {
             window.location.href = '/src/pages/dashboard/b/dashboard.html'
+        } else if (userRoles.includes('admin')) {
+            window.location.href = '/src/pages/admin/dashboard.html'
         } else {
             window.location.href = '/'
         }
+    } else {
+        window.location.href = '/'
     }
 }
