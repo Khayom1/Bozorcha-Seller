@@ -2,20 +2,13 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Bozorcha - Дашборд</title>
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="/src/styles/main.css">
-    <link rel="stylesheet" href="/src/styles/theme.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bozorcha</title>
     <style>
-        /* Стилҳои муваққатӣ (то даме ки main.css пурра шавад) */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
         body {
@@ -25,42 +18,8 @@
             flex-direction: column;
         }
         
-        /* Header */
-        .dashboard-header {
-            background: white;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .logo img {
-            height: 32px;
-        }
-        
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-        }
-        
-        .menu-icon span {
-            width: 100%;
-            height: 3px;
-            background-color: #333;
-            border-radius: 3px;
-            transition: 0.3s;
-        }
-        
-        /* Content */
-        .dashboard-content {
+        /* Content area - ин ҷо саҳифаҳо бор мешаванд */
+        .content-area {
             flex: 1;
             overflow-y: auto;
             padding-bottom: 70px; /* Барои bottom navigation */
@@ -77,7 +36,7 @@
             justify-content: space-around;
             padding: 8px 0 16px;
             box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
-            z-index: 100;
+            z-index: 1000;
         }
         
         .nav-item {
@@ -99,103 +58,58 @@
             width: 24px;
             height: 24px;
         }
-        
-        /* Loading indicator */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="dashboard-header">
-        <div class="logo" onclick="goToHome()">
-            <img src="/public/assets/logo.svg" alt="Bozorcha" onerror="this.src='https://via.placeholder.com/100x32?text=Bozorcha'">
-        </div>
-        <div class="menu-icon" onclick="goToSettings()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </header>
-
-    <!-- Content (Dynamic) -->
-    <main class="dashboard-content" id="main-content">
-        <div class="loading">Саҳифа бор мешавад...</div>
-    </main>
-
+    <!-- Content area -->
+    <div class="content-area" id="contentArea">
+        <!-- Саҳифаҳо (home, chat, cart, profile) бо JavaScript бор мешаванд -->
+    </div>
+    
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="loadPage('home')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 3L4 9v12h16V9l-8-6z"/>
             </svg>
-            <span class="label">Асосӣ</span>
+            <span>Асосӣ</span>
         </div>
         <div class="nav-item" onclick="loadPage('chat')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
             </svg>
-            <span class="label">Паём</span>
+            <span>Паём</span>
         </div>
         <div class="nav-item" onclick="loadPage('cart')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
             </svg>
-            <span class="label">Сабад</span>
+            <span>Сабад</span>
         </div>
         <div class="nav-item" onclick="loadPage('profile')">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
             </svg>
-            <span class="label">Профил</span>
+            <span>Профил</span>
         </div>
     </nav>
 
-    <!-- JavaScript модулӣ -->
     <script type="module">
-        // Импорти функсияҳои зарурӣ
         import { supabase } from '/src/js/supabase.js'
         import { checkAuth, saveReturnUrl } from '/src/js/guard.js'
         
-        // Танзимоти асосӣ
-        const API = {
-            home: '/src/pages/b/home/home.html',
-            chat: '/src/pages/b/chat/chat.html',
-            cart: '/src/pages/b/cart/cart.html',
-            profile: '/src/pages/b/profile/profile.html'
-        }
-        
-        // Бор кардани саҳифаи пешфарз
+        // Бор кардани саҳифаи пешфарз (home)
         window.addEventListener('DOMContentLoaded', () => {
-            // Санҷидани URL барои # (hash)
-            const hash = window.location.hash.substring(1)
-            const page = hash || 'home'
-            loadPage(page)
+            loadPage('home')
         })
         
         // Функсия барои бор кардани саҳифаҳо
-        window.loadPage = async (page, updateHistory = true) => {
-            const contentDiv = document.getElementById('main-content')
+        window.loadPage = async (page) => {
+            const contentArea = document.getElementById('contentArea')
             
-            // Нишон додани индикатори боркунӣ
-            contentDiv.innerHTML = '<div class="loading">Саҳифа бор мешавад...</div>'
-            
-            // Навсозии active class барои навигатсия
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active')
-            })
-            
-            // Тугмаи мувофиқро active кун
-            const activeItem = Array.from(document.querySelectorAll('.nav-item')).find(
-                item => item.querySelector('.label').textContent.toLowerCase() === 
-                       (page === 'home' ? 'асосӣ' : page)
-            )
-            if (activeItem) {
-                activeItem.classList.add('active')
-            }
+            // Навсозии active class
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'))
+            event?.currentTarget?.classList.add('active')
             
             // Санҷидани воридшавӣ барои саҳифаҳои маҳдуд
             const protectedPages = ['chat', 'cart', 'profile']
@@ -204,81 +118,20 @@
                 const { data: { user } } = await supabase.auth.getUser()
                 
                 if (!user) {
-                    // Нигоҳ доштани URL барои бозгашт
                     saveReturnUrl(window.location.href)
-                    
-                    // Ба саҳифаи интихоби нақш равон кун
-                    window.location.href = '/src/pages/auth/method.html'
+                    window.location.href = '/src/pages/auth/b/method.html'
                     return
                 }
             }
             
             try {
-                // Бор кардани саҳифа
-                const response = await fetch(API[page])
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`)
-                }
-                
+                const response = await fetch(`/src/pages/b/${page}/${page}.html`)
                 const html = await response.text()
-                
-                // Ҷойгузории мазмун
-                contentDiv.innerHTML = html
-                
-                // Навсозии URL (барои бозгашт бо тугмаи back)
-                if (updateHistory) {
-                    history.pushState({page}, '', `#${page}`)
-                }
-                
-                // Иҷрои скриптҳои дохили саҳифа (агар бошад)
-                Array.from(contentDiv.querySelectorAll('script')).forEach(oldScript => {
-                    const newScript = document.createElement('script')
-                    Array.from(oldScript.attributes).forEach(attr => {
-                        newScript.setAttribute(attr.name, attr.value)
-                    })
-                    newScript.textContent = oldScript.textContent
-                    oldScript.parentNode.replaceChild(newScript, oldScript)
-                })
-                
+                contentArea.innerHTML = html
             } catch (error) {
                 console.error('Error loading page:', error)
-                contentDiv.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #999;">
-                        <p>Саҳифа бор нашуд</p>
-                        <p style="font-size: 12px; margin-top: 8px;">${error.message}</p>
-                    </div>
-                `
+                contentArea.innerHTML = '<div style="text-align: center; padding: 40px;">Саҳифа бор нашуд</div>'
             }
-        }
-        
-        // Ба коркарди тугмаи back/forward
-        window.addEventListener('popstate', (event) => {
-            const page = location.hash.substring(1) || 'home'
-            loadPage(page, false)
-        })
-        
-        // Рафтан ба саҳифаи асосӣ (ҳангоми клик ба лого)
-        window.goToHome = () => {
-            loadPage('home')
-        }
-        
-        // Рафтан ба танзимот
-        window.goToSettings = () => {
-            window.location.href = '/src/pages/b/settings.html'
-        }
-        
-        // Инжект кардани функсияи санҷиши воридшавӣ ба саҳифаҳои боршуда
-        window.requireAuthForAction = async (action) => {
-            const { data: { user } } = await supabase.auth.getUser()
-            
-            if (!user) {
-                saveReturnUrl(window.location.href)
-                window.location.href = '/src/pages/auth/method.html'
-                return false
-            }
-            
-            return true
         }
     </script>
 </body>
