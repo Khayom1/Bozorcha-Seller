@@ -2,301 +2,294 @@
 <html lang="tg">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Дохилшавӣ - Bozorcha</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Воридшавӣ барои харидорон - Bozorcha</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
     <style>
-        :root {
-            --bg: #FFFFFF;
-            --surface: #F8F9FA;
-            --text-primary: #1A1C1E;
-            --text-secondary: #6C757D;
-            --accent-gradient: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
-            --border: #EEEEEE;
-            --shadow: 0 15px 35px rgba(0,0,0,0.05);
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
         }
-
-        [data-theme="dark"] {
-            --bg: #0A0A0B;
-            --surface: #161618;
-            --text-primary: #F8F9FA;
-            --text-secondary: #ADB5BD;
-            --border: #2C2E33;
-            --shadow: 0 15px 35px rgba(0,0,0,0.3);
+        
+        .auth-card {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
-
-        body {
-            background-color: var(--bg); color: var(--text-primary);
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 20px;
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-
-        /* Аниматсияи Логотип */
-        .awning-part { transform-origin: top center; animation: windSwing 3s ease-in-out infinite; }
-        @keyframes windSwing { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
-
-        .card {
-            background: var(--surface); border-radius: 35px; padding: 40px 30px;
-            box-shadow: var(--shadow); border: 1px solid var(--border);
-            max-width: 400px; width: 100%; position: relative; text-align: center;
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
         }
-
-        header { display: flex; align-items: center; margin-bottom: 35px; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-
+        
+        .auth-header .role-badge {
+            background: #007bff;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .auth-header h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .auth-header p {
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .auth-btn:hover {
+            background: #0056b3;
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .auth-links a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .auth-divider span {
+            padding: 0 10px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
         .back-btn {
-            width: 44px; height: 44px; border-radius: 14px;
-            background: var(--bg); border: 1px solid var(--border);
-            cursor: pointer; display: flex; justify-content: center; align-items: center;
-            font-size: 20px; color: var(--text-primary);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
-
-        .title { font-size: 22px; font-weight: 800; margin-bottom: 8px; text-align: left; }
-        .subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; text-align: left; line-height: 1.4; }
-
-        .input-group { margin-bottom: 10px; text-align: left; }
-        .custom-input {
-            display: flex; align-items: center; background: var(--bg);
-            border: 2px solid var(--border); border-radius: 20px; padding: 5px;
+        
+        .back-btn:hover {
+            color: #333;
         }
-        .custom-input:focus-within { border-color: #FF9F43; }
-        .custom-input input { 
-            flex: 1; padding: 15px; border: none; outline: none; 
-            background: transparent; color: var(--text-primary); 
-            font-size: 16px; font-weight: 600; 
+        
+        /* Тёмная тема */
+        .theme-dark .auth-card {
+            background: #2d2d2d;
         }
-
-        .otp-input { text-align: center; letter-spacing: 10px; font-size: 22px !important; }
-
-        .btn {
-            width: 100%; padding: 20px; border-radius: 20px;
-            font-size: 16px; font-weight: 700; border: none; cursor: pointer;
-            margin-top: 20px; transition: transform 0.2s, opacity 0.3s;
+        
+        .theme-dark .auth-header h2 {
+            color: #fff;
         }
-        .btn-primary { background: var(--accent-gradient); color: white; box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2); }
-        .btn-primary:disabled { opacity: 0.5; pointer-events: none; }
-
-        #otp-section { display: none; }
-        .error-message { color: #ff4444; font-size: 13px; margin-top: 5px; display: none; }
-        footer { margin-top: 40px; color: var(--text-secondary); font-size: 12px; }
+        
+        .theme-dark .auth-header p {
+            color: #bbb;
+        }
+        
+        .theme-dark .form-group label {
+            color: #ddd;
+        }
+        
+        .theme-dark .form-group input {
+            background: #3d3d3d;
+            border-color: #4d4d4d;
+            color: #fff;
+        }
+        
+        .theme-dark .back-btn {
+            color: #bbb;
+        }
+        
+        .theme-dark .back-btn:hover {
+            color: #fff;
+        }
     </style>
 </head>
-<body data-theme="light">
-    <div class="card">
-        <header>
-            <div class="header-left">
-                <button class="back-btn" id="backBtn">←</button>
-                <svg width="45" height="45" viewBox="0 0 200 200">
-                    <path class="awning-part" d="M 10 60 C 30 10 140 0 185 60 L 185 85 A 28.5 28.5 0 0 1 126.6 85 A 28.5 28.5 0 0 1 68.3 85 A 28.5 28.5 0 0 1 10 85 L 10 60 Z" fill="#f4ce9b"/>
-                    <path d="M 25 105 Q 65 140 25 195 L 25 105 Z" fill="#eea54a"/>
-                    <path d="M 90 120 L 125 120 Q 125 160 160 130 Q 195 160 150 195 Q 80 200 90 120 Z" fill="#e45d27"/>
-                </svg>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <button class="back-btn" onclick="window.location.href='/src/pages/dashboard/b/dashboard.html'">← Ба дашборд</button>
+            
+            <div class="auth-header">
+                <span class="role-badge">Харидор</span>
+                <h2>Ба ҳисоби харидор ворид шавед</h2>
+                <p>Барои харид ва пайгирии фармоишҳо</p>
             </div>
-        </header>
-
-        <div id="email-section">
-            <h1 class="title" id="t-title">Дохилшавӣ</h1>
-            <p class="subtitle" id="t-sub">Почтаи электронии худро ворид кунед</p>
-            <div class="input-group">
-                <div class="custom-input">
-                    <input type="email" id="email" placeholder="example@mail.com">
+            
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Почтаи электронӣ</label>
+                    <input type="email" id="email" placeholder="buyer@example.com" required>
                 </div>
-                <div id="email-error" class="error-message">Почта нодуруст аст</div>
-            </div>
-            <button class="btn btn-primary" id="sendBtn">Фиристодани код</button>
-        </div>
-
-        <div id="otp-section">
-            <h1 class="title" id="t-otp-title">Тасдиқи код</h1>
-            <p class="subtitle" id="t-otp-sub">Коди 6-рақамаро ворид кунед</p>
-            <div class="input-group">
-                <div class="custom-input">
-                    <input type="text" id="otp" class="otp-input" placeholder="000000" maxlength="6">
+                
+                <div class="form-group">
+                    <label for="password">Парол</label>
+                    <input type="password" id="password" placeholder="********" required>
                 </div>
-                <div id="otp-error" class="error-message">Код нодуруст аст</div>
+                
+                <button type="submit" class="auth-btn" id="submitBtn">Воридшавӣ</button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>ё</span>
             </div>
-            <button class="btn btn-primary" id="verifyBtn">Тасдиқ кардан</button>
+            
+            <div class="auth-links">
+                <a href="#" onclick="goToPhone()">Бо рақами телефон ворид шавед</a>
+                <br><br>
+                <a href="#" onclick="goToRegister()">Ҳисоб надоред? Ҳамчун харидор сабти ном кунед</a>
+            </div>
         </div>
-
-        <footer id="t-foot">© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.</footer>
     </div>
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script>
-        const _supabase = supabase.createClient(
-            'https://seagtlaujnnhoyitgsdd.supabase.co',
-            'sb_publishable_OlLChtOja0i8nIrPZuM_Og_vyfGjfsP'
-        );
-
-        const i18n = {
-            tj: { 
-                title: "Дохилшавӣ", 
-                sub: "Почтаи электронии худро ворид кунед", 
-                otpTitle: "Тасдиқи код", 
-                otpSub: "Коди 6-рақамаро ворид кунед", 
-                btnSend: "Фиристодани код", 
-                btnVerify: "Тасдиқ кардан", 
-                foot: "© 2026 Bozorcha. Ҳамаи ҳуқуқҳо ҳифз шудаанд.",
-                loading: "Сабр кунед...",
-                errEmail: "Почтаи электронӣ нодуруст аст",
-                errOtp: "Код нодуруст аст",
-                userNotFound: "Чунин корбар ёфт нашуд. Лутфан аввал сабти ном кунед."
-            },
-            ru: { 
-                title: "Вход", 
-                sub: "Введите ваш email", 
-                otpTitle: "Подтверждение", 
-                otpSub: "Введите 6-значный код", 
-                btnSend: "Отправить код", 
-                btnVerify: "Подтвердить", 
-                foot: "© 2026 Bozorcha. Все права защищены.",
-                loading: "Загрузка...",
-                errEmail: "Неверный email",
-                errOtp: "Неверный код",
-                userNotFound: "Пользователь не найден. Пожалуйста, зарегистрируйтесь."
-            },
-            en: { 
-                title: "Login", 
-                sub: "Enter your email address", 
-                otpTitle: "Verification", 
-                otpSub: "Enter 6-digit code", 
-                btnSend: "Send code", 
-                btnVerify: "Verify", 
-                foot: "© 2026 Bozorcha. All rights reserved.",
-                loading: "Loading...",
-                errEmail: "Invalid email",
-                errOtp: "Invalid code",
-                userNotFound: "User not found. Please register first."
-            }
-        };
-
-        const emailSection = document.getElementById('email-section');
-        const otpSection = document.getElementById('otp-section');
-        const emailInput = document.getElementById('email');
-        const otpInput = document.getElementById('otp');
-        const sendBtn = document.getElementById('sendBtn');
-        const verifyBtn = document.getElementById('verifyBtn');
-        const backBtn = document.getElementById('backBtn');
-
-        let currentLang = localStorage.getItem('lang') || 'tj';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-
-        document.body.setAttribute('data-theme', currentTheme);
-        applyLang(currentLang);
-
-        function applyLang(lang) {
-            const d = i18n[lang];
-            document.getElementById('t-title').innerText = d.title;
-            document.getElementById('t-sub').innerText = d.sub;
-            document.getElementById('t-otp-title').innerText = d.otpTitle;
-            document.getElementById('t-otp-sub').innerText = d.otpSub;
-            document.getElementById('sendBtn').innerText = d.btnSend;
-            document.getElementById('verifyBtn').innerText = d.btnVerify;
-            document.getElementById('t-foot').innerText = d.foot;
+    <script type="module">
+        import { signInWithEmail } from '/src/js/supabase.js'
+        import { handlePostAuth } from '/src/js/guard.js'
+        
+        window.goToPhone = () => {
+            window.location.href = '/src/pages/auth/b/login/phone.html'
         }
-
-        backBtn.onclick = () => {
-            if (otpSection.style.display === 'block') {
-                otpSection.style.display = 'none';
-                emailSection.style.display = 'block';
-            } else {
-                window.location.href = 'choose-method.html';
-            }
-        };
-
-        sendBtn.onclick = async () => {
-            const email = emailInput.value.trim();
-            const lang = localStorage.getItem('lang') || 'tj';
+        
+        window.goToRegister = () => {
+            window.location.href = '/src/pages/auth/b/register/form.html'
+        }
+        
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault()
             
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                document.getElementById('email-error').innerText = i18n[lang].errEmail;
-                document.getElementById('email-error').style.display = 'block';
-                return;
-            }
+            const email = document.getElementById('email').value
+            const password = document.getElementById('password').value
+            const submitBtn = document.getElementById('submitBtn')
+            const errorDiv = document.getElementById('errorMessage')
             
-            // Санҷидани мавҷудияти почта дар таблицаи user
-            const { data: existingUser, error: userError } = await _supabase
-                .from('user')
-                .select('id, full_name, shop_name')
-                .eq('email', email);
+            errorDiv.style.display = 'none'
+            submitBtn.disabled = true
+            submitBtn.textContent = 'Интизор шавед...'
             
-            if (userError) {
-                alert("Хатогӣ дар санҷиш: " + userError.message);
-                return;
-            }
-            
-            // Агар корбар вуҷуд надошта бошад, паёми хатогӣ диҳед
-            if (!existingUser || existingUser.length === 0) {
-                document.getElementById('email-error').innerText = i18n[lang].userNotFound;
-                document.getElementById('email-error').style.display = 'block';
-                return;
-            }
-            
-            // Нигоҳ доштани маълумоти корбар барои баъдтар
-            localStorage.setItem('temp_email', email);
-            localStorage.setItem('temp_user', JSON.stringify(existingUser[0]));
-            
-            sendBtn.disabled = true;
-            sendBtn.innerText = i18n[lang].loading;
-            
-            const { error } = await _supabase.auth.signInWithOtp({ 
-                email: email,
-                options: { shouldCreateUser: false }
-            });
-            
-            if (error) {
-                alert("Хатогӣ: " + error.message);
-                sendBtn.disabled = false;
-                sendBtn.innerText = i18n[lang].btnSend;
-            } else {
-                emailSection.style.display = 'none';
-                otpSection.style.display = 'block';
-                document.getElementById('email-error').style.display = 'none';
-            }
-        };
-
-        verifyBtn.onclick = async () => {
-            const token = otpInput.value.trim();
-            const email = localStorage.getItem('temp_email');
-            const lang = localStorage.getItem('lang') || 'tj';
-            
-            if (token.length !== 6) {
-                document.getElementById('otp-error').innerText = i18n[lang].errOtp;
-                document.getElementById('otp-error').style.display = 'block';
-                return;
-            }
-            
-            verifyBtn.disabled = true;
-            verifyBtn.innerText = i18n[lang].loading;
-
-            const { data, error } = await _supabase.auth.verifyOtp({ 
-                email, 
-                token, 
-                type: 'email' 
-            });
-
-            if (error) {
-                document.getElementById('otp-error').innerText = i18n[lang].errOtp;
-                document.getElementById('otp-error').style.display = 'block';
-                verifyBtn.disabled = false;
-                verifyBtn.innerText = i18n[lang].btnVerify;
-            } else {
-                localStorage.setItem('userId', data.user.id);
+            try {
+                const { data, error } = await signInWithEmail(email, password)
                 
-                // Санҷидани пурра будани профил
-                const userData = JSON.parse(localStorage.getItem('temp_user') || '{}');
-                if (userData.full_name && userData.shop_name) {
-                    window.location.href = 'dashboard.html';
-                } else {
-                    alert("Лутфан аввал профили худро пур кунед");
-                    window.location.href = 'profile-form.html';
+                if (error) {
+                    throw error
                 }
                 
-                localStorage.removeItem('temp_email');
-                localStorage.removeItem('temp_user');
+                document.getElementById('successMessage').textContent = 'Воридшавӣ муваффақ шуд!'
+                document.getElementById('successMessage').style.display = 'block'
+                
+                // Ба дашборди харидор равон кун
+                setTimeout(() => {
+                    handlePostAuth()
+                }, 1000)
+                
+            } catch (error) {
+                errorDiv.textContent = error.message || 'Почта ё парол нодуруст аст'
+                errorDiv.style.display = 'block'
+                submitBtn.disabled = false
+                submitBtn.textContent = 'Воридшавӣ'
             }
-        };
+        })
     </script>
 </body>
 </html>
