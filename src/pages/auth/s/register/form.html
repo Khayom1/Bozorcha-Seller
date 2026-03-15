@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сабти ном - Фурӯшанда - Bozorcha</title>
+    <title>Сабти ном барои фурӯшандагон - Bozorcha</title>
     <link rel="stylesheet" href="/src/styles/main.css">
     <style>
-        /* Стилҳо ба монанди боло */
         .auth-container {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
         
         .auth-card {
@@ -23,6 +22,21 @@
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .auth-header .role-badge {
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
         }
         
         .form-row {
@@ -36,17 +50,115 @@
                 grid-template-columns: 1fr;
             }
         }
-        /* ... дигар стилҳо аз боло */
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #28a745;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .auth-btn:hover {
+            background: #218838;
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .auth-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .auth-links a {
+            color: #28a745;
+            text-decoration: none;
+        }
+        
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .back-btn:hover {
+            color: #333;
+        }
+        
+        /* Тёмная тема */
+        .theme-dark .auth-card {
+            background: #2d2d2d;
+        }
+        
+        .theme-dark .form-group label {
+            color: #ddd;
+        }
+        
+        .theme-dark .form-group input {
+            background: #3d3d3d;
+            border-color: #4d4d4d;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <button class="back-btn" onclick="history.back()">← Бозгашт</button>
+            <button class="back-btn" onclick="window.location.href='/src/pages/dashboard/s/dashboard.html'">← Ба дашборд</button>
             
             <div class="auth-header">
-                <h2>Сабти ном ба ҳайси фурӯшанда</h2>
-                <p>Барои оғози тиҷорат, маълумоти худро пур кунед</p>
+                <span class="role-badge">Фурӯшанда</span>
+                <h2>Сабти ном барои фурӯшандагон</h2>
+                <p>Барои оғози тиҷорати онлайн</p>
             </div>
             
             <div id="errorMessage" class="error-message"></div>
@@ -55,39 +167,39 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Ном</label>
-                        <input type="text" id="firstName" required>
+                        <input type="text" id="firstName" placeholder="Алӣ" required>
                     </div>
                     
                     <div class="form-group">
                         <label>Насаб</label>
-                        <input type="text" id="lastName" required>
+                        <input type="text" id="lastName" placeholder="Алиев" required>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label>Номи мағоза</label>
-                    <input type="text" id="shopName" required>
+                    <input type="text" id="shopName" placeholder="Мағозаи Алӣ" required>
                 </div>
                 
                 <div class="form-group">
                     <label>Почтаи электронӣ</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" placeholder="ali@example.com" required>
                 </div>
                 
                 <div class="form-group">
                     <label>Рақами телефон</label>
-                    <input type="tel" id="phone" placeholder="+992 00 000 0000" required>
+                    <input type="tel" id="phone" placeholder="+992 900 000 000" required>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Парол</label>
-                        <input type="password" id="password" required>
+                        <input type="password" id="password" placeholder="********" required>
                     </div>
                     
                     <div class="form-group">
                         <label>Такрори парол</label>
-                        <input type="password" id="confirmPassword" required>
+                        <input type="password" id="confirmPassword" placeholder="********" required>
                     </div>
                 </div>
                 
@@ -111,11 +223,8 @@
         import { supabase } from '/src/js/supabase.js'
         import { isValidEmail, isValidPhone, isValidPassword } from '/src/js/utils.js'
         
-        const urlParams = new URLSearchParams(window.location.search)
-        const role = urlParams.get('role') || 'seller'
-        
         window.goToLogin = () => {
-            window.location.href = `/src/pages/auth/${role}/login/email.html?role=${role}`
+            window.location.href = '/src/pages/auth/s/login/email.html'
         }
         
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
@@ -177,7 +286,7 @@
                         data: {
                             first_name: firstName,
                             last_name: lastName,
-                            role: role
+                            role: 'seller'
                         }
                     }
                 })
@@ -194,37 +303,34 @@
                             last_name: lastName,
                             email: email,
                             phone: phone,
-                            roles: [role],
-                            username: shopName.toLowerCase().replace(/\s+/g, '_')
+                            roles: ['seller']
                         }
                     ])
                 
                 if (profileError) throw profileError
                 
-                // 3. Агар фурӯшанда бошад, мағоза созем
-                if (role === 'seller') {
-                    const { error: shopError } = await supabase
-                        .from('shops')
-                        .insert([
-                            {
-                                user_id: authData.user.id,
-                                name: shopName,
-                                slug: shopName.toLowerCase().replace(/\s+/g, '_'),
-                                phone: phone
-                            }
-                        ])
-                    
-                    if (shopError) throw shopError
-                }
+                // 3. Эҷоди мағоза
+                const { error: shopError } = await supabase
+                    .from('shops')
+                    .insert([
+                        {
+                            user_id: authData.user.id,
+                            name: shopName,
+                            slug: shopName.toLowerCase().replace(/\s+/g, '_'),
+                            phone: phone
+                        }
+                    ])
                 
-                // Пас аз муваффақият
-                document.getElementById('successMessage').textContent = 
-                    'Сабти ном муваффақ шуд! Барои фаъолсозӣ, почтаи худро тафтиш кунед.'
-                document.getElementById('successMessage').style.display = 'block'
+                if (shopError) throw shopError
                 
-                // Ба саҳифаи тасдиқ равон кун
+                // Муваффақият
+                errorDiv.style.backgroundColor = '#d4edda'
+                errorDiv.style.color = '#155724'
+                errorDiv.textContent = 'Сабти ном муваффақ шуд! Барои фаъолсозӣ, почтаи худро тафтиш кунед.'
+                errorDiv.style.display = 'block'
+                
                 setTimeout(() => {
-                    window.location.href = `/src/pages/auth/${role}/register/verify.html?email=${encodeURIComponent(email)}`
+                    window.location.href = '/src/pages/auth/s/login/email.html'
                 }, 3000)
                 
             } catch (error) {
